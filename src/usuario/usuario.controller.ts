@@ -9,26 +9,26 @@ export class UsuarioController {
 
   @Post()
   create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuarioService.create(createUsuarioDto);
+    return this.usuarioService.createUser(createUsuarioDto);
   }
 
   @Get()
   findAll() {
-    return this.usuarioService.findAll();
+    return this.usuarioService.getUsers();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {  // Eliminado +id
+  findOne(@Param('id') id: string) {
     return this.usuarioService.findOne(id);
   }
-
+  /*
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {  // Eliminado +id
-    return this.usuarioService.update(id, updateUsuarioDto);
+  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+    return this.usuarioService.(+id, updateUsuarioDto);
   }
-
+    */
   @Delete(':id')
-  remove(@Param('id') id: string) {  // Eliminado +id
-    return this.usuarioService.delete(id);
+  remove(@Param('id') id: string) {
+    return this.usuarioService.remove(id);
   }
 }

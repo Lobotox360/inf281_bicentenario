@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -6,19 +12,25 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model Usuario {
-  id                  String   @id @default(uuid()) // Cambiado a UUID
+  id                  String   @id @default(uuid())  // ID único con UUID
   nombre              String   @db.VarChar(50)
   apellidoPaterno     String   @db.VarChar(50)
   apellidoMaterno     String   @db.VarChar(50)
   email               String   @unique
-  contraseña          String
-  telefono            String   @db.VarChar(15)
+  contrasena          String   // Guardar hash, NO en texto plano
+  telefono            String?  @db.VarChar(15)  // Opcional
   pais                String   @db.VarChar(50)
-  estado              String   @db.VarChar(50)
-  fechaNacimiento     DateTime?
-  genero              String   @db.VarChar(10)
+  ciudad              String   @db.VarChar(50)
+  genero              String?  @db.VarChar(10) // Opcional
   fechaCreacion       DateTime @default(now())
   ultimaActualizacion DateTime @updatedAt
+
+  // 🔹 Para verificación de cuenta
+  verificado          Boolean  @default(false) // Indica si el usuario verificó su email
+  codigoVerificacion  String?  @unique // Código de verificación de email (expira)
+
+  // 🔹 Para recuperación de contraseña
+  tokenRecuperacion   String?  @unique // Token único para recuperación
+  expiracionToken     DateTime? // Fecha de expiración del token
 }

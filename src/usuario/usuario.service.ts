@@ -1,27 +1,53 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUsuarioDto } from './dto/create-usuario.dto';
+import { PrismaService } from 'src/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    return this.prisma.usuario.findMany();
+  async getUsers() {
+    return await this.prisma.usuario.findMany();
   }
 
-  async create(data: any) {
-    return this.prisma.usuario.create({ data });
+  async createUser(createUsuarioDto: CreateUsuarioDto) {
+    const hashedPassword = await bcrypt.hash(createUsuarioDto.contrasena, 10);
+
+    return await this.prisma.usuario.create({
+      data: {
+        nombre: createUsuarioDto.nombre,
+        apellidoPaterno: createUsuarioDto.apellidoPaterno,
+        apellidoMaterno: createUsuarioDto.apellidoMaterno,
+        email: createUsuarioDto.email,
+        contrasena: hashedPassword,
+        telefono: createUsuarioDto.telefono,
+        pais: createUsuarioDto.pais,
+        ciudad: createUsuarioDto.ciudad,
+        genero: createUsuarioDto.genero,
+      }
+    });
   }
 
-  async findOne(id: string) {  // Cambiado a string
-    return this.prisma.usuario.findUnique({ where: { id } });
+  async findOne(id: string) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: { id },
+    });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    return usuario;
   }
 
-  async update(id: string, data: any) {  // Cambiado a string
-    return this.prisma.usuario.update({ where: { id }, data });
-  }
+  async remove(id: string) {
+    const usuario = await this.prisma.usuario.findUnique({ where: { id } });
 
-  async delete(id: string) {  // Cambiado a string
-    return this.prisma.usuario.delete({ where: { id } });
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
+    return await this.prisma.usuario.delete({ where: { id } });
   }
 }
