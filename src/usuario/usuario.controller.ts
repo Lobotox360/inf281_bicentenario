@@ -1,34 +1,56 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
 
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
-    return this.usuarioService.createUser(createUsuarioDto);
+  // Registro y envío de código de verificación
+  @Post('registrar')
+  async registerUser(@Body() userData: CreateUsuarioDto) {
+    return await this.usuarioService.registerUser(userData);
   }
 
+  // Verificar el código y creación del usuario
+  @Post('verificar')
+  async verifyEmail(@Body() { email, code }: { email: string; code: string }) {
+    return await this.usuarioService.verifyAndCreateUser(email, code);
+  }
+
+  // Reactivar el código si ha expirado
+  @Get('reenviar')
+  async resendCode(@Query('email') email: string) {
+    return await this.usuarioService.resendVerificationCode(email);
+  }
+
+  // Obtener todos los usuarios
+  // @UseGuards(JwtAuthGuard)
   @Get()
   findAll() {
     return this.usuarioService.getUsers();
   }
 
+  // Obtener un usuario por ID
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usuarioService.findOne(id);
   }
-  /*
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuarioService.(+id, updateUsuarioDto);
-  }
-    */
+
+  // Eliminar un usuario
+  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuarioService.remove(id);
+  }
+  
+  // Editar usuario por ID
+  @UseGuards(JwtAuthGuard)
+  @Patch(':id')
+  async updateUser(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
+    return await this.usuarioService.updateUser(id, updateUsuarioDto);
   }
 }

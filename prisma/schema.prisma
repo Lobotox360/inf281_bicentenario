@@ -27,10 +27,9 @@ model Usuario {
   ultimaActualizacion DateTime @updatedAt
 
   // 🔹 Para verificación de cuenta
-  verificado          Boolean  @default(false) // Indica si el usuario verificó su email
-  codigoVerificacion  String?  @unique // Código de verificación de email (expira)
+  permiso          Boolean  @default(false)
 
   // 🔹 Para recuperación de contraseña
-  tokenRecuperacion   String?  @unique // Token único para recuperación
-  expiracionToken     DateTime? // Fecha de expiración del token
+  // tokenRecuperacion   String?  @unique // Token único para recuperación
+  // expiracionToken     DateTime? // Fecha de expiración del token
 }
