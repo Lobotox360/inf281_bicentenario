@@ -20,10 +20,11 @@ export class UsuarioController {
     return await this.usuarioService.verifyAndCreateUser(email, code);
   }
 
-  // Reactivar el código si ha expirado
-  @Get('reenviar')
-  async resendCode(@Query('email') email: string) {
-    return await this.usuarioService.resendVerificationCode(email);
+  // Reenvia el código si ha expirado
+  @Post('reenviar')
+  async resendCode(@Body('email') email: string) {
+    console.log("📩 Recibiendo solicitud de reenvío para:", email);
+    return this.usuarioService.resendVerificationCode(email);
   }
 
   // Obtener todos los usuarios

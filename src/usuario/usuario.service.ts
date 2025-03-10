@@ -7,20 +7,22 @@ import { EmailService } from './email.service';
 
 @Injectable()
 export class UsuarioService {
-  // Guarda temporalmente el body - codigo - tiempo(expira)
-  private pendingVerifications = new Map<string, { data: CreateUsuarioDto; code: string; timeout: NodeJS.Timeout }>();
+  // Guarda temporalmente el body - código - tiempo de expiración
+  private pendingVerifications = new Map<string, { 
+    data: CreateUsuarioDto; 
+    code: string; 
+    expired: boolean;
+    timeout: NodeJS.Timeout 
+  }>();
 
-  // Base de datos y el Email
   constructor(private prisma: PrismaService, private emailService: EmailService) {}
 
-  // todos los usuarios
   async getUsers() {
     return await this.prisma.usuario.findMany();
   }
 
-  // registra
   async registerUser(createUsuarioDto: CreateUsuarioDto) {
-    // Verifica si el correo ya está registrado
+    // Verificar si el correo ya está registrado
     const existingUser = await this.prisma.usuario.findUnique({
       where: { email: createUsuarioDto.email },
     });
@@ -29,39 +31,41 @@ export class UsuarioService {
       throw new BadRequestException('El correo ya está registrado.');
     }
 
-    // Genera el codigo de verificacion
+    // Generar código de verificación
     return await this.generateVerificationCode(createUsuarioDto);
   }
 
   async generateVerificationCode(createUsuarioDto: CreateUsuarioDto) {
     const email = createUsuarioDto.email;
 
-    // código de verificación
+    // Generar código aleatorio de 6 dígitos
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Elimina código anterior si existe
+    // Si ya existe un código previo, eliminarlo
     if (this.pendingVerifications.has(email)) {
       clearTimeout(this.pendingVerifications.get(email)?.timeout);
       this.pendingVerifications.delete(email);
     }
 
-    // Configurar eliminación automática en 1 minuto // 60000 ms = 1 minuto
+    // Configurar eliminación automática en 2 minutos (120000 ms)
     const timeout = setTimeout(() => {
-      this.pendingVerifications.delete(email);
-      console.log(`Código de verificación expirado para: ${email}`);
-    }, 60000);
+      const pendingData = this.pendingVerifications.get(email);
+      if (pendingData) {
+        pendingData.expired = true;
+        console.log(`⏳ Código de verificación expirado para: ${email}`);
+      }
+    }, 120000);
 
-    // Guardar datos del usuario junto con el nuevo código
     this.pendingVerifications.set(email, {
       data: createUsuarioDto,
       code: verificationCode,
+      expired: false,
       timeout,
     });
 
-    // Enviar el código por correo
     await this.emailService.sendVerificationEmail(email, verificationCode);
 
-    return { message: 'Codigo de verificación enviado. Revisa tu correo.' };
+    return { message: 'Código de verificación enviado. Revisa tu correo.' };
   }
 
   async verifyAndCreateUser(email: string, code: string) {
@@ -71,17 +75,18 @@ export class UsuarioService {
       throw new BadRequestException('No se encontró una solicitud de verificación o ya expiró.');
     }
 
+    if (pendingData.expired) {
+      throw new BadRequestException('El código de verificación ha expirado. Solicita un nuevo código.');
+    }
+
     if (pendingData.code !== code) {
       throw new BadRequestException('Código incorrecto.');
     }
 
-    // Cancelar la eliminación programada
     clearTimeout(pendingData.timeout);
 
-    // Encriptar la contraseña
     const hashedPassword = await bcrypt.hash(pendingData.data.contrasena, 10);
 
-    // Crear usuario en la base de datos
     const newUser = await this.prisma.usuario.create({
       data: {
         nombre: pendingData.data.nombre,
@@ -98,19 +103,37 @@ export class UsuarioService {
 
     this.pendingVerifications.delete(email);
 
-    return { message: 'Usuario registrado con éxito'};
+    return { message: 'Usuario registrado con éxito' };
   }
 
-  //reenvia el mensaje
-  async resendVerificationCode(email: string) {
-    const pendingData = this.pendingVerifications.get(email);
 
+  async resendVerificationCode(email: string) {
+    console.log("📩 Intentando reenviar código para:", email);
+  
+    if (!email) {
+      console.log("ERROR: El email recibido es vacío.");
+      throw new BadRequestException("El email es requerido.");
+    }
+  
+  
+    let pendingData = this.pendingVerifications.get(email);
+  
     if (!pendingData) {
+      console.log(`No se encontró un código para: ${email}`);
       throw new BadRequestException('No se encontró un registro de usuario pendiente.');
     }
-
-    return await this.generateVerificationCode(pendingData.data);
+  
+    if (pendingData.expired) {
+      console.log(`Código expirado. Generando uno nuevo para: ${email}`);
+      return await this.generateVerificationCode(pendingData.data);
+    }
+  
+    console.log(`Código aún válido. Reenviando para: ${email}`);
+    await this.emailService.sendVerificationEmail(email, pendingData.code);
+  
+    return { message: 'Código reenviado. Revisa tu correo.' };
   }
+  
 
   async findOne(id: string) {
     const usuario = await this.prisma.usuario.findUnique({
@@ -134,7 +157,6 @@ export class UsuarioService {
     return await this.prisma.usuario.delete({ where: { id } });
   }
 
-  // Actualizar usuario por ID
   async updateUser(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.prisma.usuario.findUnique({ where: { id } });
 
@@ -142,12 +164,10 @@ export class UsuarioService {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
 
-    // Si el usuario intenta cambiar la contraseña, la encriptamos
     if (updateUsuarioDto.contrasena) {
       updateUsuarioDto.contrasena = await bcrypt.hash(updateUsuarioDto.contrasena, 10);
     }
 
-    // Actualizar usuario en la base de datos
     return await this.prisma.usuario.update({
       where: { id },
       data: { ...updateUsuarioDto },
