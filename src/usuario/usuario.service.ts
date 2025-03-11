@@ -38,9 +38,10 @@ export class UsuarioService {
   async generateVerificationCode(createUsuarioDto: CreateUsuarioDto) {
     const email = createUsuarioDto.email;
 
-    // Generar código aleatorio de 6 dígitos
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-
+    // Generar código aleatorio de 5 dígitos
+    //const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationCode = Math.floor(10000 + Math.random() * 90000).toString();
+    
     // Si ya existe un código previo, eliminarlo
     if (this.pendingVerifications.has(email)) {
       clearTimeout(this.pendingVerifications.get(email)?.timeout);
