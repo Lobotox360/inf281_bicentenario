@@ -54,4 +54,5 @@ export class UsuarioController {
   async updateUser(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
     return await this.usuarioService.updateUser(id, updateUsuarioDto);
   }
+  
 }
