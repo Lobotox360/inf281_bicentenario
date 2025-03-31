@@ -28,7 +28,7 @@ export class EmailService {
             <div style="background-color: #3498db; color: #fff; padding: 15px; font-size: 24px; font-weight: bold; border-radius: 5px; display: inline-block; margin: 10px 0;">
               ${code}
             </div>
-            <p style="font-size: 14px; color: #777;">Este código es válido solo por 5 minutos.</p>
+            <p style="font-size: 14px; color: #777;">Este código es válido solo por 2 minutos.</p>
             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
             <p style="font-size: 12px; color: #aaa;">Si no solicitaste este código, puedes ignorar este mensaje.</p>
           </div>

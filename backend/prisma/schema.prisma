@@ -12,24 +12,261 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-model Usuario {
-  id                  String   @id @default(uuid())  // ID único con UUID
-  nombre              String   @db.VarChar(50)
-  apellidoPaterno     String   @db.VarChar(50)
-  apellidoMaterno     String   @db.VarChar(50)
-  email               String   @unique
-  contrasena          String   // Guardar hash, NO en texto plano
-  telefono            String?  @db.VarChar(15)  // Opcional
+
+model Usuarios {
+  id_usuario          String   @id @default(uuid())
+  nombre              String   @db.VarChar(30)
+  apellidopaterno     String   @db.VarChar(30)
+  apellidomaterno     String   @db.VarChar(30)
+  email               String   @unique @db.VarChar(50)
+  contrasena          String   @db.VarChar(255)
+  foto                String   @db.VarChar(255)
+  telefono            String   @db.VarChar(20)
   pais                String   @db.VarChar(50)
   ciudad              String   @db.VarChar(50)
-  genero              String?  @db.VarChar(10) // Opcional
-  fechaCreacion       DateTime @default(now())
-  ultimaActualizacion DateTime @updatedAt
+  genero              String   @db.VarChar(20)
+  fechacreacion       DateTime @default(now())
+  ultimaactualizacion DateTime @updatedAt
+  verificado         Boolean  @default(false)
+  tokenRecuperacion   String?   @db.VarChar(100)
+  expiracionTokenRecuperacion DateTime?
 
-  // 🔹 Para verificación de cuenta
-  permiso          Boolean  @default(false)
+  id_rol              Int @default(1)
+  Roles               Roles     @relation(fields: [id_rol], references: [id_rol])
+  
+  Preferencias_Usuario Preferencias_Usuario[]
+  Historial_Actividades Historial_Actividades[]
+  Participantes_Eventos Participantes_Eventos[]
+  Usuarios_Historia     Usuarios_Historia[]
+  Usuarios_Cultura      Usuarios_Cultura[]
+}
 
-  // 🔹 Para recuperación de contraseña
-  // tokenRecuperacion   String?  @unique // Token único para recuperación
-  // expiracionToken     DateTime? // Fecha de expiración del token
+model Roles {
+  id_rol          Int       @id @default(autoincrement())
+  nombre          String    @unique @db.VarChar(50)
+  descripcion_rol String    @db.VarChar(255)
+  Usuarios        Usuarios[]
+  Permisos        Permisos[]
+}
+
+model Permisos {
+  id_permiso          Int    @id @default(autoincrement())
+  id_rol              Int
+  nombre              String @db.VarChar(100)
+  descripcion_permiso String @db.VarChar(255)
+  Roles               Roles  @relation(fields: [id_rol], references: [id_rol])
+}
+
+model Preferencias_Usuario {
+  id_preferencia Int     @id @default(autoincrement())
+  id_usuario     String
+  nombre         String  @db.VarChar(100)
+  descripcion    String  @db.VarChar(255)
+  tipo           String  @db.VarChar(50)
+  Usuarios       Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model Historial_Actividades {
+  id_historial    Int     @id @default(autoincrement())
+  id_usuario      String
+  fecha_actividad DateTime
+  tipo_actividad  String  @db.VarChar(100)
+  descripcion     String  @db.VarChar(1000)
+  Usuarios        Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+model Eventos {
+  id_evento       Int     @id @default(autoincrement())
+  nombre          String  @db.VarChar(255)
+  fecha           DateTime
+  descripcion     String  @db.VarChar(1000)
+  tipo            String  @db.VarChar(100)
+  Eventos_Expositores Eventos_Expositores[]
+  Participantes_Eventos Participantes_Eventos[]
+  Agenda          Agenda[]
+  Ubicacion       Ubicacion[]
+  Recursos        Recursos[]
+  Multimedia      Multimedia[]
+  Eventos_Patrocinadores Eventos_Patrocinadores[]
+}
+
+model Expositores {
+  id_expositor    Int     @id @default(autoincrement())
+  nombre          String  @db.VarChar(100)
+  especialidad    String  @db.VarChar(100)
+  institucion     String  @db.VarChar(100)
+  contacto        String  @db.VarChar(100)
+  Eventos_Expositores Eventos_Expositores[]
+}
+
+model Eventos_Expositores {
+  id_evento_expositor Int @id @default(autoincrement())
+  id_evento Int
+  id_expositor Int
+  fecha DateTime
+  tema String @db.VarChar(255)
+
+  Eventos     Eventos     @relation(fields: [id_evento], references: [id_evento])
+  Expositores Expositores @relation(fields: [id_expositor], references: [id_expositor])
+}
+
+model Participantes_Eventos {
+  id_usuario String
+  id_evento Int
+
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Eventos  Eventos  @relation(fields: [id_evento], references: [id_evento])
+
+  @@id([id_usuario, id_evento])
+}
+
+model Agenda {
+  id_agenda Int @id @default(autoincrement())
+  id_evento Int
+  actividades String @db.VarChar(255)
+  fecha DateTime
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+}
+
+model Ubicacion {
+  id_ubicacion Int @id @default(autoincrement())
+  id_evento Int
+  descripcion String @db.VarChar(255)
+  direccion String @db.VarChar(255)
+  departamento String @db.VarChar(100)
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+}
+
+model Recursos {
+  id_recurso Int @id @default(autoincrement())
+  id_evento Int
+  nombre String @db.VarChar(255)
+  descripcion String @db.VarChar(255)
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+}
+
+model Multimedia {
+  id_multimedia Int @id @default(autoincrement())
+  id_evento Int
+  tipo_archivo String @db.VarChar(50)
+  ruta_archivo String @db.VarChar(255)
+  descripcion_archivo String @db.VarChar(255)
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+}
+
+model Patrocinadores {
+  id_patrocinador Int @id @default(autoincrement())
+  razon_social String @db.VarChar(255)
+  institucion String @db.VarChar(255)
+  Eventos_Patrocinadores Eventos_Patrocinadores[]
+}
+
+model Eventos_Patrocinadores {
+  id_patrocina Int @id @default(autoincrement())
+  id_evento Int
+  id_auspiciador Int
+  fecha DateTime
+  monto Int
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+  Patrocinadores Patrocinadores @relation(fields: [id_auspiciador], references: [id_patrocinador])
+}
+
+model Historia {
+  id_historia Int @id @default(autoincrement())
+  titulo String @db.VarChar(255)
+  descripcion String @db.VarChar(1000)
+  fuentes String @db.VarChar(255)
+  puntuacion Int
+  Batallas Batallas[]
+  Presidentes Presidentes[]
+  Personajes_Historicos Personajes_Historicos[]
+  Usuarios_Historia Usuarios_Historia[]
+}
+
+model Usuarios_Historia {
+  id_usuario String
+  id_historia Int
+  comentario String @db.VarChar(100)
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Historia Historia @relation(fields: [id_historia], references: [id_historia])
+
+  @@id([id_usuario, id_historia])
+}
+
+model Batallas {
+  id_batalla Int @id @default(autoincrement())
+  id_historia Int
+  nombre String @db.VarChar(255)
+  ubicacion String @db.VarChar(255)
+  descripcion String @db.VarChar(1000)
+  Historia Historia @relation(fields: [id_historia], references: [id_historia])
+}
+
+model Presidentes {
+  id_presidente Int @id @default(autoincrement())
+  id_historia Int
+  periodo_inicio DateTime
+  periodo_fin DateTime
+  partido_politico String @db.VarChar(100)
+  Historia Historia @relation(fields: [id_historia], references: [id_historia])
+}
+
+model Personajes_Historicos {
+  id_personaje Int @id @default(autoincrement())
+  id_historia Int
+  nombre String @db.VarChar(255)
+  apodo String @db.VarChar(100)
+  biografia String @db.VarChar(1000)
+  fecha_nacimiento DateTime
+  fecha_fallecimiento DateTime
+  logros String @db.VarChar(1000)
+  Historia Historia @relation(fields: [id_historia], references: [id_historia])
+}
+
+model Etnias {
+  id_etnia Int @id @default(autoincrement())
+  id_cultura Int
+  nombre String @db.VarChar(100)
+  ubicacion String @db.VarChar(255)
+  poblacion Int
+  Cultura Cultura @relation(fields: [id_cultura], references: [id_cultura])
+  Idiomas Idiomas[]
+  Costumbres Costumbres[]
+}
+
+model Idiomas {
+  id_idioma Int @id @default(autoincrement())
+  id_etnia Int
+  nombre String @db.VarChar(100)
+  descripcion String @db.VarChar(255)
+  Etnias Etnias @relation(fields: [id_etnia], references: [id_etnia])
+}
+
+model Costumbres {
+  id_costumbre Int @id @default(autoincrement())
+  id_etnia Int
+  nombre String @db.VarChar(100)
+  descripcion String @db.VarChar(255)
+  vestimenta String @db.VarChar(100)
+  Etnias Etnias @relation(fields: [id_etnia], references: [id_etnia])
+}
+
+model Cultura {
+  id_cultura Int @id @default(autoincrement())
+  nombre String @db.VarChar(255)
+  descripcion String @db.VarChar(1000)
+  tipo String @db.VarChar(100)
+  puntuacion String @db.VarChar(50)
+  Etnias Etnias[]
+  Usuarios_Cultura Usuarios_Cultura[]
+}
+
+model Usuarios_Cultura {
+  id_usuario String
+  id_cultura Int
+  comentario String @db.VarChar(100)
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Cultura Cultura @relation(fields: [id_cultura], references: [id_cultura])
+
+  @@id([id_usuario, id_cultura])
 }

@@ -10,40 +10,35 @@ export class EmailService {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
   }
 
-  async sendPasswordResetEmail(to: string, newPassword: string) {
+  async sendPasswordResetEmail(to: string, link: string) {
     const senderEmail = process.env.EMAIL_FROM;
+  
     if (!senderEmail) {
-      throw new Error('CUIDADO: El EMAIL de orgien no esta definido en .env');
+      throw new Error('❗ EMAIL_FROM no está definido en el archivo .env');
     }
-
+  
     const msg: sgMail.MailDataRequired = {
-        to,
-        from: senderEmail,
-        subject: '🔑 Tu Nueva Contraseña - BICENTENARIO',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-            <div style="text-align: center;">
-              <h2 style="color: #2c3e50;">🔑 Recuperación de Contraseña</h2>
-              <p style="font-size: 16px; color: #555;">Hemos generado una nueva contraseña temporal para tu cuenta en <b>BICENTENARIO</b>:</p>
-              <div style="background-color: #3498db; color: #fff; padding: 15px; font-size: 24px; font-weight: bold; border-radius: 5px; display: inline-block; margin: 10px 0;">
-                ${newPassword}
-              </div>
-              <p style="font-size: 14px; color: #777;">Por seguridad, te recomendamos cambiarla lo antes posible.</p>
-              <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-              <p style="font-size: 12px; color: #aaa;">Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
-            </div>
-          </div>
-        `,
-      };
-    
-
+      to,
+      from: senderEmail,
+      subject: '🔐 Restablece tu contraseña',
+      html: `
+        <div style="font-family:Arial;padding:20px;">
+          <h2>🔑 Recuperación de Contraseña</h2>
+          <p>Haz clic en el botón para crear una nueva contraseña:</p>
+          <a href="${link}" style="background:#2ecc71;color:#fff;padding:10px 20px;text-decoration:none;border-radius:5px;">Cambiar Contraseña</a>
+          <p style="font-size:12px;color:#aaa;margin-top:20px;">Este enlace expirará en 15 minutos.</p>
+        </div>
+      `,
+    };
+  
     try {
       await sgMail.send(msg);
-      console.log(`✅ Nueva contrasena enviada a ${to}`);
-      return { message: 'Nueva contrasena enviada correctamente' };
+      console.log(`✅ Email de recuperación enviado a ${to}`);
+      return { message: 'Correo enviado correctamente' };
     } catch (error) {
-      console.error('❌ Error enviando correo:', error.response?.body || error);
-      throw new Error('No se pudo enviar la nueva contrasena');
+      console.error('❌ Error al enviar correo:', error.response?.body || error);
+      throw new Error('No se pudo enviar el correo de recuperación');
     }
   }
+  
 }

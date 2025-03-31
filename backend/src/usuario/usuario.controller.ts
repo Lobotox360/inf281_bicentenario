@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Query, UseGuards ,UseInterceptors,UploadedFile} from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
+
 
 @Controller('usuario')
 export class UsuarioController {
@@ -13,11 +15,11 @@ export class UsuarioController {
   async registerUser(@Body() userData: CreateUsuarioDto) {
     return await this.usuarioService.registerUser(userData);
   }
-
+  
   // Verificar el código y creación del usuario
   @Post('verificar')
   async verifyEmail(@Body() { email, code }: { email: string; code: string }) {
-    return await this.usuarioService.verifyAndCreateUser(email, code);
+    return await this.usuarioService.verifyUser(email, code);
   }
 
   // Reenvia el código si ha expirado
@@ -27,15 +29,31 @@ export class UsuarioController {
     return this.usuarioService.resendVerificationCode(email);
   }
 
-  // Obtener todos los usuarios
-  // @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.usuarioService.getUsers();
+  @Post('foto')
+  @UseInterceptors(FileInterceptor('foto'))
+  async subirFoto(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('email') email: string,
+  ) {
+    console.log("📥 Email recibido:", email);
+    console.log("🧾 Archivo recibido:", file);
+    return await this.usuarioService.guardarFotoEnCloudinary(email, file);
   }
 
+  
+  
+
+  // Obtener todos los usuarios
+  // @UseGuards(JwtAuthGuard)
+  
+  @Get()
+  findAll() {
+    return this.usuarioService.findAll();
+  }
+  
+  
   // Obtener un usuario por ID
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usuarioService.findOne(id);
@@ -49,10 +67,11 @@ export class UsuarioController {
   }
   
   // Editar usuario por ID
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateUser(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
     return await this.usuarioService.updateUser(id, updateUsuarioDto);
   }
+  
   
 }
