@@ -46,7 +46,7 @@ export class UsuarioService {
         pais: createUsuarioDto.pais,
         ciudad: createUsuarioDto.ciudad,
         genero: createUsuarioDto.genero,
-        foto: createUsuarioDto.foto || 'fotodefecto',
+        foto: createUsuarioDto.foto || 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg',
         verificado: false,
         Roles: {
           connect: { id_rol: 1 },
@@ -58,7 +58,7 @@ export class UsuarioService {
 
     await this.generateVerificationCode(newUser.id_usuario, newUser.email);
 
-    return { message: 'Usuario registrado. Revisa tu correo para verificar tu cuenta.' };
+    return { message: 'Revisa tu correo para verificar tu cuenta.' };
   }
 
   private async generateVerificationCode(userId: string, email: string) {

@@ -16,7 +16,13 @@ export class AuthService {
 
   // 🔐 Inicio de sesión
   async login(email: string, contrasena: string) {
-    const usuario = await this.prisma.usuarios.findUnique({ where: { email } });
+    const usuario = await this.prisma.usuarios.findFirst({
+      where: {
+        email,
+        verificado: true,
+      },
+    });
+    
 
     if (!usuario) {
       throw new UnauthorizedException('Correo o contraseña incorrectos');
