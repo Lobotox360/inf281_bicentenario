@@ -28,13 +28,27 @@ export class UsuarioService {
     const existing = await this.prisma.usuarios.findUnique({
       where: { email: createUsuarioDto.email },
     });
-
+  
     if (existing) {
       throw new BadRequestException('El correo ya está registrado.');
     }
-
+  
+    const rolUsuario = await this.prisma.roles.findUnique({
+      where: { nombre: 'usuario_casual' },
+    });
+  
+    if (!rolUsuario) {
+      throw new BadRequestException('No se encontró el rol usuario_casual');
+    }
+  
     const hashedPassword = await bcrypt.hash(createUsuarioDto.contrasena, 10);
 
+    let fotoPorDefecto='https://res.cloudinary.com/djxsfzosx/image/upload/v1743944383/perfil_usuario/rtnyh2skqqldxmneuhai.jpg';
+    if (createUsuarioDto.genero === 'Femenino') {
+      fotoPorDefecto = 'https://res.cloudinary.com/djxsfzosx/image/upload/v1743944383/perfil_usuario/z5ddxqhziqenaaehpx4y.jpg';
+    }
+
+    
     const newUser = await this.prisma.usuarios.create({
       data: {
         nombre: createUsuarioDto.nombre,
@@ -46,21 +60,25 @@ export class UsuarioService {
         pais: createUsuarioDto.pais,
         ciudad: createUsuarioDto.ciudad,
         genero: createUsuarioDto.genero,
-        foto: createUsuarioDto.foto || 'https://static.vecteezy.com/system/resources/previews/036/594/092/non_2x/man-empty-avatar-photo-placeholder-for-social-networks-resumes-forums-and-dating-sites-male-and-female-no-photo-images-for-unfilled-user-profile-free-vector.jpg',
+        foto: createUsuarioDto.foto || fotoPorDefecto,
         verificado: false,
-        Roles: {
-          connect: { id_rol: 1 },
-        },
+  
+        id_rol: rolUsuario.id_rol,
       },
     });
-    
-    
+
+    await this.registrarActividad(
+      newUser.id_usuario, 
+      'Registro de Datos', 
+      'El usuario se registró exitosamente.'
+    );
 
     await this.generateVerificationCode(newUser.id_usuario, newUser.email);
-
+  
     return { message: 'Revisa tu correo para verificar tu cuenta.' };
+    
   }
-
+  
   private async generateVerificationCode(userId: string, email: string) {
     const code = Math.floor(10000 + Math.random() * 90000).toString();
 
@@ -75,8 +93,8 @@ export class UsuarioService {
         item.expired = true;
         console.log(`⏳ Código expirado para: ${email}`);
       }
-    }, 120000); // 2 minutos
 
+    }, 120000); // 2 min
     this.pendingVerifications.set(email, {
       userId,
       code,
@@ -102,6 +120,14 @@ export class UsuarioService {
       throw new BadRequestException('El código es incorrecto.');
     }
 
+    const usuario = await this.prisma.usuarios.findUnique({
+      where: { email },
+    });
+  
+    if (!usuario) {
+      throw new NotFoundException('Usuario no encontrado.');
+    }
+
     await this.prisma.usuarios.update({
       where: { email },
       data: {
@@ -112,6 +138,13 @@ export class UsuarioService {
     clearTimeout(usu.timeout);
     this.pendingVerifications.delete(email);
 
+    await this.registrarActividad(
+      usuario.id_usuario,
+      'Verificacion de Datos',
+      'El usuario verificó su cuenta de correo electrónico.'
+    );
+
+    
     return { message: 'Cuenta verificada exitosamente ✅' };
   }
 
@@ -147,7 +180,13 @@ export class UsuarioService {
         foto: result.secure_url,
       },
     });
-    
+
+    await this.registrarActividad(
+      user.id_usuario,
+      'Actualización de foto',
+      'El usuario actualizó su foto de perfil.'
+    );
+
     return {
       message: '✅ Foto subida exitosamente',
     };
@@ -163,41 +202,89 @@ export class UsuarioService {
     const usuario = await this.prisma.usuarios.findUnique({
       where: { id_usuario: id },
     });
-
+  
     if (!usuario) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
-
+  
+    await this.registrarActividad(
+      id,
+      'Pedir Datos',
+      'El usuario solicitó sus datos personales.'
+    );
+  
     return usuario;
   }
+  
 
 
   async remove(id: string) {
     const usuario = await this.prisma.usuarios.findUnique({ where: { id_usuario: id } });
-
+  
     if (!usuario) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
-
-    return await this.prisma.usuarios.delete({ where: { id_usuario: id } });
+  
+    await this.prisma.usuarios.delete({ where: { id_usuario: id } });
+  
+    return { message: '✅ Usuario eliminado correctamente' };
   }
+  
 
-  async updateUser(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-  const usuario = await this.prisma.usuarios.findUnique({ where: { id_usuario: id } });
+  async updateUser(
+    id: string,
+    updateUsuarioDto: UpdateUsuarioDto,
+    file?: Express.Multer.File,
+  ) {
+    const usuario = await this.prisma.usuarios.findUnique({ where: { id_usuario: id } });
+  
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+  
+    if (updateUsuarioDto.contrasena) {
+      updateUsuarioDto.contrasena = await bcrypt.hash(updateUsuarioDto.contrasena, 10);
+    }
+  
+    if ('email' in updateUsuarioDto || 'id_rol' in updateUsuarioDto) {
+      throw new BadRequestException('No puedes actualizar tu email o tu rol.');
+    }
+  
+    // Subir imagen a Cloudinary si hay nueva imagen
+    let fotoUrl = usuario.foto;
+    if (file) {
+      console.log('📤 Subiendo imagen a Cloudinary...');
+      const result = await this.cloudinaryService.uploadImage(file, 'perfil_usuario');
+      console.log('🌐 URL obtenida:', result.secure_url);
+      fotoUrl = result.secure_url;
+    }
+  
+    const actualizado = await this.prisma.usuarios.update({
+      where: { id_usuario: id },
+      data: {
+        ...updateUsuarioDto,
+        foto: fotoUrl,
+      },
+    });
 
-  if (!usuario) {
-    throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    await this.registrarActividad(
+      id,
+      'Actualización de datos',
+      'El usuario actualizó su información personal.'
+    );
+
+    console.log('✅ Usuario actualizado:');
+    return '✅ Usuario actualizado:';
   }
-
-  if (updateUsuarioDto.contrasena) {
-    updateUsuarioDto.contrasena = await bcrypt.hash(updateUsuarioDto.contrasena, 10);
+  async registrarActividad(id_usuario: string, tipo: string, descripcion: string) {
+    await this.prisma.historial_Actividades.create({
+      data: {
+        id_usuario,
+        fecha_actividad: new Date(),
+        tipo_actividad: tipo,
+        descripcion,
+      },
+    });
   }
-
-  return await this.prisma.usuarios.update({
-    where: { id_usuario: id },
-    data: { ...updateUsuarioDto },
-  });
-}
-
-    
+  
 }

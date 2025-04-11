@@ -14,30 +14,42 @@ export class AuthService {
     private readonly emailService: EmailService,
   ) {}
 
-  // 🔐 Inicio de sesión
-  async login(email: string, contrasena: string) {
-    const usuario = await this.prisma.usuarios.findFirst({
-      where: {
-        email,
-        verificado: true,
-      },
-    });
-    
+// 🔐 Inicio de sesión
+async login(email: string, contrasena: string) {
+  const usuario = await this.prisma.usuarios.findFirst({
+    where: {
+      email,
+      verificado: true,
+    },
+    include: {
+      Roles: true,
+    },
+  });
 
-    if (!usuario) {
-      throw new UnauthorizedException('Correo o contraseña incorrectos');
-    }
-
-    const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
-    if (!isMatch) {
-      throw new UnauthorizedException('Correo o contraseña incorrectos');
-    }
-
-    const payload = { sub: usuario.id_usuario, email: usuario.email };
-    const token = this.jwtService.sign(payload);
-
-    return { access_token: token, id: usuario.id_usuario };
+  if (!usuario) {
+    throw new UnauthorizedException('Correo o contraseña incorrectos');
   }
+
+  const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+  if (!isMatch) {
+    throw new UnauthorizedException('Correo o contraseña incorrectos');
+  }
+
+  const payload = {
+    sub: usuario.id_usuario,
+    email: usuario.email,
+    rol: usuario.Roles.nombre,
+  };
+
+  const token = this.jwtService.sign(payload);
+
+  return {
+    access_token: token,
+    id: usuario.id_usuario,
+    rol: usuario.Roles.nombre,
+  };
+}
+
 
   // 📤 Enviar enlace de recuperación por correo
   async sendPasswordResetEmail(email: string) {
@@ -89,7 +101,6 @@ export class AuthService {
         expiracionTokenRecuperacion: null,
       },
     });
-
     return { message: '✅ Contraseña actualizada correctamente' };
   }
 }

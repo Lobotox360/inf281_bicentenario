@@ -52,9 +52,13 @@ model Roles {
 model Permisos {
   id_permiso          Int    @id @default(autoincrement())
   id_rol              Int
-  nombre              String @db.VarChar(100)
+  objeto              String @db.VarChar(100)
+  accion              String @db.VarChar(50)
   descripcion_permiso String @db.VarChar(255)
+
   Roles               Roles  @relation(fields: [id_rol], references: [id_rol])
+
+  @@unique([id_rol, objeto, accion])
 }
 
 model Preferencias_Usuario {
@@ -63,7 +67,7 @@ model Preferencias_Usuario {
   nombre         String  @db.VarChar(100)
   descripcion    String  @db.VarChar(255)
   tipo           String  @db.VarChar(50)
-  Usuarios       Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Usuarios       Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 }
 
 model Historial_Actividades {
@@ -72,61 +76,68 @@ model Historial_Actividades {
   fecha_actividad DateTime
   tipo_actividad  String  @db.VarChar(100)
   descripcion     String  @db.VarChar(1000)
-  Usuarios        Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Usuarios        Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 }
 
 model Eventos {
-  id_evento       Int     @id @default(autoincrement())
-  nombre          String  @db.VarChar(255)
-  fecha           DateTime
-  descripcion     String  @db.VarChar(1000)
-  tipo            String  @db.VarChar(100)
-  Eventos_Expositores Eventos_Expositores[]
-  Participantes_Eventos Participantes_Eventos[]
-  Agenda          Agenda[]
-  Ubicacion       Ubicacion[]
-  Recursos        Recursos[]
-  Multimedia      Multimedia[]
-  Eventos_Patrocinadores Eventos_Patrocinadores[]
+  id_evento      Int          @id @default(autoincrement())
+  titulo         String       @db.VarChar(255)
+  descripcion    String       @db.VarChar(1000)
+  foto_evento    String?      @db.VarChar(255)
+  hora_inicio    String       @db.VarChar(50)
+  hora_fin       String       @db.VarChar(50)
+  fecha          DateTime
+  ubicacion      String       @db.VarChar(50)
+  costo          Float
+  modalidad      String       @db.VarChar(50)
+  departamento   String       @db.VarChar(50)
+
+  // Relaciones actualizadas
+  Expositores    Expositores[] // ✅ relación uno a muchos
+  Participantes_Eventos   Participantes_Eventos[]
+  Agenda                  Agenda[]
+  UbicacionExtra          Ubicacion[]
+  Telefonos               Telefonos[]
+  Eventos_Patrocinadores  Eventos_Patrocinadores[]
+  CategoriasEvento        Eventos_Categorias[]
 }
+
+
+
 
 model Expositores {
-  id_expositor    Int     @id @default(autoincrement())
-  nombre          String  @db.VarChar(100)
-  especialidad    String  @db.VarChar(100)
-  institucion     String  @db.VarChar(100)
-  contacto        String  @db.VarChar(100)
-  Eventos_Expositores Eventos_Expositores[]
+  id_expositor Int @id @default(autoincrement())
+  id_evento    Int
+  nombre       String  @db.VarChar(100)
+  especialidad String  @db.VarChar(100)
+  institucion  String  @db.VarChar(100)
+  contacto     String  @db.VarChar(100)
+
+  Eventos      Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
 
-model Eventos_Expositores {
-  id_evento_expositor Int @id @default(autoincrement())
-  id_evento Int
-  id_expositor Int
-  fecha DateTime
-  tema String @db.VarChar(255)
 
-  Eventos     Eventos     @relation(fields: [id_evento], references: [id_evento])
-  Expositores Expositores @relation(fields: [id_expositor], references: [id_expositor])
-}
+
 
 model Participantes_Eventos {
   id_usuario String
   id_evento Int
 
-  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
-  Eventos  Eventos  @relation(fields: [id_evento], references: [id_evento])
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  Eventos  Eventos  @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 
   @@id([id_usuario, id_evento])
 }
+
 
 model Agenda {
   id_agenda Int @id @default(autoincrement())
   id_evento Int
   actividades String @db.VarChar(255)
   fecha DateTime
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
+
 
 model Ubicacion {
   id_ubicacion Int @id @default(autoincrement())
@@ -134,32 +145,47 @@ model Ubicacion {
   descripcion String @db.VarChar(255)
   direccion String @db.VarChar(255)
   departamento String @db.VarChar(100)
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
 
-model Recursos {
-  id_recurso Int @id @default(autoincrement())
-  id_evento Int
-  nombre String @db.VarChar(255)
-  descripcion String @db.VarChar(255)
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+
+model Telefonos {
+  id_telefono Int     @id @default(autoincrement())
+  id_evento   Int
+  numero      String
+  nombre      String
+
+  evento      Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
 
-model Multimedia {
-  id_multimedia Int @id @default(autoincrement())
-  id_evento Int
-  tipo_archivo String @db.VarChar(50)
-  ruta_archivo String @db.VarChar(255)
-  descripcion_archivo String @db.VarChar(255)
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+
+
+model Categorias {
+  id_categoria Int     @id @default(autoincrement())
+  nombre       String  @unique
+  descripcion  String?
+
+  eventos      Eventos_Categorias[]
 }
+
+
+model Eventos_Categorias {
+  id_evento_categoria Int        @id @default(autoincrement())
+  id_evento           Int
+  id_categoria        Int
+
+  evento              Eventos    @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
+  categoria           Categorias @relation(fields: [id_categoria], references: [id_categoria])
+}
+
 
 model Patrocinadores {
   id_patrocinador Int @id @default(autoincrement())
-  razon_social String @db.VarChar(255)
+  razon_social String @unique
   institucion String @db.VarChar(255)
   Eventos_Patrocinadores Eventos_Patrocinadores[]
 }
+
 
 model Eventos_Patrocinadores {
   id_patrocina Int @id @default(autoincrement())
@@ -167,9 +193,10 @@ model Eventos_Patrocinadores {
   id_auspiciador Int
   fecha DateTime
   monto Int
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
+  Eventos Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Patrocinadores Patrocinadores @relation(fields: [id_auspiciador], references: [id_patrocinador])
 }
+
 
 model Historia {
   id_historia Int @id @default(autoincrement())
@@ -187,7 +214,7 @@ model Usuarios_Historia {
   id_usuario String
   id_historia Int
   comentario String @db.VarChar(100)
-  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   Historia Historia @relation(fields: [id_historia], references: [id_historia])
 
   @@id([id_usuario, id_historia])
@@ -265,7 +292,7 @@ model Usuarios_Cultura {
   id_usuario String
   id_cultura Int
   comentario String @db.VarChar(100)
-  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario])
+  Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   Cultura Cultura @relation(fields: [id_cultura], references: [id_cultura])
 
   @@id([id_usuario, id_cultura])
