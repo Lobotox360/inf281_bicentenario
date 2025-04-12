@@ -70,7 +70,7 @@ async login(email: string, contrasena: string) {
       },
     });
 
-    const link = `http://localhost:3000/restablecer?token=${token}`;
+    const link = `http://localhost:3000/login/restablecer?token=${token}`;
 
     await this.emailService.sendPasswordResetEmail(email, link);
 
