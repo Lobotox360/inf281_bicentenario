@@ -2,8 +2,8 @@ import {
   IsString,
   IsOptional,
   IsNumber,
-  IsObject,
   ValidateNested,
+  IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -29,6 +29,17 @@ class ExpositorDto {
   contacto: string;
 }
 
+class UbicacionDto {
+  @IsString()
+  ubicacion: string;
+
+  @IsString()
+  departamento: string;
+
+  @IsString()
+  descripcion: string;
+}
+
 export class CreateEventoDto {
   @IsString()
   titulo: string;
@@ -46,16 +57,9 @@ export class CreateEventoDto {
   @IsString()
   hora_fin: string;
 
-  @IsString()
-  ubicacion: string;
-
-  @IsString()
-  departamento: string;
-
   @IsNumber()
   @Type(() => Number)
   costo: number;
-
 
   @IsString()
   modalidad: string;
@@ -75,4 +79,9 @@ export class CreateEventoDto {
   @ValidateNested()
   @Type(() => ExpositorDto)
   expositor: ExpositorDto;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UbicacionDto)
+  ubicacion: UbicacionDto[];
 }

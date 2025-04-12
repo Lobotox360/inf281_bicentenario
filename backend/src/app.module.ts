@@ -8,6 +8,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import { CasbinModule } from './rbac/casbin.module';
 import { RolModule } from './rol/rol.module';
 import { EventoModule } from './evento/evento.module';
+import { CategoriaModule } from './categoria/categoria.module';
+import { PatrocinadorModule } from './patrocinador/patrocinador.module';
 
 @Module({
   imports: [
@@ -19,7 +21,9 @@ import { EventoModule } from './evento/evento.module';
     MulterModule.register({}),
     CasbinModule,
     RolModule,
-    EventoModule, 
+    EventoModule,
+    CategoriaModule,
+    PatrocinadorModule, 
   ],
 })
 export class AppModule {}

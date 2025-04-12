@@ -69,8 +69,7 @@ export class RolService {
       );
       
     
-      // 📧 También puedes enviar el correo aquí como lo hicimos antes
-    
+      await this.emailService.sendRoleChangedEmail(email, nuevoRolData.nombre);
       return {
         message: `✅ Rol actualizado correctamente para ${email}`,
       };
