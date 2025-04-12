@@ -58,12 +58,18 @@ async function main() {
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'delete', descripcion_permiso: 'Eliminar su cuenta' },
 
     // Permisos del administrador de eventos
-    { id_rol: adminEventos.id_rol, objeto: 'eventos', accion: 'post', descripcion_permiso: 'Crear eventos' },
-    { id_rol: adminEventos.id_rol, objeto: 'eventos', accion: 'put', descripcion_permiso: 'Editar eventos' },
-    { id_rol: adminEventos.id_rol, objeto: 'eventos', accion: 'delete', descripcion_permiso: 'Eliminar eventos' },
+    { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'post', descripcion_permiso: 'Crear eventos' },
+    { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'put', descripcion_permiso: 'Editar eventos' },
+    { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'delete', descripcion_permiso: 'Eliminar eventos' },
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'delete', descripcion_permiso: 'Eliminar su cuenta' },
+    { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'get', descripcion_permiso: 'Ver a los patrocinadores' },
+    { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'put', descripcion_permiso: 'Editar patrocinadores' },
+    { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'delete', descripcion_permiso: 'Eliminar patrocinadores' },
+    { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'get', descripcion_permiso: 'Ver a las categorias' },
+    { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'put', descripcion_permiso: 'Editar categorias' },
+    { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'delete', descripcion_permiso: 'Eliminar categorias' },
 
     // Permisos del administrador de contenido
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'post', descripcion_permiso: 'Crear agente' },

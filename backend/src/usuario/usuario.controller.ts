@@ -10,13 +10,13 @@ import { CasbinGuard } from '../rbac/casbin.guard';
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
 
-  // Registro y envío de código de verificación
+  // Registro y envío de código de verificación (valido por 2 minutos)
   @Post('registrar')
   async registerUser(@Body() userData: CreateUsuarioDto) {
     return await this.usuarioService.registerUser(userData);
   }
   
-  // Verificar el código y creación del usuario
+  // Verificar el código y pone verificado (true)
   @Post('verificar')
   async verifyEmail(@Body() { email, code }: { email: string; code: string }) {
     return await this.usuarioService.verifyUser(email, code);
@@ -41,7 +41,7 @@ export class UsuarioController {
   }
 
   
-  
+  // solo prueba
   @Get()
   findAll() {
     return this.usuarioService.findAll();
@@ -72,7 +72,5 @@ export class UsuarioController {
   ) {
     return this.usuarioService.updateUser(id, updateUsuarioDto, file);
   }
-  
 
-  
 }

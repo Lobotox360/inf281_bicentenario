@@ -8,19 +8,19 @@ import { CasbinGuard } from '../rbac/casbin.guard';
 export class RolController {
   constructor(private readonly rolService: RolService) {}
 
-  // @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('roles')
   async obtenerTodosLosRoles() {
     return await this.rolService.obtenerTodos();
   }
 
-  // @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('usuarios')
   findAll() {
     return this.rolService.findAll();
   }
 
-  // @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('cambiar-rol')
   async cambiarRolUsuario(
     @Body() body: { email: string; nuevoRol: number },

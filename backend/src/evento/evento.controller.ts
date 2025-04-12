@@ -5,15 +5,18 @@ import {
   Body,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { EventoService } from './evento.service';
 import { CreateEventoDto } from './dto/create-evento.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CasbinGuard } from 'src/rbac/casbin.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('evento')
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
-  
+  //@UseGuards(CasbinGuard,JwtAuthGuard)
   @Post()
   @UseInterceptors(FileInterceptor('foto_evento'))
   async crearEvento(
@@ -49,7 +52,7 @@ export class EventoController {
     return eventoCreado;
   }
 
-
+  //@UseGuards(CasbinGuard,JwtAuthGuard)
   @Get()
   async obtenerEventos() {
     return await this.eventoService.obtenerEventos();
