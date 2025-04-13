@@ -25,7 +25,6 @@ export class PatrocinadorService {
   }
 
   async findOne(id: number) {
-
     return this.prisma.patrocinadores.findUnique({where: { id_patrocinador: id },});
   }
 

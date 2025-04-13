@@ -22,11 +22,12 @@ export class PatrocinadorController {
   }
 
   //@UseGuards(JwtAuthGuard, CasbinGuard)
+  
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.patrocinadorService.findOne(+id);
   }
-
+  
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   update(

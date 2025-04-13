@@ -17,7 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CasbinGuard } from 'src/rbac/casbin.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
-@Controller('evento')
+@Controller('eventos')
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
@@ -71,7 +71,6 @@ export class EventoController {
     return evento;
   }
 
-  
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   @UseInterceptors(FileInterceptor('foto_evento'))
