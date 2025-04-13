@@ -25,17 +25,8 @@ export class PatrocinadorService {
   }
 
   async findOne(id: number) {
-    const patrocinador = await this.prisma.patrocinadores.findUnique({
-      where: { id_patrocinador: id },
-    });
 
-    if (!patrocinador) {
-      throw new NotFoundException(`⛔ Patrocinador con ID ${id} no encontrado.`);
-    }
-
-    return {
-      data: patrocinador,
-    };
+    return this.prisma.patrocinadores.findUnique({where: { id_patrocinador: id },});
   }
 
   async update(id: number, data: UpdatePatrocinadorDto) {

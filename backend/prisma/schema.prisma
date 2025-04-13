@@ -188,7 +188,6 @@ model Eventos_Patrocinadores {
   id_evento Int
   id_auspiciador Int
   fecha DateTime
-  monto Int
   Eventos Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Patrocinadores Patrocinadores @relation(fields: [id_auspiciador], references: [id_patrocinador], onDelete: Cascade)
 }

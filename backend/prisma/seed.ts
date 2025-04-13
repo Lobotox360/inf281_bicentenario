@@ -61,15 +61,21 @@ async function main() {
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'post', descripcion_permiso: 'Crear eventos' },
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'put', descripcion_permiso: 'Editar eventos' },
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'delete', descripcion_permiso: 'Eliminar eventos' },
+    { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'get', descripcion_permiso: 'Ver los eventos' },
+
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
     { id_rol: adminEventos.id_rol, objeto: 'usuario', accion: 'delete', descripcion_permiso: 'Eliminar su cuenta' },
+
     { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'get', descripcion_permiso: 'Ver a los patrocinadores' },
     { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'put', descripcion_permiso: 'Editar patrocinadores' },
     { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'delete', descripcion_permiso: 'Eliminar patrocinadores' },
+    { id_rol: adminEventos.id_rol, objeto: 'patrocinador', accion: 'post', descripcion_permiso: 'Agregar patrocinadores' },
+    
     { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'get', descripcion_permiso: 'Ver a las categorias' },
     { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'put', descripcion_permiso: 'Editar categorias' },
     { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'delete', descripcion_permiso: 'Eliminar categorias' },
+    { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'post', descripcion_permiso: 'Agregar categorias' },
 
     // Permisos del administrador de contenido
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'post', descripcion_permiso: 'Crear agente' },
@@ -120,6 +126,27 @@ async function main() {
     },
   });
   
+  //admin de eventos
+  await prisma.usuarios.upsert({
+    where: { email: 'edwin123axl@gmail.com' },
+    update: {},
+    create: {
+      nombre: 'Edw',
+      apellidopaterno: 'Ali',
+      apellidomaterno: 'Yuj',
+      email: 'edwin123axl@gmail.com',
+      contrasena: hashedPassword,
+      foto: 'https://res.cloudinary.com/djxsfzosx/image/upload/v1743888521/perfil_usuario/u6ckp3d3to6qciwnw8ln.png',
+      telefono: '+591 79846545',
+      pais: 'Bolivia',
+      ciudad: 'La Paz',
+      genero: 'Masculino',
+      verificado: true,
+      id_rol: adminEventos.id_rol,
+    },
+  });
+
+
     // ========== CATEGORÍAS ==========
     const categorias = [
       { nombre: 'Música', descripcion: 'Eventos relacionados con conciertos, grupos y festivales musicales' },

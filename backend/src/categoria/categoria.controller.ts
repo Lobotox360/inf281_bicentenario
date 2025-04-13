@@ -9,31 +9,31 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
-  //@UseGuards(CasbinGuard,JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   create(@Body() createCategoriaDto: CreateCategoriaDto) {
     return this.categoriaService.create(createCategoriaDto);
   }
 
-  //@UseGuards(CasbinGuard,JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   findAll() {
     return this.categoriaService.findAll();
   }
 
-  //@UseGuards(CasbinGuard,JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoriaService.findOne(+id);
   }
 
-  //@UseGuards(CasbinGuard,JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
     return this.categoriaService.update(+id, updateCategoriaDto);
   }
 
-  //@UseGuards(CasbinGuard,JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriaService.remove(+id);
