@@ -15,8 +15,10 @@ export default function Navbar() {
   const router = useRouter();
   
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
-    const id = localStorage.getItem("id_user");
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("access_token");
+      const id = localStorage.getItem("id_user");
+    }
     
     setEstadoLogin(!!token);
   
@@ -35,8 +37,10 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("id_user");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("id_user");
+    }
     setEstadoLogin(false);
     setMenuUsuario(false);
     router.push('/login');
