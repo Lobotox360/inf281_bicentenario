@@ -11,6 +11,19 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   const [departamento, setDepartamento] = useState('');
   const [descripcion, setDescripcion] = useState('');
 
+  // Mapa de coordenadas de los departamentos
+  const departamentoCoordenadas = {
+    'La Paz': { lat: -16.500000, lng: -68.119300 },
+    'Oruro': { lat: -17.9833, lng: -67.1167 },
+    'Potosi': { lat: -19.5842, lng: -65.7456 },
+    'Cochabamba': { lat: -17.3902, lng: -66.1568 },
+    'Chuquisaca': { lat: -19.0333, lng: -65.2600 },
+    'Tarija': { lat: -21.5310, lng: -64.7295 },
+    'Pando': { lat: -11.0046, lng: -68.1122 },
+    'Beni': { lat: -14.8333, lng: -64.9000 },
+    'Santa Cruz': { lat: -17.7775, lng: -63.1815 }
+  };
+
   // Si hay datos previos en eventoData, cargarlos en los estados
   useEffect(() => {
     if (eventoData && eventoData.ubicacion) {
@@ -19,6 +32,24 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
       setDescripcion(eventoData.ubicacion.descripcion || '');
     }
   }, [eventoData]);
+
+  // Manejar el cambio del select de departamento
+  const handleDepartamentoChange = (e) => {
+    const selectedDepartamento = e.target.value;
+    setDepartamento(selectedDepartamento);
+
+    // Actualizar las coordenadas del mapa según el departamento seleccionado
+    if (departamentoCoordenadas[selectedDepartamento]) {
+      setCoordenadas(departamentoCoordenadas[selectedDepartamento]);
+    }
+
+    // Guardar en el estado global sin incluir latLng
+    handleUpdateData('ubicacion', {
+      ubicacion,
+      departamento: selectedDepartamento,
+      descripcion
+    });
+  };
 
   const handleMapClick = useCallback((event) => {
     const nuevaUbicacion = {
@@ -44,18 +75,6 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
       } else {
         console.error('No se pudo obtener la dirección');
       }
-    });
-  };
-
-  // Manejar el cambio del select de departamento
-  const handleDepartamentoChange = (e) => {
-    const selectedDepartamento = e.target.value;
-    setDepartamento(selectedDepartamento);
-    // Guardar en el estado global, sin incluir latLng
-    handleUpdateData('ubicacion', { 
-      ubicacion, 
-      departamento: selectedDepartamento,
-      descripcion
     });
   };
 

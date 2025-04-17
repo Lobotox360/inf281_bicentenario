@@ -38,6 +38,19 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     fetchEventoData();
   }, [eventoId]);
 
+  // Mapa de coordenadas de los departamentos
+  const departamentoCoordenadas = {
+    'La Paz': { lat: -16.500000, lng: -68.119300 },
+    'Oruro': { lat: -17.9833, lng: -67.1167 },
+    'Potosi': { lat: -19.5842, lng: -65.7456 },
+    'Cochabamba': { lat: -17.3902, lng: -66.1568 },
+    'Chuquisaca': { lat: -19.0333, lng: -65.2600 },
+    'Tarija': { lat: -21.5310, lng: -64.7295 },
+    'Pando': { lat: -11.0046, lng: -68.1122 },
+    'Beni': { lat: -14.8333, lng: -64.9000 },
+    'Santa Cruz': { lat: -17.7775, lng: -63.1815 }
+  };
+
   const handleMapClick = useCallback((event) => {
     const nuevaUbicacion = {
       lat: event.latLng.lat(),
@@ -69,6 +82,11 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   const handleDepartamentoChange = (e) => {
     const selectedDepartamento = e.target.value;
     setDepartamento(selectedDepartamento);
+    
+    // Actualizar las coordenadas del mapa según el departamento
+    if (departamentoCoordenadas[selectedDepartamento]) {
+      setCoordenadas(departamentoCoordenadas[selectedDepartamento]);
+    }
   };
 
   // Manejar el cambio de descripcion
@@ -76,15 +94,22 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     const nuevaDescripcion = e.target.value;
     setDescripcion(nuevaDescripcion);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
-        method: 'PUT', 
+        method: 'PUT',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(informacion),
+        body: JSON.stringify({
+          ubicacion,
+          departamento,
+          descripcion,
+          lat: coordenadas.lat,
+          lng: coordenadas.lng
+        }),
       });
 
       if (response.ok) {
@@ -108,6 +133,7 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
       <div className="p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
+          
           {/* Campo departamento */}
           <div className="mb-4">
             <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>
