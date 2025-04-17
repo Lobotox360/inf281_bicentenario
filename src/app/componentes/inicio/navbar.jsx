@@ -17,10 +17,13 @@ export default function Navbar() {
   const router = useRouter();
   
   useEffect(() => {
-    setUserId(localStorage.getItem("id_user"));
-    setToken(localStorage.getItem("access_token"));
-    
-    setEstadoLogin(null);
+    const storedToken = localStorage.getItem("access_token");
+    const storedId = localStorage.getItem("id_user");
+
+    setToken(storedToken);
+    setUserId(storedId);
+
+    setEstadoLogin(!!storedToken);
   
     if (token && id) {
       fetch(`https://inf281-production.up.railway.app/usuario/${id}`)
