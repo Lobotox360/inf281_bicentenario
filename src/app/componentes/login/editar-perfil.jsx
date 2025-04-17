@@ -90,22 +90,23 @@ const EditarPerfil = () => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-800 via-yellow-600 to-green-800 p-6">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
-                <h2 className="text-xl font-semibold text-center mb-4">Editar Perfil</h2>
                 <div className="grid grid-cols-3 gap-6">
                     {/* Caja izquierda - Foto de perfil */}
                     <div className="flex flex-col items-center justify-start">
+                        <h2 className="text-xl font-semibold text-center mb-4">FOTO DE PERFIL</h2>
                         <img
-                            src={usuario?.foto || '/default-profile.jpg'} // Imagen de perfil, si no hay, se usa una imagen por defecto
+                            src={usuario?.foto || '../assets/ads.jpg'} // Imagen de perfil, si no hay, se usa una imagen por defecto
                             alt="Foto de perfil"
-                            className="w-40 h-40 rounded-full object-cover mb-4"
+                            className="w-65 h-65 rounded-full object-cover mb-4"
                         />
-                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        <button className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-yellow-400">
                             Cambiar Foto
                         </button>
                     </div>
 
                     {/* Caja derecha - Formulario */}
                     <div className="col-span-2">
+                        <h2 className="text-xl font-semibold text-center mb-4">MIS DATOS PERSONALES</h2>
                         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                             <div>
                                 <label className="block font-medium">Nombres</label>
@@ -178,19 +179,20 @@ const EditarPerfil = () => {
                                 </div>
                             </div>
 
-                            {/* Botones */}
-                            <div className="flex justify-between space-x-4 mt-6">
-                                <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
-                                    Cancelar
-                                </button>
-                                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-                                    Guardar
-                                </button>
-                                
-                            </div>
+                    
                         </form>
                     </div>
+                    
                 </div>
+                    {/* Botones */}
+                    <div className="flex justify-between space-x-4 mt-6">
+                        <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
+                            Salir sin guardar
+                        </button>
+                        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600">
+                            Guardar cambios
+                        </button>
+                    </div>
             </div>
         </div>
     );

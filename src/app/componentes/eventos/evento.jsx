@@ -59,7 +59,7 @@ export default function Eventos() {
         <MenuFiltrar />
     
       {/* Formulario de comentarios */}
-      <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">Comentarios</h2>
+      <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">COMENTAR</h2>
       <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
         {commentsList.map((c, index) => (
           <div key={index} className="border-b pb-4 mb-4 flex items-center gap-4">
