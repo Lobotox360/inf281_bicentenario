@@ -20,7 +20,7 @@ export default function Navbar() {
     setUserId(localStorage.getItem("id_user"));
     setToken(localStorage.getItem("access_token"));
     
-    setEstadoLogin(!!token);
+    setEstadoLogin(null);
   
     if (token && id) {
       fetch(`https://inf281-production.up.railway.app/usuario/${id}`)
