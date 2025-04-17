@@ -24,10 +24,6 @@ export class ExpositorController {
   }
   
   
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
-  @Get(':id')
-  findAllByEvent(@Param('id') id: string) {
-    return this.expositorService.findAllByEvent(+id);
-  }
+
   
 }
