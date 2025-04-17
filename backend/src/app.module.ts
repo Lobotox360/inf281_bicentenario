@@ -10,6 +10,9 @@ import { RolModule } from './rol/rol.module';
 import { EventoModule } from './evento/evento.module';
 import { CategoriaModule } from './categoria/categoria.module';
 import { PatrocinadorModule } from './patrocinador/patrocinador.module';
+import { AgendaModule } from './agenda/agenda.module';
+import { TelefonoModule } from './telefono/telefono.module';
+import { ExpositorModule } from './expositor/expositor.module';
 
 @Module({
   imports: [
@@ -23,7 +26,10 @@ import { PatrocinadorModule } from './patrocinador/patrocinador.module';
     RolModule,
     EventoModule,
     CategoriaModule,
-    PatrocinadorModule, 
+    PatrocinadorModule,
+    AgendaModule,
+    TelefonoModule,
+    ExpositorModule, 
   ],
 })
 export class AppModule {}

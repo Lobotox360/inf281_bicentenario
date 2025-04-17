@@ -36,7 +36,7 @@ model Usuarios {
   
   Preferencias_Usuario Preferencias_Usuario[]
   Historial_Actividades Historial_Actividades[]
-  Participantes_Eventos Participantes_Eventos[]
+  Agenda Agenda[]
 }
 
 model Roles {
@@ -91,7 +91,6 @@ model Eventos {
   Ubicacion      Ubicacion?
 
   Expositores              Expositores[]
-  Participantes_Eventos    Participantes_Eventos[]
   Agenda                   Agenda[]
   Telefonos                Telefonos[]
   Eventos_Patrocinadores   Eventos_Patrocinadores[]
@@ -109,29 +108,23 @@ model Expositores {
   especialidad String  @db.VarChar(100)
   institucion  String  @db.VarChar(100)
   contacto     String  @db.VarChar(100)
-
+  
   Eventos      Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
 
 
 
 
-model Participantes_Eventos {
+model Agenda {
   id_usuario String
   id_evento Int
 
+  actividades String @db.VarChar(255)
+  fecha DateTime
   Usuarios Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
   Eventos  Eventos  @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 
   @@id([id_usuario, id_evento])
-}
-
-model Agenda {
-  id_agenda Int @id @default(autoincrement())
-  id_evento Int
-  actividades String @db.VarChar(255)
-  fecha DateTime
-  Eventos Eventos @relation(fields: [id_evento], references: [id_evento])
 }
 
 model Ubicacion {
@@ -187,7 +180,6 @@ model Eventos_Patrocinadores {
   id_patrocina Int @id @default(autoincrement())
   id_evento Int
   id_auspiciador Int
-  fecha DateTime
   Eventos Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Patrocinadores Patrocinadores @relation(fields: [id_auspiciador], references: [id_patrocinador], onDelete: Cascade)
 }

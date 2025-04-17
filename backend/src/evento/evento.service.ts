@@ -3,6 +3,7 @@ import { CreateEventoDto } from './dto/create-evento.dto';
 import { UpdateEventoDto } from './dto/update-evento.dto';
 import { PrismaService } from 'src/prisma.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UpdateUbicacionDto } from './dto/update-ubicacion.dto';
 
 @Injectable()
 export class EventoService {
@@ -10,6 +11,43 @@ export class EventoService {
     private prisma: PrismaService,
     private cloudinaryService: CloudinaryService,
   ) {}
+
+  async getUbicacionByEvento(id_evento: number) {
+    const ubicacion = await this.prisma.ubicacion.findUnique({
+      where: {
+        id_evento: id_evento,
+      },
+    });
+
+    if (!ubicacion) {
+      return { message: 'Ubicación no encontrada para este evento.' };
+    }
+    return { ubicacion };
+  }
+
+  async updateUbicacion(id_ubicacion: number, updateUbicacionDto: any) {
+    const ubicacionExistente = await this.prisma.ubicacion.findUnique({
+      where: { id_ubicacion: id_ubicacion },
+    });
+
+    if (!ubicacionExistente) {
+      return {
+        message: 'La ubicación con el id_ubicacion proporcionado no fue encontrada.',
+      };
+    }
+
+    const updatedUbicacion = await this.prisma.ubicacion.update({
+      where: {
+        id_ubicacion: id_ubicacion,
+      },
+      data: updateUbicacionDto,
+    });
+
+    return {
+      message: 'Ubicación actualizada con éxito.'
+    };
+  }
+
 
   async subirFoto(file: Express.Multer.File) {
     return await this.cloudinaryService.uploadImage(file, 'eventos');
@@ -74,14 +112,7 @@ export class EventoService {
         data: telefonosFormateados,
       });
     }
-    
-    await this.prisma.eventos_Categorias.create({
-      data: {
-        id_evento,
-        id_categoria: parseInt(categoria),
-      },
-    });
-    
+
     if (ubicacion) {
       await this.prisma.ubicacion.create({
         data: {
@@ -89,16 +120,26 @@ export class EventoService {
           ...ubicacion,
         },
       });
-    }
-    
-    await this.prisma.eventos_Patrocinadores.create({
+    }   
+
+  for (const cat of categoria) {
+    await this.prisma.eventos_Categorias.create({
       data: {
-        id_evento,
-        id_auspiciador: parseInt(patrocinador),
-        fecha: new Date(),
+        id_evento: evento.id_evento,
+        id_categoria: cat.id_categoria,
       },
     });
+  }
 
+  // Crear los patrocinadores asociados al evento
+  for (const patro of patrocinador) {
+    await this.prisma.eventos_Patrocinadores.create({
+      data: {
+        id_evento: evento.id_evento,
+        id_auspiciador: patro.id_auspiciador,
+      },
+    });
+  }
     return { mensaje: '✅ Evento creado correctamente' };
   }
 
@@ -109,7 +150,7 @@ export class EventoService {
         CategoriasEvento: { include: { categoria: true } },
         Expositores: true,
         Ubicacion: true,
-        Eventos_Patrocinadores: { include: { Patrocinadores: true } },
+        Eventos_Patrocinadores: { include: { Patrocinadores: true } }
       },
     });
   
@@ -185,97 +226,40 @@ export class EventoService {
     return { ...evento, estado };
   }
 
-  async actualizarEvento(id: number, data: any, nuevaFoto?: Express.Multer.File) {
-    const eventoExistente = await this.prisma.eventos.findUnique({
-      where: { id_evento: id },
+  async updateEvento(id_evento: number, updateEventoDto: UpdateEventoDto) {
+    const now = new Date().toISOString();
+  
+    const updatedEvento = await this.prisma.eventos.update({
+      where: { id_evento: id_evento },
+      data: {
+        ...updateEventoDto,
+        fecha: now,
+      },
     });
   
-    if (!eventoExistente) {
-      return { mensaje: `❌ No se encontró el evento con ID ${id}` };
+    return { mensaje: '✅ Evento actualizado correctamente'};
+  }
+
+  async actualizarFotoEvento(id_evento: number, foto_evento: Express.Multer.File) {
+    const subida = await this.subirFoto(foto_evento);
+    const url = subida.secure_url;
+  
+    const eventoId = parseInt(id_evento.toString(), 10); 
+  
+    if (isNaN(eventoId)) {
+      throw new Error('El id_evento debe ser un número válido');
     }
   
-    let url = eventoExistente.foto_evento;
-  
-    // ✅ Si llega una nueva imagen, súbela y actualiza la URL
-    if (nuevaFoto) {
-      const subida = await this.subirFoto(nuevaFoto);
-      url = subida.secure_url;
-    }
-  
-    // ✅ Actualizar campos principales si están definidos
-    await this.prisma.eventos.update({
-      where: { id_evento: id },
+    const eventoActualizado = await this.prisma.eventos.update({
+      where: {
+        id_evento: eventoId,
+      },
       data: {
-        titulo: data.titulo || undefined,
-        descripcion: data.descripcion || undefined,
-        hora_inicio: data.hora_inicio || undefined,
-        hora_fin: data.hora_fin || undefined,
-        costo: data.costo ? parseFloat(data.costo) : undefined,
-        modalidad: data.modalidad || undefined,
         foto_evento: url,
       },
     });
   
-    // ✅ Actualizar expositores si se envían
-    if (data.expositor) {
-      await this.prisma.expositores.deleteMany({ where: { id_evento: id } });
-      const nuevosExpositores = Array.isArray(data.expositor)
-        ? data.expositor
-        : [data.expositor];
-  
-      await this.prisma.expositores.createMany({
-        data: nuevosExpositores.map((exp) => ({
-          id_evento: id,
-          ...exp,
-        })),
-      });
-    }
-  
-    // ✅ Actualizar teléfonos si se envían
-    if (data.telefonos_contacto) {
-      await this.prisma.telefonos.deleteMany({ where: { id_evento: id } });
-      const nuevosTelefonos = data.telefonos_contacto.map((tel, index) => ({
-        id_evento: id,
-        nombre: `Teléfono ${index + 1}`,
-        numero: tel.telefono,
-      }));
-  
-      await this.prisma.telefonos.createMany({ data: nuevosTelefonos });
-    }
-  
-    // ✅ Actualizar ubicación si se envía
-    if (data.ubicacion) {
-      await this.prisma.ubicacion.deleteMany({ where: { id_evento: id } });
-      await this.prisma.ubicacion.create({
-        data: { id_evento: id, ...data.ubicacion },
-      });
-    }
-  
-    // ✅ Actualizar categoría si se envía
-    if (data.categoria) {
-      await this.prisma.eventos_Categorias.deleteMany({ where: { id_evento: id } });
-      await this.prisma.eventos_Categorias.create({
-        data: {
-          id_evento: id,
-          id_categoria: parseInt(data.categoria),
-        },
-      });
-    }
-  
-    // ✅ Actualizar patrocinador si se envía
-    if (data.patrocinador) {
-      await this.prisma.eventos_Patrocinadores.deleteMany({ where: { id_evento: id } });
-      await this.prisma.eventos_Patrocinadores.create({
-        data: {
-          id_evento: id,
-          id_auspiciador: parseInt(data.patrocinador),
-          fecha: new Date(),
-        },
-      });
-    }
-  
-    return { mensaje: '✅ Evento actualizado correctamente' };
+    return { mensaje: '✅ Foto actualizado correctamente'};
   }
   
-
 }

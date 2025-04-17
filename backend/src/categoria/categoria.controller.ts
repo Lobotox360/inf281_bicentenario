@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller,HttpStatus,HttpException, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
 import { CategoriaService } from './categoria.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto';
@@ -8,6 +8,34 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @Controller('evento/categoria')
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
+
+  @Put('evento/:id_evento')
+  async updateCategoriasEvento(
+    @Param('id_evento') id_evento: string, 
+    @Body() categorias: { id_categoria: number }[]
+  ) {
+    const eventoId = parseInt(id_evento, 10);
+
+    if (isNaN(eventoId)) {
+      throw new HttpException(
+        'El id_evento debe ser un número válido',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.categoriaService.updateCategoriasDeEvento(eventoId, categorias);
+  }
+
+  
+
+  @Get('evento/:id_evento')
+  async getCategoriasByEvento(@Param('id_evento') id_evento: string) {
+    const eventoId = parseInt(id_evento, 10);
+    if (isNaN(eventoId)) {
+      throw new Error('El id_evento debe ser un número válido');
+    }
+    return this.categoriaService.getCategoriasByEvento(eventoId);
+  }
 
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
@@ -38,4 +66,7 @@ export class CategoriaController {
   remove(@Param('id') id: string) {
     return this.categoriaService.remove(+id);
   }
+
+
+
 }

@@ -6,7 +6,16 @@ import {
   IsArray,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+class CategoriaDto {
+  @IsNumber()
+  id_categoria: number;
+}
 
+// Modificar para recibir un array de objetos con `id_auspiciador`
+class PatrocinadorDto {
+  @IsNumber()
+  id_auspiciador: number;
+}
 class TelefonosContactoDto {
   @IsString()
   telefono1: string;
@@ -64,13 +73,16 @@ export class CreateEventoDto {
   @IsString()
   modalidad: string;
 
-  @IsNumber()
-  @Type(() => Number)
-  categoria: number;
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CategoriaDto)
+  categoria: CategoriaDto[];
 
-  @IsNumber()
-  @Type(() => Number)
-  patrocinador: number;
+  // Cambiar a un array de objetos con `id_auspiciador`
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PatrocinadorDto)
+  patrocinador: PatrocinadorDto[];
 
   @ValidateNested()
   @Type(() => TelefonosContactoDto)
