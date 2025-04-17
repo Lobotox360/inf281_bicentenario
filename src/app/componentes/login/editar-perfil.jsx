@@ -14,6 +14,7 @@ const EditarPerfil = () => {
     const [userId, setUserId] = useState(null);
     const [token, setToken] = useState(null);
 
+    
     const { register, handleSubmit, setValue } = useForm();
 
     // Obtener datos del usuario desde la API
@@ -51,6 +52,9 @@ const EditarPerfil = () => {
                 setValue("pais", userData.pais);
                 setValue("ciudad", userData.ciudad);
 
+                // Actualizar los estados del país y ciudad
+                setIdPais(userData.pais);
+                setIdEstado(userData.ciudad);
             } catch (error) {
                 console.error("Error al obtener datos del usuario:", error);
             }
@@ -85,99 +89,108 @@ const EditarPerfil = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-800 via-yellow-600 to-green-800 p-6">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
                 <h2 className="text-xl font-semibold text-center mb-4">Editar Perfil</h2>
-
-                <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-                    <div>
-                        <label className="block font-medium">Nombres</label>
-                        <input className="w-full p-2 border rounded-md" type="text" {...register('nombre')} />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block font-medium">Apellido Paterno</label>
-                            <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoPaterno')} />
-                        </div>
-                        <div>
-                            <label className="block font-medium">Apellido Materno</label>
-                            <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoMaterno')} />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block font-medium">Género</label>
-                            <select className="w-full p-2 border rounded-md" {...register("genero")}>
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                                <option value="N">Sin comentarios</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block font-medium">Teléfono/Celular</label>
-                            <input className="w-full p-2 border rounded-md" type="text" {...register('telefono')} />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block font-medium">País</label>
-                            <CountrySelect 
-                                onChange={(e) => setIdPais(e.id)}
-                                placeHolder="Seleccione un país"
-                            />
-                        </div>
-                        <div>
-                            <label className="block font-medium">Ciudad</label>
-                            <StateSelect 
-                                disabled={!idPais}
-                                countryid={idPais}
-                                onChange={(e) => setIdEstado(e.id)}
-                                placeHolder="Seleccione una ciudad"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block font-medium">Contraseña</label>
-                            <div className="relative">
-                                <input className="w-full p-2 border rounded-md pr-10" 
-                                    type={visible ? "text" : "password"} 
-                                    placeholder="Nueva contraseña"
-                                    {...register('contrasena')}
-                                />
-                                <button className="absolute right-3 top-3 text-gray-500" type="button" onClick={() => setVisible(!visible)}>
-                                    {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block font-medium">Repite Contraseña</label>
-                            <div className="relative">
-                                <input className="w-full p-2 border rounded-md pr-10" 
-                                    type={revisible ? "text" : "password"} 
-                                    placeholder="Repite tu contraseña"
-                                    {...register('recontrasenia')}
-                                />
-                                <button className="absolute right-3 top-3 text-gray-500" type="button" onClick={() => setRevisible(!revisible)}>
-                                    {revisible ? <AiFillEye /> : <AiFillEyeInvisible />}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-end space-x-4 mt-6">
-                        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
-                            Guardar
-                        </button>
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" type="button">
-                            Cancelar
+                <div className="grid grid-cols-3 gap-6">
+                    {/* Caja izquierda - Foto de perfil */}
+                    <div className="flex flex-col items-center justify-start">
+                        <img
+                            src={usuario?.foto || '/default-profile.jpg'} // Imagen de perfil, si no hay, se usa una imagen por defecto
+                            alt="Foto de perfil"
+                            className="w-40 h-40 rounded-full object-cover mb-4"
+                        />
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                            Cambiar Foto
                         </button>
                     </div>
-                </form>
+
+                    {/* Caja derecha - Formulario */}
+                    <div className="col-span-2">
+                        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                            <div>
+                                <label className="block font-medium">Nombres</label>
+                                <input className="w-full p-2 border rounded-md" type="text" {...register('nombre')} />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block font-medium">Apellido Paterno</label>
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoPaterno')} />
+                                </div>
+                                <div>
+                                    <label className="block font-medium">Apellido Materno</label>
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoMaterno')} />
+                                </div>
+                            </div>
+
+                            {/* Correo electrónico y teléfono */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block font-medium">Correo electrónico</label>
+                                    <input className="w-full p-2 border rounded-md" type="email" {...register('email')} readOnly />
+                                </div>
+                                <div>
+                                    <label className="block font-medium">Teléfono/Celular</label>
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('telefono')} />
+                                </div>
+                            </div>
+
+                            {/* País y ciudad */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block font-medium">País</label>
+                                    <CountrySelect countryid={idPais} onChange={(e) => setIdPais(e.id)} />
+                                </div>
+                                <div>
+                                    <label className="block font-medium">Ciudad</label>
+                                    <StateSelect countryid={idPais} stateid={idEstado} onChange={(e) => setIdEstado(e.id)} />
+                                </div>
+                            </div>
+
+                            {/* Contraseña */}
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block font-medium">Contraseña</label>
+                                    <div className="relative">
+                                        <input className="w-full p-2 border rounded-md pr-10" 
+                                            type={visible ? "text" : "password"} 
+                                            placeholder="Nueva contraseña"
+                                            {...register('contrasena')}
+                                        />
+                                        <button className="absolute right-3 top-3 text-gray-500" type="button" onClick={() => setVisible(!visible)} aria-label={visible ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                                            {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block font-medium">Repite Contraseña</label>
+                                    <div className="relative">
+                                        <input className="w-full p-2 border rounded-md pr-10" 
+                                            type={revisible ? "text" : "password"} 
+                                            placeholder="Repite tu contraseña"
+                                            {...register('recontrasenia')}
+                                        />
+                                        <button className="absolute right-3 top-3 text-gray-500" type="button" onClick={() => setRevisible(!revisible)} aria-label={revisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}>
+                                            {revisible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Botones */}
+                            <div className="flex justify-between space-x-4 mt-6">
+                                <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">
+                                    Cancelar
+                                </button>
+                                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+                                    Guardar
+                                </button>
+                                
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     );

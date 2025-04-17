@@ -22,6 +22,18 @@ export default function CalendarioUsuario() {
       },
       {
         id: '2',
+        title: 'Reunión de equipo',
+        start: '2025-04-15T11:30:00',
+        end: '2025-04-15T12:30:00'
+      },
+      {
+        id: '3',
+        title: 'Reunión de equipo',
+        start: '2025-04-15T12:30:00',
+        end: '2025-04-15T14:00:00'
+      },
+      {
+        id: '4',
         title: 'Estudio bíblico',
         start: '2025-04-18T18:00:00',
         end: '2025-04-18T19:00:00'
