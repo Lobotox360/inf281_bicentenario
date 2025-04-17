@@ -11,14 +11,16 @@ const EditarPerfil = () => {
     const [visible, setVisible] = useState(false);
     const [revisible, setRevisible] = useState(false);
     const [usuario, setUsuario] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [token, setToken] = useState(null);
 
     const { register, handleSubmit, setValue } = useForm();
 
     // Obtener datos del usuario desde la API
     useEffect(() => {
         const fetchUserData = async () => {
-            const userId = localStorage.getItem("id_user");
-            const token = localStorage.getItem("access_token");
+            setUserId(localStorage.getItem("id_user"));
+            setToken(localStorage.getItem("access_token"));
 
             if (!userId || !token) {
                 console.error("No hay usuario logueado.");
@@ -59,8 +61,8 @@ const EditarPerfil = () => {
 
     // Función para actualizar los datos del usuario
     const onSubmit = async (data) => {
-        const userId = localStorage.getItem("user_id");
-        const token = localStorage.getItem("access_token");
+        setUserId(localStorage.getItem("id_user"));
+        setToken(localStorage.getItem("access_token"));
 
         try {
             const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {

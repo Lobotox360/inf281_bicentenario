@@ -12,13 +12,13 @@ export default function Navbar() {
   const [barraBusqueda, setBarraBusqueda] = useState(false);
   const [buscarConsulta, setBuscarConsulta] = useState("");
   const [fotoUsuario, setFotoUsuario] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [token, setToken] = useState(null);
   const router = useRouter();
   
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("access_token");
-      const id = localStorage.getItem("id_user");
-    }
+    setUserId(localStorage.getItem("id_user"));
+    setToken(localStorage.getItem("access_token"));
     
     setEstadoLogin(!!token);
   
@@ -37,10 +37,8 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("id_user");
-    }
+    setUserId(localStorage.getItem("id_user"));
+    setToken(localStorage.getItem("access_token"));
     setEstadoLogin(false);
     setMenuUsuario(false);
     router.push('/login');
