@@ -151,5 +151,9 @@ export class EventoController {
     return this.eventoService.updateUbicacion(ubicacionId, updateUbicacionDto);
   }
 
-  
+  @Get('top/10')
+  async getTop10Eventos() {
+    return this.eventoService.getTop10Eventos();
+  }
+
 }

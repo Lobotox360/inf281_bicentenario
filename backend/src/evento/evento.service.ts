@@ -12,6 +12,16 @@ export class EventoService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
+  async getTop10Eventos() {
+    const eventos = await this.prisma.eventos.findMany({
+      orderBy: {
+        puntuacion: 'desc', // Ordenar por puntuación en orden descendente
+      },
+      take: 10, // Limitar a los primeros 10 eventos
+    });
+
+    return eventos;
+  }
   async getUbicacionByEvento(id_evento: number) {
     const ubicacion = await this.prisma.ubicacion.findUnique({
       where: {

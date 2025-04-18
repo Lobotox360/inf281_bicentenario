@@ -48,21 +48,21 @@ export class UsuarioController {
   }
   
   // Obtener usuario por ID
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usuarioService.findOne(id);
   }
 
   // Eliminar usuario
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usuarioService.remove(id);
   }
 
   // Editar usuario (nombre, ciudad, foto, etc.)
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
@@ -71,7 +71,7 @@ export class UsuarioController {
     return this.usuarioService.updateUser(id, updateUsuarioDto);
   }
 
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @UseInterceptors(FileInterceptor('foto'))
   @Put('foto/:id')
   async updateFoto(
