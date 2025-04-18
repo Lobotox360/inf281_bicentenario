@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaEdit } from 'react-icons/fa';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import MapaEvento from './mapa';
+import MapaEvento from './mapa'; // Asumimos que MapaEvento está recibiendo la dirección y geocodificando
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
@@ -60,7 +60,7 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
     router.push("/eventos/agregar");
   };
 
-  //EN CONTSTRUCION
+  //EN CONSTRUCCION
   const handleAsistir = async (eventoId) => {
     try {
       const res = await fetch('/api/asistencias', {
@@ -144,6 +144,7 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
         )}
 
         <div className="flex justify-center mt-8">
+          {/* Mostrar el mapa con la ubicación de cada evento */}
           <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} />
         </div>
       </div>

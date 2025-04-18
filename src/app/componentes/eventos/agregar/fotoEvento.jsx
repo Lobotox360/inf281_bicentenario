@@ -34,9 +34,13 @@ const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
     formData.append("hora_fin", eventoData.informacion.horaFin);
     formData.append("costo", eventoData.informacion.costo);
     formData.append("modalidad", eventoData.informacion.modalidad);
-    formData.append("patrocinador", JSON.stringify(eventoData.patrocinadores[0].id_patrocinador));
+    formData.append("patrocinador", JSON.stringify(eventoData.patrocinadores.map(patrocinador => ({
+        id_auspiciador: patrocinador.id_patrocinador}))
+    ));
     formData.append("expositor", JSON.stringify(eventoData.expositores));
-    formData.append("categoria", JSON.stringify(eventoData.categorias[0].id_categoria));
+    formData.append("categoria", JSON.stringify(eventoData.categorias.map(categoria => ({
+      id_categoria: categoria.id_categoria}))
+    ));
     formData.append("telefonos_contacto", JSON.stringify(eventoData.telefonos));
     formData.append("ubicacion", JSON.stringify(eventoData.ubicacion));
 

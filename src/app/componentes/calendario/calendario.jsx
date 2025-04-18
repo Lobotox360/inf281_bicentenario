@@ -55,7 +55,6 @@ export default function CalendarioUsuario() {
 
   return (
     <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto">
-      <Navbar />
       <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
         Mi Calendario de Eventos
       </h2>

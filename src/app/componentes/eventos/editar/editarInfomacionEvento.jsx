@@ -9,14 +9,14 @@ const EditarInformacionEvento = ({eventoId}) => {
     titulo: '',
     descripcion: '',
     modalidad: '',
-    costo: '',
+    costo: 0.0,
     hora_inicio: '',
     hora_fin: '',
   });
 
   const router = useRouter();
 
-  {/* VISUALIZAR DATOS ACTUALES*/}
+  {/* VISUALIZAR DATOS ACTUALES*/} //parseFloat(nuevoCosto)
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
@@ -27,7 +27,7 @@ const EditarInformacionEvento = ({eventoId}) => {
             titulo: data.titulo || '',
             descripcion: data.descripcion || '',
             modalidad: data.modalidad || '',
-            costo: data.costo || '',
+            costo: data.costo || 0.0,
             hora_inicio: data.hora_inicio || '',
             hora_fin: data.hora_fin || '',
           });
@@ -54,18 +54,33 @@ const EditarInformacionEvento = ({eventoId}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const costo = parseFloat(informacion.costo);
+    const titulo = informacion.titulo;
+    const descripcion = informacion.descripcion;
+    const modalidad = informacion.modalidad;
+    const hora_inicio = informacion.hora_inicio;
+    const hora_fin = informacion.hora_fin;
+    const bodyData = {
+      titulo,
+      descripcion,
+      modalidad,
+      costo,
+      hora_inicio,
+      hora_fin
+    };
+  
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
-        method: 'PUT', 
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(informacion),
+        body: JSON.stringify(bodyData),  // Aquí pasas el objeto con los datos estructurados
       });
-
+  
       if (response.ok) {
         alert('✅ Evento actualizado exitosamente');
-        siguientePaso();  // Avanzar al siguiente paso si la actualización es exitosa
       } else {
         alert('❌ Error al actualizar el evento');
       }
@@ -129,7 +144,7 @@ const EditarInformacionEvento = ({eventoId}) => {
               type="number" 
               name="costo"
               id="costo"
-              value={informacion.costo}
+              value={parseFloat(informacion.costo)}
               onChange={handleInputChange}
               className="w-full p-2 border border-gray-300 rounded-md"
               min="0"

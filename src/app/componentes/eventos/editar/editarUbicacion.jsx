@@ -3,7 +3,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, LoadScriptNext } from '@react-google-maps/api';
 import { useRouter } from 'next/navigation';
 
-const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
+const EditarUbicacionEvento = ({eventoId}) => {
   const [coordenadas, setCoordenadas] = useState({
     lat: -16.5,
     lng: -68.15,
@@ -11,22 +11,24 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   const [ubicacion, setUbicacion] = useState('');
   const [departamento, setDepartamento] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [ubicacionID, setUbicacionID] = useState(null);
   const router = useRouter();
 
   // Si hay datos previos en eventoData, cargarlos en los estados
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
+        const response = await fetch(`https://inf281-production.up.railway.app/eventos/ubicacion/${eventoId}`);
         const data = await response.json();
-        console.log(data.Ubicacion.lat);
-        if (data && data.Ubicacion) {
-          setUbicacion(data.Ubicacion.ubicacion || '');
-          setDepartamento(data.Ubicacion.departamento || '');
-          setDescripcion(data.Ubicacion.descripcion || '');
+        console.log(data);
+        if (data) {
+          setUbicacionID(data.ubicacion.id_ubicacion || '');
+          setUbicacion(data.ubicacion.ubicacion || '');
+          setDepartamento(data.ubicacion.departamento || '');
+          setDescripcion(data.ubicacion.descripcion || '');
           setCoordenadas({
-            lat: data.Ubicacion.lat || -16.5, // Si no hay lat, usa valores predeterminados
-            lng: data.Ubicacion.lng || -68.15, // Si no hay lng, usa valores predeterminados
+            lat: data.ubicacion.lat || -16.5, // Si no hay lat, usa valores predeterminados
+            lng: data.ubicacion.lng || -68.15, // Si no hay lng, usa valores predeterminados
           });
         } else {
           console.error('No se encontraron datos del evento');
@@ -98,7 +100,7 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
+      const response = await fetch(`https://inf281-production.up.railway.app/eventos/ubicacion/${ubicacionID}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -107,14 +109,11 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
           ubicacion,
           departamento,
           descripcion,
-          lat: coordenadas.lat,
-          lng: coordenadas.lng
         }),
       });
 
       if (response.ok) {
         alert('✅ Evento actualizado exitosamente');
-        siguientePaso();  // Avanzar al siguiente paso si la actualización es exitosa
       } else {
         alert('❌ Error al actualizar el evento');
       }
@@ -132,7 +131,7 @@ const EditarUbicacionEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     <LoadScriptNext googleMapsApiKey="AIzaSyA4coShq7smfTIjc5MwT9JUTs6_uTv07lA">
       <div className="p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
+          <h3 className="text-2xl font-semibold text-center py-4">Editar Ubicación del evento</h3>
           
           {/* Campo departamento */}
           <div className="mb-4">

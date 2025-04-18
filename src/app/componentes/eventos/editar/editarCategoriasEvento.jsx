@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
-const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
+const EditarCategoriasEvento = ({ eventoId}) => {
   const [categorias, setCategorias] = useState([]); // Estado para las categorías disponibles
   const [selectedCategoria, setSelectedCategoria] = useState(''); // Estado para la categoría seleccionada
   const [addedCategorias, setAddedCategorias] = useState([]); // Estado para las categorías añadidas
@@ -24,6 +24,7 @@ const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     try {
       const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
       const datos = await respuesta.json();
+      console.log(datos);
       setCategorias(datos.map(c => ({
         value: c.id_categoria,
         label: `${c.nombre} - ${c.descripcion}`,
@@ -38,19 +39,14 @@ const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     fetchCategorias();
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
+        const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`);
         const data = await response.json(); //recibo todo
         if (data) {
-          // Actualizar la información general del evento
           setInformacion({
             nombre: data.nombre || '',
             descripcion: data.descripcion || '',
           });
-
-          // Asignar todos los expositores actuales a 'expositoresAgregados'
-          const categoriasPlanas = (data.CategoriasEvento || []).map(item => item.categoria);
-          console.log(categoriasPlanas);
-          setAddedCategorias(categoriasPlanas); // Aquí asignamos todos los expositores
+          setAddedCategorias(data); 
         } else {
           console.error('No se encontraron datos del evento');
         }
@@ -90,10 +86,37 @@ const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     setNuevaCategoria({ ...nuevaCategoria, [name]: value });
   };
 
-  // Enviar nueva categoría al backend
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Construir el cuerpo con el formato esperado
+    const categoriasParaEnviar = addedCategorias.map(categoria => ({
+      id_categoria: categoria.id_categoria 
+    }));
+  
+    try {
+      const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(categoriasParaEnviar ), // Enviar el arreglo de categorías
+      });
+  
+      if (response.ok) {
+        alert('✅ Evento actualizado exitosamente');
+      } else {
+        alert('❌ Error al actualizar el evento');
+      }
+    } catch (error) {
+      console.error('❌ Error del data:', error);
+      alert('❌ Error al actualizar el evento');
+    }
+  };
+  
   const handleAgregarNuevaCategoria = async () => {
     try {
-      const res = await fetch('https://inf281-production.up.railway.app/eventos/categoria', {
+      const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -120,29 +143,6 @@ const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
-        method: 'PUT', 
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify(informacion),
-      });
-
-      if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
-        siguientePaso();  // Avanzar al siguiente paso si la actualización es exitosa
-      } else {
-        alert('❌ Error al actualizar el evento');
-      }
-    } catch (error) {
-      console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
-    }
-  };
-
   const handleBack = () => {
     router.back(); // Regresa a la página anterior en el historial
   };  
@@ -150,7 +150,7 @@ const EditarCategoriasEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   return (
     <div className="max-w-4xl mx-auto">
       <form className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Seleccionar categorias</h3>
+        <h3 className="text-2xl font-semibold text-center py-4">Editar categorias</h3>
         {/* Select de categorías existentes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">

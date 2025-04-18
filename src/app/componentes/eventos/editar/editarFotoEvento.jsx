@@ -2,20 +2,19 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const EditarFotoEvento = ({anteriorPaso, eventoId }) => {
+const EditarFotoEvento = ({eventoId }) => {
   const [imagen, setImagen] = useState(null);  // Mantener la imagen desde los datos previos
   const [imagenPreview, setImagenPreview] = useState(null); // Para la vista previa
   const router = useRouter();
+
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
         const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
         const data = await response.json();
-        console.log(data);
         if (data && data.foto_evento) {
           setImagen(data.foto_evento || null);
           setImagenPreview(data.foto_evento || null);
-          
         } else {
           console.error('No se encontraron datos del evento');
         }
@@ -26,30 +25,41 @@ const EditarFotoEvento = ({anteriorPaso, eventoId }) => {
     fetchEventoData();
   }, [eventoId]);
 
-  // Manejo de cambios para la imagen
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImagen(file);
-      setImagenPreview(URL.createObjectURL(file)); // Vista previa de la imagen
+      if (file.type.startsWith('image/')) {  // Verificar si es una imagen
+        setImagen(file);
+        setImagenPreview(URL.createObjectURL(file));
+      } else {
+        alert('Por favor selecciona un archivo de imagen válido.');
+      }
+    } else {
+      setImagen(null);
+      setImagenPreview(null); // Limpiar vista previa si no hay imagen
     }
   };
-
-  // Manejo del envío de los datos finales
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!imagen) {
+      alert('❌ Por favor selecciona una imagen');
+      return;
+    }
+  
+    const formData = new FormData();
+    formData.append('foto_evento', imagen);  // Cambiar 'imagen' a 'foto_evento' si es necesario
+  
     try {
-      const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
-        method: 'PUT', 
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify(informacion),
+      const response = await fetch(`https://inf281-production.up.railway.app/eventos/foto/${eventoId}`, {
+        method: 'PUT',
+        body: formData,
       });
-
+  
       if (response.ok) {
         alert('✅ Evento actualizado exitosamente');
-        siguientePaso();  // Avanzar al siguiente paso si la actualización es exitosa
+        router.push('/eventos');  // Redirige a la página de eventos
       } else {
         alert('❌ Error al actualizar el evento');
       }
@@ -58,16 +68,16 @@ const EditarFotoEvento = ({anteriorPaso, eventoId }) => {
       alert('❌ Error al actualizar el evento');
     }
   };
+  
 
   const handleBack = () => {
     router.back(); // Regresa a la página anterior en el historial
   };
 
-
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <form className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-center py-4">Paso 5: Agregar Imagen del Evento</h3>
+      <form className="bg-white p-5 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+        <h3 className="text-2xl font-semibold text-center py-4">Editar Imagen del Evento</h3>
 
         {/* Input para seleccionar la imagen */}
         <div className="mb-4">
@@ -89,20 +99,19 @@ const EditarFotoEvento = ({anteriorPaso, eventoId }) => {
 
         {/* Botones de navegación */}
         <div className="flex justify-between mt-4">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
-            >
-              Salir sin guardar
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-            >
-              Guardar cambios y salir
-            </button>
+          <button
+            type="button"
+            onClick={handleBack}
+            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+          >
+            Salir sin guardar
+          </button>
+          <button
+            type="submit" // Cambiado a 'submit' para enviar el formulario
+            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+          >
+            Guardar cambios y salir
+          </button>
         </div>
       </form>
     </div>

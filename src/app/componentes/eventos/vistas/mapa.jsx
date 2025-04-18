@@ -1,59 +1,45 @@
-// components/MapaEvento.js
+'use client';
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-
-// Usamos dynamic import para cargar el mapa solo en el cliente
-const GoogleMap = dynamic(() => import('@react-google-maps/api').then((mod) => mod.GoogleMap), {
-  ssr: false,  // Esto asegura que no se cargue en el servidor
-});
-const Marker = dynamic(() => import('@react-google-maps/api').then((mod) => mod.Marker), {
-  ssr: false,  // Esto asegura que no se cargue en el servidor
-});
+import { GoogleMap, Marker, LoadScriptNext } from '@react-google-maps/api';
 
 const MapaEvento = ({ direccion }) => {
-  const [coordenadas, setCoordenadas] = useState(null);
-  const [carga, setCarga] = useState(false);
+  const [coordenadas, setCoordenadas] = useState(null); // Coordenadas iniciales como null
+  const [carga, setCarga] = useState(false); // Inicializamos en true para mostrar el estado de carga
 
   useEffect(() => {
-    if (direccion && window.google) {
-      const geocoder = new google.maps.Geocoder();
+    if (direccion && typeof window !== 'undefined' && window.google) {
+      const geocoder = new window.google.maps.Geocoder();
 
       // Convertir la dirección en coordenadas
       geocoder.geocode({ address: direccion }, (resultados, estado) => {
-        if (estado === google.maps.GeocoderStatus.OK) {
+        if (estado === window.google.maps.GeocoderStatus.OK) {
           setCoordenadas({
             lat: resultados[0].geometry.location.lat(),
             lng: resultados[0].geometry.location.lng(),
           });
-          setCarga(false);
+          setCarga(false); // Marca como carga terminada
         } else {
           console.error('Error al obtener la ubicación: ', estado);
-          setCarga(false);
+          setCarga(false); // Si hay un error, también terminamos la carga
         }
       });
     }
-  }, [direccion]);
+  }, [direccion]); // Se ejecuta cuando cambia la dirección
 
   return (
-    <>
-      <script
-        src={`https://maps.googleapis.com/maps/api/js?key=AIzaSyA4coShq7smfTIjc5MwT9JUTs6_uTv07lA&libraries=places`}
-        strategy="beforeInteractive"
-        async
-      ></script>
-
+    <LoadScriptNext googleMapsApiKey="AIzaSyA4coShq7smfTIjc5MwT9JUTs6_uTv07lA">
       {carga ? (
-        <div>Cargando el mapa</div>
+        <div>Cargando el mapa...</div>
       ) : (
         <GoogleMap
-          mapContainerClassName="w-1/2 h-[500px]" 
-          center={coordenadas || { lat: -16.5000, lng: -68.1193 }}  // Coordenadas predeterminadas
+          mapContainerStyle={{ width: '100%', height: '500px' }}
+          center={coordenadas || { lat: -16.5, lng: -68.1193 }}  // Coordenadas predeterminadas razonables si aún no se tienen
           zoom={14}
         >
           {coordenadas && <Marker position={coordenadas} title={direccion} />}
         </GoogleMap>
       )}
-    </>
+    </LoadScriptNext>
   );
 };
 

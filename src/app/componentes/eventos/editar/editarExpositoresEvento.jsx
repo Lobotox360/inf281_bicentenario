@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
+const EditarExpositoresEvento = ({eventoId}) => {
 
   const [expositoresAgregados, setExpositoresAgregados] = useState([]);
   const [informacion, setInformacion] = useState({
@@ -27,8 +27,9 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
+        const response = await fetch(`https://inf281-production.up.railway.app/expositor/${eventoId}`);
         const data = await response.json();
+        
         if (data) {
           // Actualizar la información general del evento
           setInformacion({
@@ -39,7 +40,7 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
           });
 
           // Asignar todos los expositores actuales a 'expositoresAgregados'
-          setExpositoresAgregados(data.Expositores || []); // Aquí asignamos todos los expositores
+          setExpositoresAgregados(data || []); // Aquí asignamos todos los expositores
         } else {
           console.error('No se encontraron datos del evento');
         }
@@ -53,6 +54,7 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     }
   }, [eventoId]);
   
+  console.log(expositoresAgregados);
   const handleAgregarExpositor = () => {
     if (!nuevoExpositor.nombre || !nuevoExpositor.especialidad) return; // Validar que el nombre y especialidad estén completos
     // Evitar agregar expositores repetidos
@@ -60,35 +62,6 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
       setNuevoExpositor({ nombre: '', especialidad: '', institucion: '', contacto: '' }); // Limpiar campos
       const nuevosExpositores = [...expositoresAgregados, nuevoExpositor];
       setExpositoresAgregados(nuevosExpositores);
-    }
-  };
-    
-  // Enviar nuevo patrocinador al backend y actualizar la lista en tiempo real
-  const handleAgregarNuevoExpositor = async () => {
-    try {
-      const res = await fetch('https://inf281-production.up.railway.app/eventos/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nuevoExpositor),
-      });
-
-      if (!res.ok) throw new Error('Error al agregar el patrocinador');
-
-      const nuevoPatrocinadorRespuesta = await res.json();
-      setNuevoExpositor({
-        nombre: '',
-        especialidad: '',
-        institucion: '',
-        contacto: ''
-      });
-
-      alert('✅ Patrocinador agregado exitosamente!');
-      setMostrarAgregar(false);
-    } catch (error) {
-      console.error('Error al agregar patrocinador:', error);
-      alert('❌ Ocurrió un error al agregar el patrocinador.');
     }
   };
 
@@ -102,29 +75,37 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
     const { name, value } = e.target;
     setNuevoExpositor({ ...nuevoExpositor, [name]: value });
   };
+//
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
-        method: 'PUT', 
-        headers: {
-          'Content-Type': 'application/json', 
-        },
-        body: JSON.stringify(informacion),
-      });
+  const expositoresFormateados = expositoresAgregados.map(expositor => ({
+    nombre: expositor.nombre,
+    especialidad: expositor.especialidad,
+    institucion: expositor.institucion,
+    contacto: expositor.contacto || '' // Asegúrate de que 'contacto' no esté vacío
+  }));
 
-      if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
-        siguientePaso();  // Avanzar al siguiente paso si la actualización es exitosa
-      } else {
-        alert('❌ Error al actualizar el evento');
-      }
-    } catch (error) {
-      console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
+  const bodyData = { expositores: expositoresFormateados };
+
+  try {
+    const response = await fetch(`https://inf281-production.up.railway.app/expositor/${eventoId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(bodyData) // Enviar el objeto correctamente estructurado
+    });
+
+    if (response.ok) {
+      alert('✅ Expositores actualizados correctamente');
+    } else {
+      alert('❌ Error al actualizar los expositores');
     }
-  };
+  } catch (error) {
+    console.error('Error:', error);
+    alert('❌ Error al actualizar los expositores');
+  }
+};
+
 
   const handleBack = () => {
     router.back(); // Regresa a la página anterior en el historial
@@ -134,7 +115,7 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
   return (
     <div className="max-w-4xl mx-auto">
       <form className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-center py-4">Paso 3: Agregar expositores</h3>
+        <h3 className="text-2xl font-semibold text-center py-4">Editar expositores</h3>
 
         {/* Formulario para agregar nuevo patrocinador */}
         <div className="mb-4 flex justify-center">
@@ -200,7 +181,7 @@ const EditarExpositoresEvento = ({ siguientePaso, anteriorPaso, eventoId}) => {
           <ul>
             {expositoresAgregados.map((expositor, index) => (
                 <li key={index} className="flex justify-between items-center mb-2">
-                    <span>{expositor.nombre} - {expositor.especialidad}</span> {/* Usamos nombre y especialidad */}
+                    <span>{expositor.nombre} - {expositor.especialidad} - {expositor.institucion} - {expositor.contacto}</span> {/* Usamos nombre y especialidad */}
                     <button
                     type="button"
                     onClick={() => handleQuitarExpositor(index)}
