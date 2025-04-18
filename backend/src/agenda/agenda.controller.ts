@@ -30,20 +30,18 @@ export class AgendaController {
     return this.agendaService.remove(id_usuario, id_evento);
   }
 
-  
-  /*
-  @Get()
-  findAll() {
-    return this.agendaService.findAll();
+  @Post('comentario')
+  async addComentario(@Body() createAgendaDto: CreateAgendaDto) {
+    return this.agendaService.addComentario(createAgendaDto);
   }
 
-  @Put(':id_usuario/:id_evento')
-  update(
-    @Param('id_usuario') id_usuario: string,
-    @Param('id_evento', ParseIntPipe) id_evento: number,
-    @Body() data: UpdateAgendaDto,
-  ) {
-    return this.agendaService.update(id_usuario, id_evento, data);
+  @Post('calificacion')
+  async addCalificacion(@Body() createAgendaDto: CreateAgendaDto) {
+    return this.agendaService.addCalificacion(createAgendaDto);
   }
-  */
+
+  @Get('comentarios/:id_evento')
+  async getComentarios(@Param('id_evento', ParseIntPipe) id_evento: number) {
+    return this.agendaService.getComentariosDeEvento(id_evento);
+  }
 }

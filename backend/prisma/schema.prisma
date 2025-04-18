@@ -78,6 +78,8 @@ model Eventos {
   titulo                 String                   @db.VarChar(255)
   foto_evento            String?                  @db.VarChar(255)
   costo                  Float
+  puntuacion             Float                    @default(0)
+
   Agenda                 Agenda[]
   CategoriasEvento       Eventos_Categorias[]
   Eventos_Patrocinadores Eventos_Patrocinadores[]
@@ -98,9 +100,12 @@ model Expositores {
 
 model Agenda {
   id_evento   Int
+  id_usuario  String
   actividades String   @db.VarChar(255)
   fecha       DateTime
-  id_usuario  String
+  comentario  String?
+  calificacion   Int?   @default(-1)
+
   Eventos     Eventos  @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Usuarios    Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 

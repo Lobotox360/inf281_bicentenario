@@ -23,7 +23,10 @@ export class ExpositorController {
     return this.expositorService.updateExpositoresDeEvento(eventoId, createExpositoresDto.expositores);
   }
   
-  
-
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @Get(':id')
+  findAllByEvent(@Param('id') id: string) {
+    return this.expositorService.findAllByEvent(+id);
+  }
   
 }

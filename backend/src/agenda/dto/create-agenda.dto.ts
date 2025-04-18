@@ -1,4 +1,4 @@
-import { IsString, isNumber, IsDateString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsOptional, IsInt, Min, Max } from 'class-validator';
 
 export class CreateAgendaDto {
   @IsString()
@@ -7,9 +7,15 @@ export class CreateAgendaDto {
   @IsNumber()
   id_evento: number;
 
+  // Campo para el comentario, opcional
+  @IsOptional()
   @IsString()
-  actividades: string;
+  comentario?: string;
 
-  @IsDateString()
-  fecha: string;
+  // Campo para la calificación, opcional
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  calificacion?: number;
 }
