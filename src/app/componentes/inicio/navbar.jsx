@@ -92,7 +92,7 @@ export default function Navbar() {
               <div className="absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl">
                 <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
                 <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
-                <Link href="/login/Editar" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
+                <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
                 <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>
               </div>
             )}

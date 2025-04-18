@@ -19,49 +19,50 @@ const EditarPerfil = () => {
 
     // Obtener datos del usuario desde la API
     useEffect(() => {
-        const fetchUserData = async () => {
-            setUserId(localStorage.getItem("id_user"));
-            setToken(localStorage.getItem("access_token"));
-
-            if (!userId || !token) {
-                console.error("No hay usuario logueado.");
-                return;
-            }
-
+        if (typeof window !== "undefined") {
+          // Acceder a localStorage solo en el cliente
+          const userId = localStorage.getItem("id_user");
+          const token = localStorage.getItem("access_token");
+      
+          if (!userId || !token) {
+            console.error("No hay usuario logueado.");
+            return;
+          }
+      
+          const fetchUserData = async () => {
             try {
-                const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
-                    method: "GET",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json",
-                    },
-                });
-
-                if (!response.ok) throw new Error("Error al obtener los datos del usuario.");
-
-                const userData = await response.json();
-                setUsuario(userData);
-
-                // Rellenar los valores en el formulario
-                setValue("nombre", userData.nombre);
-                setValue("apellidoPaterno", userData.apellidoPaterno);
-                setValue("apellidoMaterno", userData.apellidoMaterno);
-                setValue("genero", userData.genero);
-                setValue("telefono", userData.telefono);
-                setValue("email", userData.email);
-                setValue("pais", userData.pais);
-                setValue("ciudad", userData.ciudad);
-
-                // Actualizar los estados del país y ciudad
-                setIdPais(userData.pais);
-                setIdEstado(userData.ciudad);
+              const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
+                method: "GET",
+                headers: {
+                  "Authorization": `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+              });
+      
+              if (!response.ok) throw new Error("Error al obtener los datos del usuario.");
+      
+              const userData = await response.json();
+              setUsuario(userData);
+      
+              // Rellenar los valores en el formulario
+              setValue("nombre", userData.nombre);
+              setValue("apellidoPaterno", userData.apellidopaterno);
+              setValue("apellidoMaterno", userData.apellidomaterno);
+              setValue("genero", userData.genero);
+              setValue("telefono", userData.telefono);
+              setValue("email", userData.email);
+              setValue("pais", userData.pais);
+              setValue("ciudad", userData.ciudad);
+      
             } catch (error) {
-                console.error("Error al obtener datos del usuario:", error);
+              console.error("Error al obtener datos del usuario:", error);
             }
-        };
-
-        fetchUserData();
-    }, [setValue]);
+          };
+      
+          fetchUserData();
+        }
+      }, [setValue]);
+      
 
     // Función para actualizar los datos del usuario
     const onSubmit = async (data) => {
@@ -140,11 +141,11 @@ const EditarPerfil = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block font-medium">País</label>
-                                    <CountrySelect countryid={idPais} onChange={(e) => setIdPais(e.id)} />
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('pais')} readOnly />
                                 </div>
                                 <div>
                                     <label className="block font-medium">Ciudad</label>
-                                    <StateSelect countryid={idPais} stateid={idEstado} onChange={(e) => setIdEstado(e.id)} />
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('ciudad')} readOnly/>
                                 </div>
                             </div>
 
