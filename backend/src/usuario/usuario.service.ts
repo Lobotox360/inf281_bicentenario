@@ -231,50 +231,55 @@ export class UsuarioService {
   }
   
 
-  async updateUser(
-    id: string,
-    updateUsuarioDto: UpdateUsuarioDto,
-    file?: Express.Multer.File,
-  ) {
+  async updateUser(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.prisma.usuarios.findUnique({ where: { id_usuario: id } });
-  
+
     if (!usuario) {
       throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
     }
-  
+
     if (updateUsuarioDto.contrasena) {
       updateUsuarioDto.contrasena = await bcrypt.hash(updateUsuarioDto.contrasena, 10);
     }
-  
+
     if ('email' in updateUsuarioDto || 'id_rol' in updateUsuarioDto) {
       throw new BadRequestException('No puedes actualizar tu email o tu rol.');
     }
-  
-    // Subir imagen a Cloudinary si hay nueva imagen
+
+    const actualizado = await this.prisma.usuarios.update({
+      where: { id_usuario: id },
+      data: updateUsuarioDto,
+    });
+
+    await this.registrarActividad(id, 'Actualización de datos', 'El usuario actualizó su información personal.');
+
+    return {message: '✅ Usuario actualizado correctamente'};
+  }
+
+  // Método para actualizar solo la foto del usuario
+  async updateFoto(id: string, file: Express.Multer.File) {
+    const usuario = await this.prisma.usuarios.findUnique({ where: { id_usuario: id } });
+
+    if (!usuario) {
+      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+    }
+
     let fotoUrl = usuario.foto;
+
     if (file) {
       console.log('📤 Subiendo imagen a Cloudinary...');
       const result = await this.cloudinaryService.uploadImage(file, 'perfil_usuario');
       console.log('🌐 URL obtenida:', result.secure_url);
       fotoUrl = result.secure_url;
     }
-  
+
     const actualizado = await this.prisma.usuarios.update({
       where: { id_usuario: id },
-      data: {
-        ...updateUsuarioDto,
-        foto: fotoUrl,
-      },
+      data: { foto: fotoUrl },
     });
 
-    await this.registrarActividad(
-      id,
-      'Actualización de datos',
-      'El usuario actualizó su información personal.'
-    );
-
-    console.log('✅ Usuario actualizado:');
-    return '✅ Usuario actualizado:';
+    await this.registrarActividad(id, 'Actualización de foto', 'El usuario actualizó la foto de su perfil.');
+    return {message: '✅ Foto de usuario actualizada correctamente'};
   }
   async registrarActividad(id_usuario: string, tipo: string, descripcion: string) {
     await this.prisma.historial_Actividades.create({

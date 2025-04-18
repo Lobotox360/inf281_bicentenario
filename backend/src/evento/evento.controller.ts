@@ -150,4 +150,6 @@ export class EventoController {
     }
     return this.eventoService.updateUbicacion(ubicacionId, updateUbicacionDto);
   }
+
+  
 }

@@ -63,14 +63,22 @@ export class UsuarioController {
 
   // Editar usuario (nombre, ciudad, foto, etc.)
   @UseGuards(JwtAuthGuard, CasbinGuard)
-  @UseInterceptors(FileInterceptor('foto'))
   @Put(':id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUsuarioDto: UpdateUsuarioDto,
+  ) {
+    return this.usuarioService.updateUser(id, updateUsuarioDto);
+  }
+
+  @UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseInterceptors(FileInterceptor('foto'))
+  @Put('foto/:id')
+  async updateFoto(
+    @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usuarioService.updateUser(id, updateUsuarioDto, file);
+    return this.usuarioService.updateFoto(id, file);
   }
 
 }
