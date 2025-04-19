@@ -9,7 +9,7 @@ import VistaDepartamentoEventos from './porDepartamento';
 const MenuFiltrar = ({ userRole = 'admin' }) => {
   const [seleccionarDepartamento, setSeleccionarDepartamento] = useState('La Paz');
 
-  const [modoVisualizacion, setModoVisualizacion] = useState('categoria') // 'carrusel' | 'departamento' | 'categoria'
+  const [modoVisualizacion, setModoVisualizacion] = useState('carrusel') // 'carrusel' | 'departamento' | 'categoria'
   const [abrirSubmenu, setAbrirSubmenu] = useState(false);
   const [abrirSubmenuDepartamento, setAbrirSubmenuDepartamento] = useState(false);
   const [abrirSubmenuCategoria, setAbrirSubmenuCategoria] = useState(false);

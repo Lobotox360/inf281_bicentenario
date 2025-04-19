@@ -15,29 +15,44 @@ export default function Navbar() {
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
   const router = useRouter();
-  
+
   useEffect(() => {
-    const storedToken = localStorage.getItem("access_token");
-    const storedId = localStorage.getItem("id_user");
-
-    setToken(storedToken);
-    setUserId(storedId);
-
-    setEstadoLogin(!!storedToken);
+    const cargarDatosUsuario = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const id = localStorage.getItem("id_user");
   
-    if (token && id) {
-      fetch(`https://inf281-production.up.railway.app/usuario/${id}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.foto) {
-            setFotoUsuario(data.foto);
+        // Actualizar estados locales
+        setToken(token);
+        setUserId(id);
+        setEstadoLogin(!!token);
+  
+        // Validar antes de llamar a la API
+        if (!token || !id) return;
+  
+        // Llamada a la API del usuario
+        const response = await fetch(`https://inf281-production.up.railway.app/usuario/${id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`, // Solo si tu backend requiere token
           }
-        })
-        .catch(err => {
-          console.error("Error al obtener la foto del usuario:", err);
         });
-    }
+  
+        if (!response.ok) throw new Error("No se pudo obtener los datos del usuario");
+  
+        const data = await response.json();
+  
+        if (data.foto) {
+          setFotoUsuario(data.foto);
+          console.log("📸 Foto cargada:", data.foto);
+        }
+      } catch (error) {
+        console.error("❌ Error al cargar datos del usuario:", error);
+      }
+    };
+  
+    cargarDatosUsuario();
   }, []);
+  
 
   const handleLogout = () => {
     setUserId(localStorage.getItem("id_user"));
@@ -61,6 +76,7 @@ export default function Navbar() {
     // Aquí agregas tu lógica de búsqueda real
   };
 
+  console.log(userId);
   return (
     <nav className="fixed top-0 left-0 w-full p-3 shadow-lg z-50 flex items-center justify-between bg-gradient-to-b from-black to-transparent">
       <Image src="/assets/logo1.png" width={80} height={32} alt="Bicentenario de Bolivia" />
@@ -83,14 +99,14 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={40} height={40} className="rounded-full object-cover border-2 border-yellow-400"/>
+                <Image src={fotoUsuario} alt="Foto de perfil" width={80} height={80} className="rounded-full object-cover border-2 border-yellow-400"/>
               ) : (
                 <FaUser />
               )}
             </button>        
             {menuUsuario && (
               <div className="absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl">
-                <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
+                <Link href={`/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
                 <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
                 <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
                 <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>

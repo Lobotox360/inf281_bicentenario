@@ -1,49 +1,63 @@
+'use client';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaEdit } from 'react-icons/fa';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import MapaEvento from './mapa'; // Asumimos que MapaEvento está recibiendo la dirección y geocodificando
+import { FaArrowLeft, FaArrowRight, FaEdit } from 'react-icons/fa';
+import MapaEvento from './mapa';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 const CarruselEventos = ({ userRole = 'admin', departamento }) => {
-  const [eventos, setEventos] = useState([]); 
-  const [indexActual, setIndexActual] = useState(0); 
-  const [carga, setCarga] = useState(true); 
+  const [eventos, setEventos] = useState([]);
+  const [indexActual, setIndexActual] = useState(0);
+  const [carga, setCarga] = useState(true);
+  const [inscripciones, setInscripciones] = useState(() => {
+  const storedInscripciones = localStorage.getItem('inscripciones');
+    return storedInscripciones ? JSON.parse(storedInscripciones) : [];
+  });  
   const router = useRouter();
 
-  // MOSTRAR LOS EVENTOS
+  // Obtener eventos
   useEffect(() => {
     const fetchEventos = async () => {
       try {
         const response = await fetch('https://inf281-production.up.railway.app/eventos');
         const data = await response.json();
         setEventos(data);
+
+        // Inicializar inscripciones desde localStorage
+        const storedInscripciones = JSON.parse(localStorage.getItem('inscripciones')) || [];
+        setInscripciones(storedInscripciones);
       } catch (error) {
         console.error('Error al obtener eventos:', error);
       } finally {
-        setCarga(false); 
+        setCarga(false);
       }
     };
 
     fetchEventos();
-  }, []); 
+  }, []);
+
+  useEffect(() => {
+    // Guardar inscripciones en localStorage
+    if (inscripciones.length > 0) {
+      localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
+    }
+  }, [inscripciones]);
 
   if (carga) {
     return <p className='text-center text-white text-xl font-semibold'>Cargando eventos...</p>;
   }
 
-  // Filtrar los eventos del departamento seleccionado
+  // Filtrar eventos por departamento
   const eventosDepartamento = eventos.filter(evento => evento.Ubicacion.departamento === departamento);
 
-    // Si no hay eventos, muestra un mensaje indicando que no hay eventos disponibles
-    if (eventosDepartamento.length === 0) {
-      return (
-          <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles en {departamento}.</p>
-      );
-    }
+  // Si no hay eventos, mostrar mensaje
+  if (eventosDepartamento.length === 0) {
+    return (
+      <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles en {departamento}.</p>
+    );
+  }
 
-  // Extraer hora y fecha del primer evento
   const hora_inicio = String(new Date(eventosDepartamento[indexActual]?.hora_inicio).getHours()).padStart(2, '0') + ':' + String(new Date(eventosDepartamento[indexActual]?.hora_inicio).getMinutes()).padStart(2, '0');
   const hora_fin = String(new Date(eventosDepartamento[indexActual]?.hora_fin).getHours()).padStart(2, '0') + ':' + String(new Date(eventosDepartamento[indexActual]?.hora_fin).getMinutes()).padStart(2, '0');
   const fecha = `${['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(eventosDepartamento[indexActual]?.hora_inicio).getDay()]}, ${new Date(eventosDepartamento[indexActual]?.hora_inicio).getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date(eventosDepartamento[indexActual]?.hora_inicio).getMonth()]} de ${new Date(eventosDepartamento[indexActual]?.hora_inicio).getFullYear()}`;
@@ -56,34 +70,77 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
     setIndexActual((prevIndex) => (prevIndex - 1 + eventosDepartamento.length) % eventosDepartamento.length);
   };
 
-  const handleAgregarEvento = () => {
-    router.push("/eventos/agregar");
-  };
+  const handleInscripcion = async (eventoId) => {
+    const id_usuario = localStorage.getItem('id_user');
+    if (!id_usuario) {
+      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
+      return;
+    }
 
-  //EN CONSTRUCCION
-  const handleAsistir = async (eventoId) => {
     try {
-      const res = await fetch('/api/asistencias', {
+      const res = await fetch('https://inf281-production.up.railway.app/agenda', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ eventoId }),
+        body: JSON.stringify({
+          id_usuario,
+          id_evento: eventoId,
+        }),
       });
 
-      if (!res.ok) throw new Error('Error al registrar asistencia');
+      if (!res.ok) throw new Error('Error al registrar inscripción');
 
-      alert('✅ ¡Te has registrado como asistente!');
+      const data = await res.json();
+      alert(data.mensaje); // Mostrar mensaje
+
+      // Actualizar inscripciones en el estado y guardarlas en localStorage
+      const newInscripciones = [...inscripciones];
+      newInscripciones[indexActual] = true; // Marcar como agendado para el evento actual
+      setInscripciones(newInscripciones);
     } catch (error) {
       console.error(error);
-      alert('❌ Ocurrió un error al registrar la asistencia.');
+      alert('❌ Ocurrió un error al registrar la inscripción.');
+    }
+  };
+
+  const handleDesinscripcion = async (eventoId) => {
+    const id_usuario = localStorage.getItem('id_user');
+    if (!id_usuario) {
+      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}/${eventoId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_usuario,
+          id_evento: eventoId,
+        }),
+      });
+
+      if (!res.ok) throw new Error('Error al desinscribir');
+
+      const data = await res.json();
+      alert(data.mensaje); // Mostrar mensaje
+
+      // Actualizar inscripciones en el estado y guardarlas en localStorage
+      const newInscripciones = [...inscripciones];
+      newInscripciones[indexActual] = false; // Marcar como no agendado para el evento actual
+      setInscripciones(newInscripciones);
+    } catch (error) {
+      console.error(error);
+      alert('❌ Ocurrió un error al desinscribir.');
     }
   };
 
   return (
     <div className="relative p-4">
       <div className="max-w-4xl mx-auto">
-        {/* Carrusel de eventos */}
         {eventosDepartamento.length > 0 && (
           <>
             <h2 className="text-white text-3xl font-semibold text-center mb-4">EVENTOS EN {departamento.toUpperCase()}</h2>
@@ -102,7 +159,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
                 </div>
               </div>
 
-              {/* Botones de Navegación */}
               <div className="absolute top-1/2 left-0 transform -translate-y-1/2 pl-4">
                 <button onClick={handleAnterior} className="bg-red-500 text-white p-3 rounded-full hover:bg-yellow-500">
                   <FaArrowLeft />
@@ -116,8 +172,11 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
 
               {/* Botones de acción */}
               <div className="flex justify-center space-x-4 py-4">
-                <button onClick={() => handleAsistir(eventosDepartamento[indexActual].id_evento)} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
-                  ASISTIR
+                <button
+                  onClick={() => inscripciones[indexActual] ? handleDesinscripcion(eventosDepartamento[indexActual].id_evento) : handleInscripcion(eventosDepartamento[indexActual].id_evento)}
+                  className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400"
+                >
+                  {inscripciones[indexActual] ? "DESAGENDAR" : "AGENDAR"}
                 </button>
                 <Link href={`/eventos/vermas/${eventosDepartamento[indexActual].id_evento}/`} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
                   VER MÁS
@@ -131,20 +190,10 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
                 )}
               </div>
             </div>
-            <style jsx>{`
-                          @keyframes fadeIn {
-                            from { opacity: 0; transform: translateY(10px); }
-                            to { opacity: 1; transform: translateY(0); }
-                          }
-                          .animate-fadeIn {
-                            animation: fadeIn 0.6s ease forwards;
-                          }
-            `}</style>
           </>
         )}
 
         <div className="flex justify-center mt-8">
-          {/* Mostrar el mapa con la ubicación de cada evento */}
           <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} />
         </div>
       </div>

@@ -4,15 +4,13 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { CountrySelect, StateSelect } from "react-country-state-city";
 import "react-country-state-city/dist/react-country-state-city.css";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 const EditarPerfil = () => {
-    const [idPais, setIdPais] = useState(null);
-    const [idEstado, setIdEstado] = useState(null);
+    const router = useRouter();
     const [visible, setVisible] = useState(false);
     const [revisible, setRevisible] = useState(false);
     const [usuario, setUsuario] = useState(null);
-    const [userId, setUserId] = useState(null);
-    const [token, setToken] = useState(null);
 
     
     const { register, handleSubmit, setValue } = useForm();
@@ -46,8 +44,8 @@ const EditarPerfil = () => {
       
               // Rellenar los valores en el formulario
               setValue("nombre", userData.nombre);
-              setValue("apellidoPaterno", userData.apellidopaterno);
-              setValue("apellidoMaterno", userData.apellidomaterno);
+              setValue("apellidopaterno", userData.apellidopaterno);
+              setValue("apellidomaterno", userData.apellidomaterno);
               setValue("genero", userData.genero);
               setValue("telefono", userData.telefono);
               setValue("email", userData.email);
@@ -62,13 +60,60 @@ const EditarPerfil = () => {
           fetchUserData();
         }
       }, [setValue]);
+
+      const cambiarFoto = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+      
+
+        const formData = new FormData();
+        formData.append("foto", file);
+        try {
+          const id = localStorage.getItem("id_user");
+          const token = localStorage.getItem("access_token");
+            
+          const response = await fetch(`https://inf281-production.up.railway.app/usuario/foto/${id}`, {
+            method: "PUT",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+            },
+            body: formData,
+          });
+      
+          if (!response.ok) throw new Error("Error al subir la foto");
+      
+          const result = await response.json();
+          alert("✅ Foto de perfil actualizada.");
+          setUsuario(prev => ({ ...prev, foto: result.foto })); // actualizar foto en el estado
+        } catch (error) {
+          console.error("Error al cambiar la foto:", error);
+          alert("❌ No se pudo cambiar la foto.");
+        }
+      };
+      
       
 
     // Función para actualizar los datos del usuario
     const onSubmit = async (data) => {
-        setUserId(localStorage.getItem("id_user"));
-        setToken(localStorage.getItem("access_token"));
-
+        const userId = localStorage.getItem("id_user");  // Leer directamente desde localStorage
+        const token = localStorage.getItem("access_token");
+    
+        // Filtrar solo los datos necesarios
+        const { nombre, apellidopaterno, apellidomaterno, telefono, pais, ciudad, genero } = data;
+        
+        // Crear un nuevo objeto con solo los datos que necesitas
+        const datos = {
+            nombre,
+            apellidopaterno,
+            apellidomaterno,
+            telefono,
+            pais,
+            ciudad,
+            genero
+        };
+    
+        console.log(datos);  // Verifica qué datos se están enviando
+        
         try {
             const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
                 method: "PUT",
@@ -76,17 +121,22 @@ const EditarPerfil = () => {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(datos),  // Enviar solo los datos necesarios
             });
-
+    
             if (!response.ok) throw new Error("Error al actualizar los datos.");
-            
+    
             alert("✅ Perfil actualizado con éxito.");
         } catch (error) {
             console.error("Error en la actualización del perfil:", error);
             alert("❌ No se pudo actualizar el perfil.");
         }
     };
+    
+
+    const handleBack = () => {
+        router.back(); // Regresa a la página anterior en el historial
+      };  
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-800 via-yellow-600 to-green-800 p-6">
@@ -100,11 +150,23 @@ const EditarPerfil = () => {
                             alt="Foto de perfil"
                             className="w-65 h-65 rounded-full object-cover mb-4"
                         />
-                        <button className="bg-orange-500 text-white px-4 py-2 rounded-full hover:bg-yellow-400">
-                            Cambiar Foto
-                        </button>
-                    </div>
-
+                        <div className="relative">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={cambiarFoto}
+                                id="fileInput"
+                                className="hidden" // Ocultamos el input real
+                            />
+                            <label
+                                htmlFor="fileInput"
+                                className="bg-orange-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-yellow-400"
+                            >
+                                Seleccionar archivo
+                            </label>
+                            </div>
+                        
+                        </div>
                     {/* Caja derecha - Formulario */}
                     <div className="col-span-2">
                         <h2 className="text-xl font-semibold text-center mb-4">MIS DATOS PERSONALES</h2>
@@ -117,11 +179,11 @@ const EditarPerfil = () => {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block font-medium">Apellido Paterno</label>
-                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoPaterno')} />
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidopaterno')} />
                                 </div>
                                 <div>
                                     <label className="block font-medium">Apellido Materno</label>
-                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidoMaterno')} />
+                                    <input className="w-full p-2 border rounded-md" type="text" {...register('apellidomaterno')} />
                                 </div>
                             </div>
 
@@ -179,21 +241,21 @@ const EditarPerfil = () => {
                                     </div>
                                 </div>
                             </div>
-
+                            {/* Botones */}
+                            <div className="flex justify-between space-x-4 mt-6">
+                                <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600" onClick={handleBack}>
+                                    Salir sin guardar
+                                </button>
+                                <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-green-600">
+                                    Guardar cambios
+                                </button>
+                            </div>
                     
                         </form>
                     </div>
                     
                 </div>
-                    {/* Botones */}
-                    <div className="flex justify-between space-x-4 mt-6">
-                        <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">
-                            Salir sin guardar
-                        </button>
-                        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600">
-                            Guardar cambios
-                        </button>
-                    </div>
+                    
             </div>
         </div>
     );
