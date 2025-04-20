@@ -11,6 +11,58 @@ export class AgendaService {
     private emailService: EmailService,
   ) {}
 
+  async registrarAsistencia(id_usuario: string, id_evento: number) {
+    const evento = await this.prisma.eventos.findUnique({
+      where: { id_evento },
+      select: { reunion_iniciada: true, titulo: true, link_reunion: true },
+    });
+  
+    if (!evento) {
+      throw new NotFoundException('El evento no existe.');
+    }
+  
+    if (!evento.reunion_iniciada) {
+      throw new ConflictException(
+        `La reunión para el evento "${evento.titulo}" aún no ha sido iniciada.`
+      );
+    }
+  
+    // Verificar si el usuario está inscrito en el evento
+    const agenda = await this.prisma.agenda.findUnique({
+      where: {
+        id_usuario_id_evento: {
+          id_usuario,
+          id_evento,
+        },
+      },
+    });
+  
+    if (!agenda) {
+      throw new NotFoundException('No estás registrado en este evento.');
+    }
+  
+    if (agenda.asistio) {
+      throw new ConflictException('Ya registraste tu asistencia.');
+    }
+  
+    // Registrar asistencia
+    const actualizado = await this.prisma.agenda.update({
+      where: {
+        id_usuario_id_evento: { id_usuario, id_evento },
+      },
+      data: {
+        asistio: true,
+        hora_ingreso: new Date(),
+      },
+    });
+  
+    return {
+      message: '✅ Asistencia registrada con éxito.',
+      link: evento.link_reunion
+    };
+  }
+  
+  
 
   
   async create(data: CreateAgendaDto) {

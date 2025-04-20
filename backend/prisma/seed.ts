@@ -46,17 +46,28 @@ async function main() {
   const permisos = [
     // Permisos del Administrador
     { id_rol: admin.id_rol, objeto: 'dashboard', accion: 'get', descripcion_permiso: 'Ver dashboard' },
-    { id_rol: admin.id_rol, objeto: 'rol', accion: 'put', descripcion_permiso: 'Cambiar roles de usuario' },
-    { id_rol: admin.id_rol, objeto: 'rol', accion: 'get', descripcion_permiso: 'Ve los roles de usuario' },
+
     { id_rol: admin.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: admin.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
 
+    { id_rol: admin.id_rol, objeto: 'rol', accion: 'put', descripcion_permiso: 'Cambiar roles de usuario' },
+    { id_rol: admin.id_rol, objeto: 'rol', accion: 'get', descripcion_permiso: 'Ve los roles de usuario' },
 
+    { id_rol: admin.id_rol, objeto: 'evento', accion: 'get', descripcion_permiso: 'Ver los eventos' },
+
+    { id_rol: admin.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
+    { id_rol: admin.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
+    { id_rol: admin.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
     // Permisos del usuario casual
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'delete', descripcion_permiso: 'Eliminar su cuenta' },
 
+    { id_rol: usuarioCasual.id_rol, objeto: 'evento', accion: 'get', descripcion_permiso: 'Ver los eventos' },
+
+    { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
+    { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
+    { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
     // Permisos del administrador de eventos
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'post', descripcion_permiso: 'Crear eventos' },
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'put', descripcion_permiso: 'Editar eventos' },
@@ -77,6 +88,15 @@ async function main() {
     { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'delete', descripcion_permiso: 'Eliminar categorias' },
     { id_rol: adminEventos.id_rol, objeto: 'categoria', accion: 'post', descripcion_permiso: 'Agregar categorias' },
 
+    { id_rol: adminEventos.id_rol, objeto: 'telefono', accion: 'get', descripcion_permiso: 'Ver los telefonos' },
+    { id_rol: adminEventos.id_rol, objeto: 'telefono', accion: 'put', descripcion_permiso: 'Editar los telefonos' },
+
+    { id_rol: adminEventos.id_rol, objeto: 'expositor', accion: 'get', descripcion_permiso: 'Ver los expositores' },
+    { id_rol: adminEventos.id_rol, objeto: 'expositor', accion: 'put', descripcion_permiso: 'Editar los expositores' },
+
+    { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
+    { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
+    { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
     // Permisos del administrador de contenido
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'post', descripcion_permiso: 'Crear agente' },
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'put', descripcion_permiso: 'Editar agente' },
@@ -108,13 +128,13 @@ async function main() {
   // Crear Usuario de prueba
   const hashedPassword = await bcrypt.hash('123456', 10);
   await prisma.usuarios.upsert({
-    where: { email: 'edwin123axl2@gmail.com' },
+    where: { email: 'admin@gmail.com' },
     update: {},
     create: {
       nombre: 'Juanito',
       apellidopaterno: 'Perez',
       apellidomaterno: 'Mamani',
-      email: 'edwin123axl2@gmail.com',
+      email: 'admin@gmail.com',
       contrasena: hashedPassword,
       foto: 'https://res.cloudinary.com/djxsfzosx/image/upload/v1743888521/perfil_usuario/u6ckp3d3to6qciwnw8ln.png',
       telefono: '+591 79846545',
@@ -128,13 +148,13 @@ async function main() {
   
   //admin de eventos
   await prisma.usuarios.upsert({
-    where: { email: 'edwin123axl@gmail.com' },
+    where: { email: 'adminevento@gmail.com' },
     update: {},
     create: {
-      nombre: 'Edw',
-      apellidopaterno: 'Ali',
-      apellidomaterno: 'Yuj',
-      email: 'edwin123axl@gmail.com',
+      nombre: 'Nicolas',
+      apellidopaterno: 'Mamani',
+      apellidomaterno: 'Quispe',
+      email: 'adminevento@gmail.com',
       contrasena: hashedPassword,
       foto: 'https://res.cloudinary.com/djxsfzosx/image/upload/v1743888521/perfil_usuario/u6ckp3d3to6qciwnw8ln.png',
       telefono: '+591 79846545',
@@ -146,6 +166,24 @@ async function main() {
     },
   });
 
+  await prisma.usuarios.upsert({
+    where: { email: 'usuario@gmail.com' },
+    update: {},
+    create: {
+      nombre: 'Diego',
+      apellidopaterno: 'Aruquipa',
+      apellidomaterno: 'Condori',
+      email: 'usuario@gmail.com',
+      contrasena: hashedPassword,
+      foto: 'https://res.cloudinary.com/djxsfzosx/image/upload/v1743888521/perfil_usuario/u6ckp3d3to6qciwnw8ln.png',
+      telefono: '+591 79846545',
+      pais: 'Bolivia',
+      ciudad: 'La Paz',
+      genero: 'Masculino',
+      verificado: true,
+      id_rol: adminEventos.id_rol,
+    },
+  });
 
     // ========== CATEGORÍAS ==========
     const categorias = [

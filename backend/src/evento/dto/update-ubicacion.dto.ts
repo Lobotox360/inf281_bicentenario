@@ -1,5 +1,5 @@
 // src/ubicacion/dto/update-ubicacion.dto.ts
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional ,IsNumber} from 'class-validator';
 
 export class UpdateUbicacionDto {
   @IsOptional()
@@ -13,4 +13,12 @@ export class UpdateUbicacionDto {
   @IsOptional()
   @IsString()
   departamento?: string;
+
+  @IsOptional()
+  @IsNumber() 
+  latitud: number;
+
+  @IsOptional()
+  @IsNumber() 
+  longitud: number;
 }

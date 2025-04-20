@@ -30,7 +30,7 @@ export class UsuarioController {
   }
 
   @Post('foto')
-  @UseInterceptors(FileInterceptor('foto'))
+  //@UseInterceptors(FileInterceptor('foto'))
   async subirFoto(
     @UploadedFile() file: Express.Multer.File,
     @Body('email') email: string,
@@ -61,7 +61,7 @@ export class UsuarioController {
     return this.usuarioService.remove(id);
   }
 
-  // Editar usuario (nombre, ciudad, foto, etc.)
+  // Editar usuario (nombre,.....)
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   async updateUser(
@@ -71,6 +71,8 @@ export class UsuarioController {
     return this.usuarioService.updateUser(id, updateUsuarioDto);
   }
 
+  
+  // Editar usuario (foto)
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @UseInterceptors(FileInterceptor('foto'))
   @Put('foto/:id')
@@ -80,5 +82,4 @@ export class UsuarioController {
   ) {
     return this.usuarioService.updateFoto(id, file);
   }
-
 }

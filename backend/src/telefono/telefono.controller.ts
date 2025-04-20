@@ -9,6 +9,7 @@ import { CasbinGuard } from '../rbac/casbin.guard';
 export class TelefonoController {
   constructor(private readonly telefonoService: TelefonoService) {}
 
+  // Agrega telefonos y elimina eventos que ya no se tiene
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateTelefonosEvento(
@@ -27,7 +28,7 @@ export class TelefonoController {
     return this.telefonoService.updateTelefonosDeEvento(eventoId, telefonos_contacto);
   }
   
-
+  // Obtiene todos los telefonos de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id_evento')
   async findAllByEvent(@Param('id_evento') id_evento: string) {

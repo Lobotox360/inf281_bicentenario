@@ -7,7 +7,7 @@ import { CasbinGuard } from '../rbac/casbin.guard';
 @Controller('rol')
 export class RolController {
   constructor(private readonly rolService: RolService) {}
-
+  
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('roles')
   async obtenerTodosLosRoles() {
@@ -20,7 +20,7 @@ export class RolController {
     return this.rolService.findAll();
   }
 
-  //UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('cambiar-rol')
   async cambiarRolUsuario(
     @Body() body: { email: string; nuevoRol: number },

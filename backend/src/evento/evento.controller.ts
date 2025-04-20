@@ -24,7 +24,14 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
+  // Inicia la reunion de un evento
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @Put('iniciar-reunion/:id_evento')
+  async iniciarReunion(@Param('id_evento') id_evento: string) {
+    return this.eventoService.iniciarReunion(parseInt(id_evento, 10));
+  }
   
+  // Crea un nuevo evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   @UseInterceptors(FileInterceptor('foto_evento'))
@@ -72,12 +79,14 @@ export class EventoController {
   }
   
 
+  // Obtiene todos los eventos
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   async obtenerEventos() {
     return await this.eventoService.obtenerEventos();
   }
 
+  // obtienen un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   async obtenerEventoPorId(@Param('id') id: string) {
@@ -85,6 +94,7 @@ export class EventoController {
     return evento;
   }
   
+  // Edita datos de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateEvento(
@@ -98,6 +108,7 @@ export class EventoController {
     return this.eventoService.updateEvento(eventoId, updateEventoDto);
   }
   
+  // Edita la foto del evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('foto/:id_evento')
   @UseInterceptors(FileInterceptor('foto_evento'))
@@ -113,7 +124,7 @@ export class EventoController {
     return this.eventoService.actualizarFotoEvento(eventoId, foto_evento);
   }
   
-
+  // Elimina un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   async eliminarEvento(@Param('id') id: number) {
@@ -121,6 +132,7 @@ export class EventoController {
   }
 
 
+  //Obtiene una ubicacion
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('ubicacion/:id_evento')
   async getUbicacionByEvento(@Param('id_evento') id_evento: string) {
@@ -134,6 +146,7 @@ export class EventoController {
     return this.eventoService.getUbicacionByEvento(eventoId);
   }
 
+  // Edita la Ubicacion
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('ubicacion/:id_ubicacion')
   async updateUbicacion(

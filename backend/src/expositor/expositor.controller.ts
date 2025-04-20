@@ -8,7 +8,8 @@ import { CasbinGuard } from '../rbac/casbin.guard';
 @Controller('expositor')
 export class ExpositorController {
   constructor(private readonly expositorService: ExpositorService) {}
-
+  
+  // Edita todos los expositores de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateExpositores(
@@ -22,7 +23,8 @@ export class ExpositorController {
 
     return this.expositorService.updateExpositoresDeEvento(eventoId, createExpositoresDto.expositores);
   }
-  
+
+  // Proporciona todos los expositores de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findAllByEvent(@Param('id') id: string) {

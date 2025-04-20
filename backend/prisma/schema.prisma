@@ -80,6 +80,9 @@ model Eventos {
   costo                  Float
   puntuacion             Float                    @default(0)
 
+  link_reunion           String?                  @db.VarChar(255)
+  reunion_iniciada       Boolean                  @default(false)
+
   Agenda                 Agenda[]
   CategoriasEvento       Eventos_Categorias[]
   Eventos_Patrocinadores Eventos_Patrocinadores[]
@@ -106,6 +109,9 @@ model Agenda {
   comentario  String?
   calificacion   Int?   @default(-1)
 
+  asistio       Boolean  @default(false)
+  hora_ingreso  DateTime?
+  
   Eventos     Eventos  @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Usuarios    Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 
@@ -118,6 +124,8 @@ model Ubicacion {
   departamento String  @db.VarChar(100)
   id_evento    Int     @unique
   ubicacion    String  @db.VarChar(255)
+  latitud      Float
+  longitud     Float
   evento       Eventos @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
 }
 

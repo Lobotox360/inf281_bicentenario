@@ -1,16 +1,87 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { CreateEventoDto } from './dto/create-evento.dto';
 import { UpdateEventoDto } from './dto/update-evento.dto';
 import { PrismaService } from 'src/prisma.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UpdateUbicacionDto } from './dto/update-ubicacion.dto';
+import { EmailService } from './email.service';
 
 @Injectable()
 export class EventoService {
   constructor(
     private prisma: PrismaService,
     private cloudinaryService: CloudinaryService,
+    private emailService: EmailService,
   ) {}
+
+  async notificarInicioReunion(id_evento: number) {
+    const evento = await this.prisma.eventos.findUnique({
+      where: { id_evento },
+      include: {
+        Agenda: {
+          include: {
+            Usuarios: true, // obtener el correo y nombre
+          },
+        },
+      },
+    });
+  
+    if (!evento || !evento.reunion_iniciada) {
+      throw new BadRequestException('No se ha iniciado la reunión.');
+    }
+  
+    for (const agenda of evento.Agenda) {
+      const usuario = agenda.Usuarios;
+      await this.emailService.sendReunionIniciadaEmail(usuario.email, {
+        nombre_usuario: usuario.nombre,
+        titulo: evento.titulo,
+        link_reunion: evento.link_reunion!,
+      });
+    }
+  
+    return {
+      message: '📬 Correos enviados a los participantes del evento.',
+    };
+  }
+
+  
+  async iniciarReunion(id_evento: number) {
+    const evento = await this.prisma.eventos.findUnique({
+      where: { id_evento },
+    });
+  
+    if (!evento) {
+      throw new NotFoundException('Evento no encontrado.');
+    }
+  
+    // Convertimos hora_inicio y hora_fin a objetos Date
+    const ahora = new Date();
+    const horaInicio = new Date(evento.hora_inicio);
+    const horaFin = new Date(evento.hora_fin);
+
+    /*
+    // Validamos si estamos dentro del rango permitido
+    if (ahora < horaInicio || ahora > horaFin) {
+      throw new ForbiddenException('⏳ La reunión solo puede iniciarse en el horario del evento.');
+    }
+
+    */
+    const actualizado = await this.prisma.eventos.update({
+      where: { id_evento },
+      data: {
+        reunion_iniciada: true,
+      },
+    });
+  
+    // 🔔 Enviar correos a los inscritos
+    await this.notificarInicioReunion(id_evento);
+  
+    return {
+      message: '✅ Reunión iniciada correctamente y notificaciones enviadas.',
+      link: actualizado.link_reunion,
+    };
+  }
+  
 
   async getTop10Eventos() {
     const eventos = await this.prisma.eventos.findMany({
@@ -91,6 +162,8 @@ export class EventoService {
         costo: parseFloat(costo),
         modalidad,
         foto_evento: url,
+        link_reunion: `https://meet.jit.si/${titulo.replace(/\s+/g, '-')}-${Date.now()}`,
+        reunion_iniciada: false,       
       },
     });
 

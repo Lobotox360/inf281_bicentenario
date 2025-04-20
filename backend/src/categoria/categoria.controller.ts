@@ -9,6 +9,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class CategoriaController {
   constructor(private readonly categoriaService: CategoriaService) {}
 
+  // Edita relacion evento_categoria
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('evento/:id_evento')
   async updateCategoriasEvento(
     @Param('id_evento') id_evento: string, 
@@ -26,8 +28,8 @@ export class CategoriaController {
     return this.categoriaService.updateCategoriasDeEvento(eventoId, categorias);
   }
 
-  
-
+  // Proporciona relacion evento_categoria
+  //@UseGuards(JwtAuthGuard, CasbinGuard) 
   @Get('evento/:id_evento')
   async getCategoriasByEvento(@Param('id_evento') id_evento: string) {
     const eventoId = parseInt(id_evento, 10);
@@ -37,36 +39,39 @@ export class CategoriaController {
     return this.categoriaService.getCategoriasByEvento(eventoId);
   }
 
+  // creamos una categoria
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   create(@Body() createCategoriaDto: CreateCategoriaDto) {
     return this.categoriaService.create(createCategoriaDto);
   }
 
+  // retornamos todas las categorias
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   findAll() {
     return this.categoriaService.findAll();
   }
 
+  // retornamos una categoria
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoriaService.findOne(+id);
   }
 
+  // editamos una categoria
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   update(@Param('id') id: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
     return this.categoriaService.update(+id, updateCategoriaDto);
   }
 
+  // eliminamos una categoria
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoriaService.remove(+id);
   }
-
-
 
 }

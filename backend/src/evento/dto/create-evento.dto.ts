@@ -47,6 +47,12 @@ class UbicacionDto {
 
   @IsString()
   descripcion: string;
+
+  @IsNumber() 
+  latitud: number;
+
+  @IsNumber() 
+  longitud: number;
 }
 
 export class CreateEventoDto {

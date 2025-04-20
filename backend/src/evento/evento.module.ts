@@ -6,10 +6,12 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CasbinModule } from 'src/rbac/casbin.module';
 import { PrismaModule } from 'prisma/prisma.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { EmailService } from './email.service';
 
 @Module({
   imports: [CasbinModule,AuthModule,PrismaModule],
   controllers: [EventoController],
-  providers: [EventoService, PrismaService, CloudinaryService],
+  providers: [EventoService, PrismaService, CloudinaryService,EmailService],
+  exports: [EmailService],
 })
 export class EventoModule {}
