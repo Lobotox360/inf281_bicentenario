@@ -10,10 +10,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
   const [eventos, setEventos] = useState([]);
   const [indexActual, setIndexActual] = useState(0);
   const [carga, setCarga] = useState(true);
-  const [inscripciones, setInscripciones] = useState(() => {
-  const storedInscripciones = localStorage.getItem('inscripciones');
-    return storedInscripciones ? JSON.parse(storedInscripciones) : [];
-  });  
   const router = useRouter();
 
   // Obtener eventos
@@ -24,9 +20,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
         const data = await response.json();
         setEventos(data);
 
-        // Inicializar inscripciones desde localStorage
-        const storedInscripciones = JSON.parse(localStorage.getItem('inscripciones')) || [];
-        setInscripciones(storedInscripciones);
       } catch (error) {
         console.error('Error al obtener eventos:', error);
       } finally {
@@ -36,13 +29,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
 
     fetchEventos();
   }, []);
-
-  useEffect(() => {
-    // Guardar inscripciones en localStorage
-    if (inscripciones.length > 0) {
-      localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
-    }
-  }, [inscripciones]);
 
   if (carga) {
     return <p className='text-center text-white text-xl font-semibold'>Cargando eventos...</p>;
@@ -94,10 +80,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
       const data = await res.json();
       alert(data.mensaje); // Mostrar mensaje
 
-      // Actualizar inscripciones en el estado y guardarlas en localStorage
-      const newInscripciones = [...inscripciones];
-      newInscripciones[indexActual] = true; // Marcar como agendado para el evento actual
-      setInscripciones(newInscripciones);
     } catch (error) {
       console.error(error);
       alert('❌ Ocurrió un error al registrar la inscripción.');
@@ -127,11 +109,6 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
 
       const data = await res.json();
       alert(data.mensaje); // Mostrar mensaje
-
-      // Actualizar inscripciones en el estado y guardarlas en localStorage
-      const newInscripciones = [...inscripciones];
-      newInscripciones[indexActual] = false; // Marcar como no agendado para el evento actual
-      setInscripciones(newInscripciones);
     } catch (error) {
       console.error(error);
       alert('❌ Ocurrió un error al desinscribir.');
@@ -172,13 +149,7 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
 
               {/* Botones de acción */}
               <div className="flex justify-center space-x-4 py-4">
-                <button
-                  onClick={() => inscripciones[indexActual] ? handleDesinscripcion(eventosDepartamento[indexActual].id_evento) : handleInscripcion(eventosDepartamento[indexActual].id_evento)}
-                  className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400"
-                >
-                  {inscripciones[indexActual] ? "DESAGENDAR" : "AGENDAR"}
-                </button>
-                <Link href={`/eventos/vermas/${eventosDepartamento[indexActual].id_evento}/`} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
+                <Link href={`/eventos/vermas/${eventosDepartamento[indexActual].id_evento}`} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
                   VER MÁS
                 </Link>
                 {userRole === 'admin' && (

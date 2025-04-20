@@ -10,6 +10,8 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   const [ubicacion, setUbicacion] = useState('');
   const [departamento, setDepartamento] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [latitud, setLatitud] = useState('');
+  const [longitud, setLongitud] = useState('');
 
   // Mapa de coordenadas de los departamentos
   const departamentoCoordenadas = {
@@ -30,6 +32,8 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
       setUbicacion(eventoData.ubicacion.ubicacion || '');
       setDepartamento(eventoData.ubicacion.departamento || '');
       setDescripcion(eventoData.ubicacion.descripcion || '');
+      setLatitud(eventoData.ubicacion.latitud);
+      setLongitud(eventoData.ubicacion.longitud);
     }
   }, [eventoData]);
 
@@ -47,7 +51,9 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     handleUpdateData('ubicacion', {
       ubicacion,
       departamento: selectedDepartamento,
-      descripcion
+      descripcion,
+      latitud,
+      longitud
     });
   };
 
@@ -57,6 +63,8 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
       lng: event.latLng.lng(),
     };
     setCoordenadas(nuevaUbicacion);
+    setLatitud(nuevaUbicacion.lat);
+    setLongitud(nuevaUbicacion.lng);
     getDireccion(nuevaUbicacion);
   }, []);
 
@@ -86,12 +94,14 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     handleUpdateData('ubicacion', { 
       ubicacion, 
       departamento,
-      descripcion: nuevaDescripcion
+      descripcion: nuevaDescripcion,
+      latitud,
+      longitud
     });
   };
 
   return (
-    <LoadScriptNext googleMapsApiKey="AIzaSyA4coShq7smfTIjc5MwT9JUTs6_uTv07lA">
+    <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
       <div className="p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
@@ -167,7 +177,9 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
                 handleUpdateData('ubicacion', { 
                   ubicacion, 
                   departamento,
-                  descripcion
+                  descripcion,
+                  latitud,
+                  longitud
                 });
                 siguientePaso();
               }}

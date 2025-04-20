@@ -11,6 +11,8 @@ const EditarUbicacionEvento = ({eventoId}) => {
   const [ubicacion, setUbicacion] = useState('');
   const [departamento, setDepartamento] = useState('');
   const [descripcion, setDescripcion] = useState('');
+  const [latitud, setLatitud] = useState('');
+  const [longitud, setLongitud] = useState('');
   const [ubicacionID, setUbicacionID] = useState(null);
   const router = useRouter();
 
@@ -26,6 +28,9 @@ const EditarUbicacionEvento = ({eventoId}) => {
           setUbicacion(data.ubicacion.ubicacion || '');
           setDepartamento(data.ubicacion.departamento || '');
           setDescripcion(data.ubicacion.descripcion || '');
+          setLatitud(data.ubicacion.latitud || -16.5);
+          setLongitud(data.ubicacion.longitud || -68.15);
+
           setCoordenadas({
             lat: data.ubicacion.lat || -16.5, // Si no hay lat, usa valores predeterminados
             lng: data.ubicacion.lng || -68.15, // Si no hay lng, usa valores predeterminados
@@ -58,6 +63,8 @@ const EditarUbicacionEvento = ({eventoId}) => {
       lat: event.latLng.lat(),
       lng: event.latLng.lng(),
     };
+    setLatitud(nuevaUbicacion.lat);
+    setLongitud(nuevaUbicacion.lng);
     setCoordenadas(nuevaUbicacion);
     getDireccion(nuevaUbicacion);
   }, []);
@@ -109,6 +116,8 @@ const EditarUbicacionEvento = ({eventoId}) => {
           ubicacion,
           departamento,
           descripcion,
+          latitud,
+          longitud
         }),
       });
 
@@ -128,7 +137,7 @@ const EditarUbicacionEvento = ({eventoId}) => {
   };
 
   return (
-    <LoadScriptNext googleMapsApiKey="AIzaSyA4coShq7smfTIjc5MwT9JUTs6_uTv07lA">
+    <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
       <div className="p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Editar Ubicación del evento</h3>

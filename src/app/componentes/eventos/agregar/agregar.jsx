@@ -21,7 +21,9 @@ const AgregarEvento = () => {
     ubicacion: { 
       descripcion: '', 
       ubicacion: '', 
-      departamento: ''  // Descripción de la ubicación
+      departamento: '',
+      latitud: '',
+      longitud: ''  // Descripción de la ubicación
     },
     foto: null
   }); // Mantén todos los datos en un solo objeto
