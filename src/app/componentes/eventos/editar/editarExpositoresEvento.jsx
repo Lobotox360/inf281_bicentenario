@@ -54,7 +54,6 @@ const EditarExpositoresEvento = ({eventoId}) => {
     }
   }, [eventoId]);
   
-  console.log(expositoresAgregados);
   const handleAgregarExpositor = () => {
     if (!nuevoExpositor.nombre || !nuevoExpositor.especialidad) return; // Validar que el nombre y especialidad estén completos
     // Evitar agregar expositores repetidos

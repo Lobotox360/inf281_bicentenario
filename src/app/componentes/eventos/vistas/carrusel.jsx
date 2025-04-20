@@ -5,6 +5,7 @@ import { FaArrowLeft, FaArrowRight, FaEdit } from 'react-icons/fa';
 import MapaEvento from './mapa';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import ModuloComentarios from './comentarios-carrusel';
 
 const CarruselEventos = ({ userRole = 'admin', departamento }) => {
   const [eventos, setEventos] = useState([]);
@@ -165,8 +166,13 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
         )}
 
         <div className="flex justify-center mt-8">
-          <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} />
+          <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} latitud={eventosDepartamento[indexActual]?.Ubicacion?.latitud} longitud={eventosDepartamento[indexActual]?.Ubicacion?.longitud} />
         </div>
+        <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">COMENTARIOS</h2>
+        <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
+          <ModuloComentarios eventoId = {eventosDepartamento[indexActual]?.id_evento}/>
+        </div>
+
       </div>
     </div>
   );

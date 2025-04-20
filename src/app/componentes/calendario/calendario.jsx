@@ -17,7 +17,6 @@ export default function CalendarioUsuario({ id_usuario }) {
       try {
         const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}`)
         const data = await res.json()
-        console.log(data);
         const eventosFormateados = data.map(evento => {
           const fechaInicio = new Date(evento.fecha)
           const fechaFin = new Date(fechaInicio.getTime() + (evento.duracion || 60) * 60000)

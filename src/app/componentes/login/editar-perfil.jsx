@@ -111,9 +111,7 @@ const EditarPerfil = () => {
             ciudad,
             genero
         };
-    
-        console.log(datos);  // Verifica qué datos se están enviando
-        
+            
         try {
             const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
                 method: "PUT",

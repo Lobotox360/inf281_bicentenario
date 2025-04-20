@@ -47,7 +47,7 @@ export default function VerMasEvento() {
           const data = await response.json();
           setAgendado(data); // Guardamos la respuesta en el estado
         } else {
-          console.error('Error al obtener los datos de la agenda');
+          console.error('No hay datos en la agenda de este usuario');
         }
       } catch (error) {
         console.error('Error en la solicitud:', error);
@@ -79,6 +79,7 @@ export default function VerMasEvento() {
   const hora_inicio = String(new Date(evento?.hora_inicio).getHours()).padStart(2, '0') + ':' + String(new Date(evento?.hora_inicio).getMinutes()).padStart(2, '0');
   const hora_fin = String(new Date(evento?.hora_fin).getHours()).padStart(2, '0') + ':' + String(new Date(evento?.hora_fin).getMinutes()).padStart(2, '0');
   const fecha = `${['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(evento?.hora_inicio).getDay()]}, ${new Date(evento?.hora_inicio).getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date(evento?.hora_inicio).getMonth()]} de ${new Date(evento?.hora_inicio).getFullYear()}`;
+  const estrellas = Array.from({ length: 5 }, (_, index) => {return index < evento.puntuacion ? '⭐' : '☆';}).join(' ');
 
   // Manejar la inscripción al evento
   const handleInscripcion = async (eventoId) => {
@@ -214,20 +215,21 @@ export default function VerMasEvento() {
           </div>
         </div>
         <div className="flex justify-between">
-        <button
+          <Link href={'../'} className="bg-red-500 text-white py-2 px-6 rounded-full hover:bg-orange-400">
+              VOLVER
+          </Link>
+          <button
                 onClick={() => yaAgendado ? handleDesinscripcion(eventoId) : handleInscripcion(eventoId)} 
-                className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400"
-              >
-                {yaAgendado ? "DESAGENDAR" : "AGENDAR"} 
-              </button>
-
-            <Link href={'../'} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
-                VOLVER
-            </Link>
-            <p>Puntuacion: {evento.puntuacion}</p>
+                className="bg-green-500 text-white py-2 px-6 rounded-full hover:bg-yellow-300"
+          >
+            {yaAgendado ? "DESAGENDAR" : "AGENDAR"} 
+          </button>
+          <p>{estrellas}</p>
         </div>
       </div>
-      <MapaEvento direccion={evento.Ubicacion.ubicacion} />
+      <div className="max-w-4xl mx-auto mt-4">
+        <MapaEvento latitud={evento.Ubicacion.latitud} longitud = {evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion}/>
+      </div>
     </div>
   );
 }

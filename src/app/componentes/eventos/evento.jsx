@@ -2,18 +2,18 @@
 import React, {useEffect, useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../inicio/navbar';
-import CarruselEventos from './vistas/carrusel';
 import { FaUserCircle } from 'react-icons/fa'; 
 import MenuFiltrar from './vistas/menu-filtrar';
 
 export default function Eventos() {
   const [comentarioUsuario, setComentarioUsuario] = useState('');
+  const [puntuacionUsuario, setPuntuacionUsuario] = useState('');
   const [comentarios, setComentarios] = useState([]);
 
   useEffect(() => {
     const fetchComentarios = async () => {
         try {
-            const response = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/${eventoId}`); // Cambia "4" por el id dinámico del evento
+            const response = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/1`); // Cambia "4" por el id dinámico del evento
             const data = await response.json();
             
             if (response.ok) {
@@ -25,19 +25,25 @@ export default function Eventos() {
             console.error('Hubo un problema con la solicitud:', error);
         }
     };
-
-    fetchComentarios(); // Llamamos a la función para obtener los comentarios
+    fetchComentarios();
   }, []);
+
+  const handlePuntuacionChange = (event) => {
+    setPuntuacionUsuario(event.target.value); 
+  };
+
+  const handleComentarioChange = (event) => {
+    setComentarioUsuario(event.target.value);
+  };
 
   const handleEnviarComentario = async (e) => {
     e.preventDefault();
     
     const data = {
-        id_usuario: "78cb519f-7f9f-4fb1-b0eb-4d555754ba41", 
-        id_evento: 4, 
+        id_usuario: "d0e631df-cde8-4753-b21f-2ff597efd4a6", 
+        id_evento: 1, 
         comentario: comentarioUsuario,
-    };
-    
+    };    
     try {
         const response = await fetch('https://inf281-production.up.railway.app/agenda/comentario', {
             method: 'POST',
@@ -78,8 +84,8 @@ export default function Eventos() {
               <div key={index} className="border-b pb-4 mb-4 flex items-center gap-4">
                 {/* Icono de perfil */}
                 <div className="w-12 h-12 rounded-full overflow-hidden">
-                  {com.foto ? (
-                    <Image src={com.foto} alt={com.nombre_usuario} width={48} height={48} className="object-cover" />
+                  {com.foto_usuario ? (
+                    <Image src={com.foto_usuario} alt={com.nombre_usuario} width={48} height={48} className="object-cover" />
                   ) : (
                     <FaUserCircle size={48} color="#ccc" />
                   )}
@@ -108,10 +114,18 @@ export default function Eventos() {
                 required
                 ></textarea>
             </div>
-            <div className='flex justify-end'>
-                <button type="submit" className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400">
-                    Enviar Comentario
-                </button>
+            <div className='flex justify-between'>
+              <select value={puntuacionUsuario} onChange={handlePuntuacionChange}>
+                <option value="" disabled>Calificación</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+              <button type="submit" className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400">
+                Enviar Comentario
+              </button>
             </div>
         </form>
       </div>

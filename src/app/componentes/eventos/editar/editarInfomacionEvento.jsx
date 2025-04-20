@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const EditarInformacionEvento = ({eventoId}) => {
-  console.log(eventoId);
   const [informacion, setInformacion] = useState({
     titulo: '',
     descripcion: '',

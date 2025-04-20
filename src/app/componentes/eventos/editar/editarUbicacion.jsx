@@ -22,7 +22,6 @@ const EditarUbicacionEvento = ({eventoId}) => {
       try {
         const response = await fetch(`https://inf281-production.up.railway.app/eventos/ubicacion/${eventoId}`);
         const data = await response.json();
-        console.log(data);
         if (data) {
           setUbicacionID(data.ubicacion.id_ubicacion || '');
           setUbicacion(data.ubicacion.ubicacion || '');

@@ -58,7 +58,6 @@ const EditarTelefonosEvento = ({ eventoId }) => {
   const telefonosFormateados = telefonosAgregados.map(telefono => ({
     telefono: telefono.numero || telefono.telefono
   }));
-  console.log(telefonosFormateados);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

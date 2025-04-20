@@ -136,9 +136,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     const patrocinadoresTransformados = addedPatrocinadores.map(patrocinador => ({
       id_patrocinador: patrocinador.id_patrocinador,  // Obtener solo id_patrocinador
     }));
-  
-    console.log(patrocinadoresTransformados);  // Ver los datos transformados
-  
+    
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/evento/${eventoId}`, {
         method: 'PUT', 
