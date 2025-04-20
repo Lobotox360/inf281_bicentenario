@@ -287,6 +287,7 @@ export class AgendaService {
       comentario: item.comentario,
       nombre_usuario: item.Usuarios.nombre,
       foto_usuario: item.Usuarios.foto,
+      calificacion: item.calificacion,
     }));
 
     return comentariosConNombres;
