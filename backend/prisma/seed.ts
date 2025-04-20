@@ -181,7 +181,7 @@ async function main() {
       ciudad: 'La Paz',
       genero: 'Masculino',
       verificado: true,
-      id_rol: adminEventos.id_rol,
+      id_rol: usuarioCasual.id_rol,
     },
   });
 

@@ -271,6 +271,7 @@ export class AgendaService {
         Usuarios: {
           select: {
             nombre: true,  // Seleccionamos el nombre del usuario
+            foto: true,
           },
         },
       },
@@ -285,6 +286,7 @@ export class AgendaService {
     const comentariosConNombres = agenda.map((item) => ({
       comentario: item.comentario,
       nombre_usuario: item.Usuarios.nombre,
+      foto_usuario: item.Usuarios.foto,
     }));
 
     return comentariosConNombres;
