@@ -76,7 +76,6 @@ export default function Navbar() {
     // Aquí agregas tu lógica de búsqueda real
   };
 
-  console.log(userId);
   return (
     <nav className="fixed top-0 left-0 w-full p-3 shadow-lg z-50 flex items-center justify-between bg-gradient-to-b from-black to-transparent">
       <Image src="/assets/logo1.png" width={80} height={32} alt="Bicentenario de Bolivia" />

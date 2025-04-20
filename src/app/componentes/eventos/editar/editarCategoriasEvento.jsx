@@ -24,7 +24,6 @@ const EditarCategoriasEvento = ({ eventoId}) => {
     try {
       const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
       const datos = await respuesta.json();
-      console.log(datos);
       setCategorias(datos.map(c => ({
         value: c.id_categoria,
         label: `${c.nombre} - ${c.descripcion}`,

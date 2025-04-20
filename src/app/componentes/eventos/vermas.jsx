@@ -5,7 +5,8 @@ import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import Navbar from '@/app/componentes/inicio/navbar';
 import Link from 'next/link';
-import MapaEvento from './mapa';
+import MapaEvento from './vistas/mapa';
+import ModuloComentarios from './vistas/comentarios-carrusel';
 
 export default function VerMasEvento() {
   const { id: eventoId } = useParams();  // Obtén el id del evento desde la URL
@@ -229,6 +230,9 @@ export default function VerMasEvento() {
       </div>
       <div className="max-w-4xl mx-auto mt-4">
         <MapaEvento latitud={evento.Ubicacion.latitud} longitud = {evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion}/>
+      </div>
+      <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
+        <ModuloComentarios  eventoId = {eventoId}/>
       </div>
     </div>
   );
