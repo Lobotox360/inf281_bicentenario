@@ -30,7 +30,7 @@ export class UsuarioController {
   }
 
   @Post('foto')
-  //@UseInterceptors(FileInterceptor('foto'))
+  @UseInterceptors(FileInterceptor('foto'))
   async subirFoto(
     @UploadedFile() file: Express.Multer.File,
     @Body('email') email: string,
