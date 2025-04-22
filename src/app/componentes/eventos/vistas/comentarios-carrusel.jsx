@@ -156,7 +156,7 @@ const ModuloComentarios = ({eventoId}) => {
                 <option value="4">4</option>
                 <option value="5">5</option>
               </select>
-              <button type="submit" className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400">
+              <button type="submit" className="bg-orange-500 text-white py-2 px-4 rounded-full cursor-pointer hover:bg-yellow-400">
                 Enviar Comentario
               </button>
             </div>

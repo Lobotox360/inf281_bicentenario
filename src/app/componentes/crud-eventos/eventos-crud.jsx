@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from '../inicio/navbar';
 
 const EventosAdmin = () => {
     const router = useRouter();
@@ -38,7 +39,7 @@ const EventosAdmin = () => {
         const confirmarEliminar = window.confirm("¿Estás seguro de eliminar este evento?");
         if (confirmarEliminar) {
             try {
-                const res = await fetch(`https://inf281-production.up.railway.app/eventos/1`, {
+                const res = await fetch(`https://inf281-production.up.railway.app/eventos/${id_evento}`, {
                     method: 'DELETE',
                 });
 
@@ -58,8 +59,8 @@ const EventosAdmin = () => {
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
+            <Navbar/>
             <h2 className="text-2xl font-semibold mb-4">Administración de Eventos</h2>
-
             {message && <p className="text-green-500 mb-4">{message}</p>} {/* Mostrar mensaje de éxito */}
 
             <table className="min-w-full border-collapse border border-gray-300">
@@ -71,6 +72,7 @@ const EventosAdmin = () => {
                         <th className="border px-4 py-2">Modalidad</th>
                         <th className="border px-4 py-2">Costo</th>
                         <th className="border px-4 py-2">Estado</th>
+                        <th className="border px-4 py-2">Link</th>
                         <th className="border px-4 py-2">Acciones</th>
                     </tr>
                 </thead>
@@ -83,6 +85,7 @@ const EventosAdmin = () => {
                             <td className="border px-4 py-2">{evento.modalidad}</td>
                             <td className="border px-4 py-2">{evento.costo} Bs.</td>
                             <td className="border px-4 py-2">{evento.estado}</td>
+                            <td className="border px-4 py-2">{evento.link_reunion}</td>
                             <td className="border px-4 py-2">
                                 <button 
                                     onClick={() => handleEditarEvento(evento.id_evento)} 

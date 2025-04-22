@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from '../inicio/navbar';
+
 
 const AdministracionRoles = () => {
     const router = useRouter();
@@ -102,6 +104,7 @@ const AdministracionRoles = () => {
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
+            <Navbar/>
             <h2 className="text-2xl font-semibold mb-4">Administración de Roles</h2>
             
             <table className="min-w-full border-collapse border border-gray-300">

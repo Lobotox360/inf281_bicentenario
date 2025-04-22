@@ -48,10 +48,10 @@ const Login = ({ openModal }) => {
             case 'Administrador':
                 router.push('/roles');
                 break;
-            case 3:
-                router.push('/eventos');
+            case 'administrador_eventos':
+                router.push('/eventos-admin');
                 break;
-            case 4:
+            case 'administrador_contenido':
                 router.push('/contenido');
                 break;
             default:
