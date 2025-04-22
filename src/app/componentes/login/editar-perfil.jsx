@@ -83,6 +83,7 @@ const EditarPerfil = () => {
           if (!response.ok) throw new Error("Error al subir la foto");
       
           const result = await response.json();
+          window.location.reload();
           alert("✅ Foto de perfil actualizada.");
           setUsuario(prev => ({ ...prev, foto: result.foto })); // actualizar foto en el estado
         } catch (error) {

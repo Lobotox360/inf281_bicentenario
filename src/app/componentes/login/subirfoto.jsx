@@ -31,17 +31,19 @@ export default function SubirFoto() {
     setMensaje('');
 
     const uploadData = new FormData();
-    uploadData.append('foto', selectedFile);
     uploadData.append('email', email);
+    uploadData.append('foto', selectedFile);
+
+    for (let pair of uploadData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
 
     try {
       const res = await fetch('https://inf281-production.up.railway.app/usuario/foto', {
         method: 'POST',
         body: uploadData,
-      });
-
+      });      
       const data = await res.json();
-
       if (res.ok) {
         setMensaje('✅ Imagen subida con éxito');
         setTimeout(() => router.push('/login'), 3000); // redirige después de 3 segundos

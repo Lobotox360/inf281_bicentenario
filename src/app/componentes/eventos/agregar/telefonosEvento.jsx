@@ -8,6 +8,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   const [nuevoTelefono, setNuevoTelefono] = useState({
     telefono: ''  // Asegúrate de usar 'telefono' para coincidir con el objeto
   });
+  const [error, setError] = useState(''); // Estado para el mensaje de error
 
   const router = useRouter();
 
@@ -39,10 +40,24 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     setNuevoTelefono({ ...nuevoTelefono, [name]: value });
   };
 
+  // Validar que haya al menos un teléfono antes de avanzar al siguiente paso
+  const handleSiguientePaso = () => {
+    if (telefonosAgregados.length === 0) {
+      setError('Debes agregar al menos un teléfono para continuar');
+      return; // No permite avanzar si no hay teléfonos
+    }
+
+    setError(''); // Limpiar mensaje de error si todo está bien
+    siguientePaso(); // Avanzar al siguiente paso
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <form className="bg-white p-5 rounded-lg shadow-lg">
-      <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Agregar telefonos de contacto</h3>
+        <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Agregar teléfonos de contacto</h3>
+
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
+
         {/* Formulario para agregar nuevo teléfono */}
         <div className="mb-4 flex justify-center">
           <button
@@ -66,7 +81,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
               placeholder="Teléfono"
               className="w-full p-2 border border-gray-300 rounded-md mb-2"
             />
-            <div className='flex justify-center'>
+            <div className="flex justify-center">
               <button
                 type="button"
                 onClick={handleAgregarTelefono}
@@ -109,7 +124,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
 
           <button
             type="button"
-            onClick={siguientePaso}
+            onClick={handleSiguientePaso} // Validar antes de avanzar
             className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente

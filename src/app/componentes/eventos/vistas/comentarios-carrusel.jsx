@@ -54,7 +54,7 @@ const ModuloComentarios = ({eventoId}) => {
 
     const datos = {
       id_usuario: idUsuario, 
-      id_evento: eventoId, 
+      id_evento: parseInt(eventoId), 
       comentario: comentarioUsuario, 
       calificacion: parseInt(puntuacionUsuario)
     };
@@ -98,7 +98,7 @@ const ModuloComentarios = ({eventoId}) => {
     } catch (error) {
       console.error(error);
       console.log(datos);
-      alert("Hubo un error al procesar tu solicitud.");
+      alert("Debes estar agendado a este evento para comentar y calificar.");
     }
   };
 
@@ -109,21 +109,26 @@ const ModuloComentarios = ({eventoId}) => {
       <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
         {comentarios.length > 0 ? (
           comentarios.map((com, index) => (
-          <div key={index} className="border-b pb-4 mb-4 flex items-center gap-4">
-            {/* Icono de perfil */}
-            <div className="w-12 h-12 rounded-full overflow-hidden">
-              {com.foto_usuario ? (
-                <Image src={com.foto_usuario} alt={com.nombre_usuario} width={48} height={48} className="object-cover" />
-              ) : (
-                <FaUserCircle size={48} color="#ccc" />
-              )}
-            </div>
-            {/* Comentario */}
-            <div className="flex flex-col">
-              <p className="font-semibold text-gray-900">{com.nombre_usuario} <span className="text-sm text-gray-500"> - {Array.from({length:5},(_,index)=>{return index < com.calificacion?'⭐':'☆';}).join(' ')}</span></p>
-              <p className="text-gray-600">{com.comentario}</p>
-            </div>
-          </div>
+            // Verifica si el comentario no es nulo o vacío antes de mostrar el bloque
+            com.comentario && com.comentario.trim() !== "" && (
+              <div key={index} className="border-b pb-4 mb-4 flex items-center gap-4">
+                {/* Icono de perfil */}
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  {com.foto_usuario ? (
+                    <Image src={com.foto_usuario} alt={com.nombre_usuario} width={48} height={48} className="object-cover" />
+                  ) : (
+                    <FaUserCircle size={48} color="#ccc" />
+                  )}
+                </div>
+                {/* Comentario */}
+                <div className="flex flex-col">
+                  <p className="font-semibold text-gray-900">
+                    {com.nombre_usuario} <span className="text-sm text-gray-500"> - {Array.from({length: 5}, (_, index) => index < com.calificacion ? '⭐' : '☆').join(' ')}</span>
+                  </p>
+                  <p className="text-gray-600">{com.comentario}</p>
+                </div>
+              </div>
+            )
           ))
         ) : (
           <p className="text-center text-gray-500">No hay comentarios aún.</p>

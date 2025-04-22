@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
-const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData}) => {
+const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData }) => {
   const [categorias, setCategorias] = useState([]); // Estado para las categorías disponibles
   const [selectedCategoria, setSelectedCategoria] = useState(''); // Estado para la categoría seleccionada
   const [addedCategorias, setAddedCategorias] = useState(eventoData.categorias || []); // Estado para las categorías añadidas
@@ -12,6 +12,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
     nombre: '',
     descripcion: '',
   });
+  const [error, setError] = useState(''); // Estado para manejar el mensaje de error
 
   const router = useRouter();
 
@@ -93,10 +94,24 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
     }
   };
 
+  // Validación antes de avanzar al siguiente paso
+  const handleSiguientePaso = () => {
+    if (addedCategorias.length === 0) {
+      setError('Debes agregar al menos una categoría para continuar');
+      return; // No permite avanzar si no hay categorías añadidas
+    }
+
+    setError(''); // Limpiar mensaje de error si todo está bien
+    siguientePaso(); // Avanzar al siguiente paso
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <form className="bg-white p-5 rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Seleccionar categorias</h3>
+
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
+
         {/* Select de categorías existentes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
@@ -114,26 +129,27 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
         {/* Botón para agregar categoría de la lista */}
         <div className="flex justify-center mt-4 space-x-8">
             <div className="mb-4">
-            <button
+              <button
                 type="button"
                 onClick={handleAgregarCategoria}
                 className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-            >
+              >
                 Añadir Categoría
-            </button>
+              </button>
             </div>
 
             {/* Formulario para agregar nueva categoría */}
             <div className="mb-4">
-            <button
+              <button
                 type="button"
                 onClick={() => setShowAddForm(true)}
                 className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-            >
+              >
                 Crear Nueva Categoría
-            </button>
+              </button>
             </div>
         </div>
+
         {/* Mostrar formulario de nueva categoría */}
         {showAddForm && (
           <div className="mb-4">
@@ -197,7 +213,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
 
           <button
             type="button"
-            onClick={siguientePaso}
+            onClick={handleSiguientePaso} // Validar antes de avanzar
             className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente

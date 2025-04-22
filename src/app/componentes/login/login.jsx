@@ -5,12 +5,14 @@ import { FaGoogle, FaApple, FaFacebook, FaEnvelope, FaLock } from 'react-icons/f
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { BsInstagram } from 'react-icons/bs';
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Link from 'next/link';
 
 const Login = ({ openModal }) => {
   const [visible, setVisible] = useState(false);
   const [captchaValido, setCaptchaValido] = useState(false);
+  const router = useRouter();
   const { register, formState: { errors }, handleSubmit } = useForm();
 
   const onSubmit = async (data) => {
@@ -34,10 +36,27 @@ const Login = ({ openModal }) => {
         if (result.access_token && result.id) {
           localStorage.setItem('access_token', result.access_token);
           localStorage.setItem('id_user', result.id);
+          localStorage.setItem('rol', result.rol);
         }
 
         alert('✅ Inicio de sesión exitoso.');
-        window.location.href = '/';
+        const idRol = localStorage.getItem('rol');
+        switch (idRol) {
+            case 'usuario_casual':
+                router.push('/');
+                break;
+            case 'Administrador':
+                router.push('/roles');
+                break;
+            case 3:
+                router.push('/eventos');
+                break;
+            case 4:
+                router.push('/contenido');
+                break;
+            default:
+                router.push('/'); // Si el rol no es reconocido, redirigir a la página principal
+        }
       } else {
         throw new Error(result.message || 'Credenciales incorrectas.');
       }
@@ -112,7 +131,7 @@ const Login = ({ openModal }) => {
             ¿No tienes una cuenta? <span onClick={openModal} className="text-blue-600 cursor-pointer hover:text-purple-600">Regístrate aquí</span>
           </div>
 
-          <button type="submit" className="w-full bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition">
+          <button type="submit" className="w-full bg-orange-500 text-white p-3 rounded-md hover:bg-orange-600 transition cursor-pointer">
             Iniciar Sesión
           </button>
         </form>

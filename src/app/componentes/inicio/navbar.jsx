@@ -98,7 +98,7 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={80} height={80} className="rounded-full object-cover border-2 border-yellow-400"/>
+                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="rounded-full object-cover border-2 border-yellow-400"/>
               ) : (
                 <FaUser />
               )}

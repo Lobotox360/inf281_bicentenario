@@ -12,6 +12,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   const [descripcion, setDescripcion] = useState('');
   const [latitud, setLatitud] = useState('');
   const [longitud, setLongitud] = useState('');
+  const [error, setError] = useState(''); // Estado para manejar los errores
 
   // Mapa de coordenadas de los departamentos
   const departamentoCoordenadas = {
@@ -100,11 +101,44 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     });
   };
 
+  // Validación antes de avanzar al siguiente paso
+  const handleSiguientePaso = () => {
+    // Verificar que todos los campos necesarios estén llenos
+    if (!departamento) {
+      setError('Debes seleccionar un departamento');
+      return;
+    }
+
+    if (!descripcion) {
+      setError('Debes ingresar una descripción para la ubicación');
+      return;
+    }
+
+    if (!latitud || !longitud) {
+      setError('Debes seleccionar una ubicación en el mapa');
+      return;
+    }
+
+    // Limpiar el mensaje de error si todo está correcto
+    setError('');
+
+    // Guardar la ubicación y avanzar al siguiente paso
+    handleUpdateData('ubicacion', { 
+      ubicacion, 
+      departamento,
+      descripcion,
+      latitud,
+      longitud
+    });
+    siguientePaso(); // Avanzar al siguiente paso
+  };
+
   return (
     <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
       <div className="p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
+          {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
           {/* Campo departamento */}
           <div className="mb-4">
             <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>
@@ -173,16 +207,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
             </button>
             <button
               type="button"
-              onClick={() => {
-                handleUpdateData('ubicacion', { 
-                  ubicacion, 
-                  departamento,
-                  descripcion,
-                  latitud,
-                  longitud
-                });
-                siguientePaso();
-              }}
+              onClick={handleSiguientePaso} // Validar antes de avanzar
               className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
             >
               Siguiente

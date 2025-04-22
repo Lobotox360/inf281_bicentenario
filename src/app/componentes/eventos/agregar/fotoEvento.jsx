@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
   const [imagen, setImagen] = useState(eventoData.foto || null);  // Mantener la imagen desde los datos previos
   const [imagenPreview, setImagenPreview] = useState(eventoData.foto ? eventoData.foto : null); // Para la vista previa
+  const [error, setError] = useState(''); // Estado para manejar los errores
   const router = useRouter();
 
   // Manejo de cambios para la imagen
@@ -20,10 +21,10 @@ const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
   // Manejo del envío de los datos finales
   const handleFinalSubmit = async () => {
     if (!imagen) {
-      alert("Por favor, selecciona una imagen.");
+      setError("Por favor, selecciona una imagen.");
       return;
     }
-
+    setError('')
     const formData = new FormData();
     formData.append("foto_evento", imagen); // Adjuntamos la imagen al FormData
 
@@ -73,7 +74,7 @@ const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
     <div className="max-w-4xl mx-auto p-4">
       <form className="bg-white p-5 rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold text-center py-4">Paso 5: Agregar Imagen del Evento</h3>
-
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
         {/* Input para seleccionar la imagen */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">Selecciona una imagen</label>

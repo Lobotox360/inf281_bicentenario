@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 
 const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
   const [informacion, setInformacion] = useState(eventoData.informacion || {}); // Inicializa con los datos previos
+  const [error, setError] = useState(''); // Estado para el mensaje de error
 
   useEffect(() => {
     // Si los datos de `eventoData` cambian, actualizar `informacion`
@@ -19,16 +20,30 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
     }));
   };
 
+  // Validar los campos antes de avanzar al siguiente paso
+  const validarCampos = () => {
+    if (!informacion.titulo || !informacion.descripcion || !informacion.modalidad || !informacion.costo || !informacion.horaInicio || !informacion.horaFin) {
+      setError('Debes llenar todos los campos');
+      return false; 
+    }
+
+    setError(''); // Limpiar el mensaje de error si todo está correcto
+    return true; // Si todo está completo, avanzamos
+  };
+
   // Enviar los datos a la función `handleUpdateData`
   const handleSubmit = () => {
-    handleUpdateData('informacion', informacion); // Actualiza los datos en el estado global
-    siguientePaso(); // Avanza al siguiente paso
+    if (validarCampos()) {
+      handleUpdateData('informacion', informacion); // Actualiza los datos en el estado global
+      siguientePaso(); // Avanza al siguiente paso
+    }
   };
 
   return (
     <div className="max-w-4xl mx-auto">
       <form onSubmit={handleSubmit} className="bg-white p-5 rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold text-center py-4">Paso 1: Información general del Evento</h3>
+        {error && <p className="text-red-500 text-center">{error}</p>}
         <div className="mb-4">
           <label htmlFor="titulo" className="block text-sm font-medium text-gray-700">Título del Evento</label>
           <input

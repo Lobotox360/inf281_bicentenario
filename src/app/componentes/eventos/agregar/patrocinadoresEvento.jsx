@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
-const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData}) => {
+const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData }) => {
   const [patrocinadores, setPatrocinadores] = useState([]);
   const [selectedPatrocinador, setSelectedPatrocinador] = useState();
   const [addedPatrocinadores, setAddedPatrocinadores] = useState(eventoData.patrocinadores || []);
@@ -12,6 +12,7 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
     razon_social: '',
     institucion: '',
   });
+  const [error, setError] = useState(''); // Estado para manejar los mensajes de error
 
   const router = useRouter();
 
@@ -34,8 +35,6 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
     fetchPatrocinadores(); // Se llama una vez cuando el componente se monta
   }, []);
 
-  
-
   const handleAgregarPatrocinador = () => {
     if (!selectedPatrocinador) return;
 
@@ -46,12 +45,11 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
     if (patrocinadorSeleccionado && !addedPatrocinadores.some(p => p.value === patrocinadorSeleccionado.value)) {
       const nuevosPatrocinadores = [...addedPatrocinadores, patrocinadorSeleccionado];
       setAddedPatrocinadores(nuevosPatrocinadores);
-      
+
       // Llamar a handleUpdateData después de actualizar el estado
       handleUpdateData('patrocinadores', nuevosPatrocinadores);
       setSelectedPatrocinador(''); // Limpiar la selección
     }
-    
   };
 
   const handleQuitarPatrocinador = (index) => {
@@ -100,10 +98,24 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
     }
   };
 
+  // Validar que haya al menos un patrocinador antes de pasar al siguiente paso
+  const handleSiguientePaso = () => {
+    if (addedPatrocinadores.length === 0) {
+      setError('Debes agregar al menos un patrocinador para continuar');
+      return;
+    }
+
+    setError('');
+    siguientePaso(); // Si hay patrocinadores, avanza al siguiente paso
+  };
+
   return (
     <div className="max-w-4xl mx-auto">
       <form className="bg-white p-5 rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold text-center py-4">Paso 2: Seleccionar patrocinadores</h3>
+        
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
+
         {/* Select de patrocinadores existentes */}
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
@@ -115,31 +127,33 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
             onChange={setSelectedPatrocinador}  // Simplemente establece el objeto completo
             placeholder="Busca o selecciona un patrocinador"
             isSearchable
-            />
+          />
         </div>
+
         <div className="flex justify-center mt-4 space-x-8">
             {/* Botón para agregar patrocinador de la lista */}
             <div className="mb-4">
-            <button
-                type="button"
-                onClick={handleAgregarPatrocinador}
-                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-            >
-                Añadir Patrocinador
-            </button>
+              <button
+                  type="button"
+                  onClick={handleAgregarPatrocinador}
+                  className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+              >
+                  Añadir Patrocinador
+              </button>
             </div>
 
             {/* Formulario para agregar nuevo patrocinador */}
             <div className="mb-4">
-            <button
-                type="button"
-                onClick={() => setShowAddForm(true)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-            >
-                Crear Nuevo Patrocinador
-            </button>
+              <button
+                  type="button"
+                  onClick={() => setShowAddForm(true)}
+                  className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+              >
+                  Crear Nuevo Patrocinador
+              </button>
             </div>
         </div>
+
         {/* Mostrar formulario de nuevo patrocinador */}
         {showAddForm && (
           <div className="mb-4">
@@ -203,7 +217,7 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
 
           <button
             type="button"
-            onClick={siguientePaso}
+            onClick={handleSiguientePaso} // Validar antes de avanzar
             className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente

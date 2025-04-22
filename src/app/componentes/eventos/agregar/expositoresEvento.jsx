@@ -1,8 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 
-const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData}) => {
+const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData }) => {
   const [expositoresAgregados, setExpositoresAgregados] = useState(eventoData.expositores || []);
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [nuevoExpositor, setNuevoExpositor] = useState({
@@ -11,8 +10,24 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
     institucion: '',
     contacto: ''
   });
+  const [error, setError] = useState(''); // Estado para manejar los mensajes de error
 
-  const router = useRouter();
+  // Manejo de cambios en el formulario de nuevo expositor
+  const handleNuevoExpositorChange = (e) => {
+    const { name, value } = e.target;
+    setNuevoExpositor({ ...nuevoExpositor, [name]: value });
+  };
+
+  // Validar si hay al menos un expositor agregado antes de avanzar
+  const handleSiguientePaso = () => {
+    if (expositoresAgregados.length === 0) {
+      setError('Debes agregar al menos un expositor para continuar');
+      return; // No permite avanzar si no hay expositores
+    }
+
+    setError(''); // Limpiar mensaje de error
+    siguientePaso(); // Si todo está bien, avanzar al siguiente paso
+  };
 
   const handleAgregarExpositor = () => {
     if (!nuevoExpositor.nombre || !nuevoExpositor.especialidad) return; // Validar que el nombre y especialidad estén completos
@@ -25,8 +40,6 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
       handleUpdateData('expositores', nuevosExpositores);
     }
   };
-    
-  
 
   const handleQuitarExpositor = (index) => {
     const nuevosExpositores = expositoresAgregados.filter((_, i) => i !== index);
@@ -34,13 +47,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
     handleUpdateData('expositores', nuevosExpositores);
   };
 
-  // Manejo de cambios en el formulario de nuevo patrocinador
-  const handleNuevoExpositorChange = (e) => {
-    const { name, value } = e.target;
-    setNuevoExpositor({ ...nuevoExpositor, [name]: value });
-  };
-
-  // Enviar nuevo patrocinador al backend y actualizar la lista en tiempo real
+  // Enviar nuevo expositor al backend y actualizar la lista en tiempo real
   const handleAgregarNuevoExpositor = async () => {
     try {
       const res = await fetch('https://inf281-production.up.railway.app/eventos', {
@@ -51,9 +58,9 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
         body: JSON.stringify(nuevoExpositor),
       });
 
-      if (!res.ok) throw new Error('Error al agregar el patrocinador');
+      if (!res.ok) throw new Error('Error al agregar el expositor');
 
-      const nuevoPatrocinadorRespuesta = await res.json();
+      const nuevoExpositorRespuesta = await res.json();
       setNuevoExpositor({
         nombre: '',
         especialidad: '',
@@ -61,11 +68,11 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
         contacto: ''
       });
 
-      alert('✅ Patrocinador agregado exitosamente!');
+      alert('✅ Expositor agregado exitosamente!');
       setMostrarAgregar(false);
     } catch (error) {
-      console.error('Error al agregar patrocinador:', error);
-      alert('❌ Ocurrió un error al agregar el patrocinador.');
+      console.error('Error al agregar expositor:', error);
+      alert('❌ Ocurrió un error al agregar el expositor.');
     }
   };
 
@@ -74,7 +81,9 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
       <form className="bg-white p-5 rounded-lg shadow-lg">
         <h3 className="text-2xl font-semibold text-center py-4">Paso 3: Agregar expositores</h3>
 
-        {/* Formulario para agregar nuevo patrocinador */}
+        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
+
+        {/* Formulario para agregar nuevo expositor */}
         <div className="mb-4 flex justify-center">
             <button
                 type="button"
@@ -84,7 +93,8 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
                 Crear Nuevo Expositor
             </button>
         </div>
-        {/* Mostrar formulario de nuevo patrocinador */}
+
+        {/* Mostrar formulario de nuevo expositor */}
         {mostrarAgregar && (
           <div className="mb-4">
             <h3 className="text-sm font-medium text-gray-700">Nuevo Expositor</h3>
@@ -132,13 +142,13 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
           </div>
         )}
 
-        {/* Mostrar patrocinadores añadidos */}
+        {/* Mostrar expositores añadidos */}
         <div className="mb-4">
           <h3 className="text-sm font-medium text-gray-700">Expositores Añadidos</h3>
           <ul>
             {expositoresAgregados.map((expositor, index) => (
                 <li key={index} className="flex justify-between items-center mb-2">
-                    <span>{expositor.nombre} - {expositor.especialidad}</span> {/* Usamos nombre y especialidad */}
+                    <span>{expositor.nombre} - {expositor.especialidad}</span>
                     <button
                     type="button"
                     onClick={() => handleQuitarExpositor(index)}
@@ -163,7 +173,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
 
           <button
             type="button"
-            onClick={siguientePaso}
+            onClick={handleSiguientePaso} // Validar antes de avanzar
             className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente
