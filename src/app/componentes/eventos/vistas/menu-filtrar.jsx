@@ -6,8 +6,9 @@ import CarruselEventos from './carrusel';
 import VistaCategoriaEventos from './porCategoria';
 import VistaDepartamentoEventos from './porDepartamento';
 
-const MenuFiltrar = ({ userRole = 'admin' }) => {
+const MenuFiltrar = () => {
   const [seleccionarDepartamento, setSeleccionarDepartamento] = useState('La Paz');
+  const [userRole, setUserRole] =  useState(null);
 
   const [modoVisualizacion, setModoVisualizacion] = useState('carrusel') // 'carrusel' | 'departamento' | 'categoria'
   const [abrirSubmenu, setAbrirSubmenu] = useState(false);
@@ -19,19 +20,25 @@ const MenuFiltrar = ({ userRole = 'admin' }) => {
   {/*SUBMENU CATEGORIA */}
   const [categorias, setCategorias] = useState([]);
   const [seleccionarCategoria, setSeleccionarCategoria] = useState(null);
-      useEffect(() => {
-        const fetchCategorias = async () => {
-          try {
-            const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
-            const datos = await respuesta.json();
-            setCategorias(datos);
-          } catch (error) {
-            console.error("Error al obtener categorías:", error);
-          }
-        };
-    
-        fetchCategorias();
-      }, []);
+
+  //Obtener Rol
+  useEffect(() => {
+    const role = localStorage.getItem('rol');
+    setUserRole(role);
+  }, []);
+
+  useEffect(() => {
+    const fetchCategorias = async () => {
+    try {
+      const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
+      const datos = await respuesta.json();
+      setCategorias(datos);
+    } catch (error) {
+      console.error("Error al obtener categorías:", error);
+    }
+  };
+  fetchCategorias();
+  }, []);
 
   const handleAgregarEvento = () => {
     router.push("/eventos/agregar");
@@ -111,7 +118,7 @@ const MenuFiltrar = ({ userRole = 'admin' }) => {
                         <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Beni'), setAbrirSubmenu(false)}} className="cursor-pointer hover:bg-gray-100 p-2">Beni</div>
                         <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Pando'), setAbrirSubmenu(false)}} className="cursor-pointer hover:bg-gray-100 p-2">Pando</div>
                         <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Tarija'), setAbrirSubmenu(false)}} className="cursor-pointer hover:bg-gray-100 p-2">Tarija</div>
-                        <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Cochabamba'), setAbrirSubmenu(false)}} className="cursor-pointer hover:bg-gray-100 p-2">Chochabamba</div>
+                        <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Cochabamba'), setAbrirSubmenu(false)}} className="cursor-pointer hover:bg-gray-100 p-2">Cochabamba</div>
                         <div onClick={() => {setModoVisualizacion('carrusel'), setSeleccionarDepartamento('Chuquisaca')}} className="cursor-pointer hover:bg-gray-100 p-2">Chuquisaca</div>
                       </div>
                     )}
@@ -187,10 +194,9 @@ const MenuFiltrar = ({ userRole = 'admin' }) => {
           </div>
         )}
 
-
-        {userRole === 'admin' && (
+        {(userRole === 'Administrador' || userRole === 'administrador_eventos') && (
             <div className='flex justify-center items-center p-2'>
-                <button onClick={handleAgregarEvento} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
+                <button onClick={handleAgregarEvento} className="cursor-pointer bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
                     AGREGAR EVENTO
                 </button>
             </div>

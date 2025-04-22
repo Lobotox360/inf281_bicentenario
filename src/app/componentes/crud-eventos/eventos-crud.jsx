@@ -7,14 +7,16 @@ import Navbar from '../inicio/navbar';
 const EventosAdmin = () => {
     const router = useRouter();
     const [eventos, setEventos] = useState([]);
-    const [message, setMessage] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+    const [modalidadFiltro, setModalidadFiltro] = useState('');  // Nuevo estado para modalidad
+    const [estadoFiltro, setEstadoFiltro] = useState('');  // Nuevo estado para estado
 
     // Función para obtener los datos de los eventos
     const fetchEventos = async () => {
         try {
-            const response = await fetch('https://inf281-production.up.railway.app/eventos'); // Ruta de la API
-            const data = await response.json();
-            setEventos(data); // Establece los datos en el estado
+            const res = await fetch('https://inf281-production.up.railway.app/eventos');
+            const datos = await res.json();
+            setEventos(datos);
         } catch (error) {
             console.error('Error al cargar los eventos:', error);
         }
@@ -26,49 +28,92 @@ const EventosAdmin = () => {
     }, []);
 
     const handleAgregarEvento = () => {
-        router.push(`/eventos/agregar`); // Redirigir a la ruta de edición
+        router.push(`/eventos/agregar`);
     };
 
     // Función para manejar la edición del evento
     const handleEditarEvento = (id_evento) => {
-        router.push(`/eventos/editar/${id_evento}`); // Redirigir a la ruta de edición
+        router.push(`/eventos/editar/${id_evento}`);
     };
 
     // Función para eliminar un evento
-    const handleDeleteEvent = async (id_evento) => {
+    const handleEliminarEvento = async (id_evento) => {
         const confirmarEliminar = window.confirm("¿Estás seguro de eliminar este evento?");
         if (confirmarEliminar) {
             try {
                 const res = await fetch(`https://inf281-production.up.railway.app/eventos/${id_evento}`, {
                     method: 'DELETE',
                 });
-
                 const datos = await res.json();
-                if (datos.message) {
-                    setMessage(datos.message); 
-                    fetchEventos();
-                } else {
-                    setMessage('Error al eliminar el evento');
-                }
+                alert(datos.mensaje);
+                window.location.reload();
             } catch (error) {
                 console.error('Error al eliminar el evento:', error);
-                setMessage('Error al eliminar el evento');
             }
         }
     };
 
+    // Filtrar eventos según el término de búsqueda, modalidad y estado
+    const eventosFiltrados = eventos.filter(evento =>
+        (evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase())||
+        evento.modalidad.toLowerCase().includes(searchTerm.toLowerCase())||
+        evento.estado.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (modalidadFiltro === '' || evento.modalidad === modalidadFiltro) &&
+        (estadoFiltro === '' || evento.estado === estadoFiltro)
+    );
+
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
-            <Navbar/>
+            <Navbar />
             <h2 className="text-2xl font-semibold mb-4">Administración de Eventos</h2>
-            {message && <p className="text-green-500 mb-4">{message}</p>} {/* Mostrar mensaje de éxito */}
+
+            {/* Barra de búsqueda */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Buscar eventos..."
+                    className="px-4 py-2 border rounded-lg w-full"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}  
+                />
+            </div>
+
+            {/* Filtros por modalidad y estado */}
+            <div className="mb-4 flex gap-4">
+                {/* Filtro por modalidad */}
+                <select
+                    className="px-4 py-2 border rounded-lg"
+                    value={modalidadFiltro}
+                    onChange={(e) => setModalidadFiltro(e.target.value)} // Actualizar el estado con la modalidad seleccionada
+                >
+                    <option value="">Seleccionar modalidad</option>
+                    <option value="presencial">Presencial</option>
+                    <option value="virtual">Virtual</option>
+                    <option value="hibrida">Hibrida</option>
+                    {/* Agrega más opciones de modalidad si es necesario */}
+                </select>
+
+                {/* Filtro por estado */}
+                <select
+                    className="px-4 py-2 border rounded-lg"
+                    value={estadoFiltro}
+                    onChange={(e) => setEstadoFiltro(e.target.value)} // Actualizar el estado con el estado seleccionado
+                >
+                    <option value="">Seleccionar estado</option>
+                    <option value="Próximo">Próximo</option>
+                    <option value="En curso">En curso</option>
+                    <option value="Finalizado">Finalizado</option>
+                    {/* Agrega más opciones de estado si es necesario */}
+                </select>
+            </div>
 
             <table className="min-w-full border-collapse border border-gray-300">
                 <thead>
                     <tr>
                         <th className="border px-4 py-2">Título</th>
                         <th className="border px-4 py-2">Descripción</th>
-                        <th className="border px-4 py-2">Fecha de creacion</th>
+                        <th className="border px-4 py-2">Fecha de creación</th>
                         <th className="border px-4 py-2">Modalidad</th>
                         <th className="border px-4 py-2">Costo</th>
                         <th className="border px-4 py-2">Estado</th>
@@ -77,7 +122,7 @@ const EventosAdmin = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {eventos.map((evento) => (
+                    {eventosFiltrados.map((evento) => (
                         <tr key={evento.id_evento}>
                             <td className="border px-4 py-2">{evento.titulo}</td>
                             <td className="border px-4 py-2">{evento.descripcion}</td>
@@ -87,14 +132,14 @@ const EventosAdmin = () => {
                             <td className="border px-4 py-2">{evento.estado}</td>
                             <td className="border px-4 py-2">{evento.link_reunion}</td>
                             <td className="border px-4 py-2">
-                                <button 
-                                    onClick={() => handleEditarEvento(evento.id_evento)} 
+                                <button
+                                    onClick={() => handleEditarEvento(evento.id_evento)}
                                     className="bg-blue-500 text-white px-4 py-2 rounded mr-2 cursor-pointer hover:bg-blue-400"
                                 >
                                     Editar
                                 </button>
-                                <button 
-                                    onClick={() => handleDeleteEvent(evento.id_evento)} 
+                                <button
+                                    onClick={() => handleEliminarEvento(evento.id_evento)}
                                     className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-400"
                                 >
                                     Eliminar
@@ -104,9 +149,15 @@ const EventosAdmin = () => {
                     ))}
                 </tbody>
             </table>
-            <button onClick={() => handleAgregarEvento()} className='bg-green-500 text-white px-4 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400'>
-                Agregar
-            </button>
+
+            <div className='flex justify-center'>
+                <button
+                    onClick={() => handleAgregarEvento()}
+                    className="bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400"
+                >
+                    Agregar
+                </button>
+            </div>
         </div>
     );
 };

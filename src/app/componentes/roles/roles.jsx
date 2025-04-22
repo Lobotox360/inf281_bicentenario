@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../inicio/navbar';
 
-
 const AdministracionRoles = () => {
     const router = useRouter();
     const [usuarios, setUsuarios] = useState([]);
@@ -12,7 +11,10 @@ const AdministracionRoles = () => {
     const [modalAbierto, setModalAbierto] = useState(false);
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
     const [rolSeleccionado, setRolSeleccionado] = useState(null);
-    const [mensaje, setMensaje] = useState(''); // Mensaje de éxito o error
+    const [mensaje, setMensaje] = useState('');
+    const [barraBusqueda, setBarraBusqueda] = useState('');
+    const [rolFiltro, setRolFiltro] = useState('');
+    const [paisFiltro, setCiudadFiltro] = useState('');
 
     // Función para manejar el clic en el botón de retroceder
     const handleBack = () => {
@@ -102,11 +104,61 @@ const AdministracionRoles = () => {
         }
     };
 
+    // Filtrar usuarios por nombre, rol y país
+    const usuariosFiltrados = usuarios.filter(usuario =>
+        (usuario.nombre.toLowerCase().includes(barraBusqueda.toLowerCase()) || 
+        usuario.email.toLowerCase().includes(barraBusqueda.toLowerCase()) || 
+        usuario.telefono.toLowerCase().includes(barraBusqueda.toLowerCase()) || 
+        usuario.pais.toLowerCase().includes(barraBusqueda.toLowerCase())) &&
+        (rolFiltro === '' || usuario.Roles.nombre === rolFiltro) &&
+        (paisFiltro === '' || usuario.pais === paisFiltro)
+    );
+
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
-            <Navbar/>
+            <Navbar />
             <h2 className="text-2xl font-semibold mb-4">Administración de Roles</h2>
-            
+
+            {/* Barra de búsqueda */}
+            <div className="mb-4">
+                <input
+                    type="text"
+                    placeholder="Buscar por nombre o email..."
+                    className="px-4 py-2 border rounded-lg w-full"
+                    value={barraBusqueda}
+                    onChange={(e) => setBarraBusqueda(e.target.value)}  // Actualizar el estado con el término de búsqueda
+                />
+            </div>
+
+            {/* Filtros por rol y país */}
+            <div className="mb-4 flex gap-4">
+                {/* Filtro por rol */}
+                <select
+                    className="px-4 py-2 border rounded-lg"
+                    value={rolFiltro}
+                    onChange={(e) => setRolFiltro(e.target.value)} // Actualizar el estado con el rol seleccionado
+                >
+                    <option value="">Seleccionar rol</option>
+                    {roles.map(role => (
+                        <option key={role.id_rol} value={role.nombre}>
+                            {role.nombre} - {role.descripcion_rol}
+                        </option>
+                    ))}
+                </select>
+
+                {/* Filtro por país */}
+                <select
+                    className="px-4 py-2 border rounded-lg"
+                    value={paisFiltro}
+                    onChange={(e) => setCiudadFiltro(e.target.value)} // Actualizar el estado con el país seleccionado
+                >
+                    <option value="">Seleccionar país</option>
+                    {[...new Set(usuarios.map(usuario => usuario.pais))].map((pais, index) => (
+                        <option key={index} value={pais}>{pais}</option>
+                    ))}
+                </select>
+            </div>
+
             <table className="min-w-full border-collapse border border-gray-300">
                 <thead>
                     <tr>
@@ -119,7 +171,7 @@ const AdministracionRoles = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {usuarios.map((usuario, index) => (
+                    {usuariosFiltrados.map((usuario, index) => (
                         <tr key={index}>
                             <td className="border px-4 py-2">{usuario.nombre}</td>
                             <td className="border px-4 py-2">{usuario.email}</td>
@@ -127,8 +179,8 @@ const AdministracionRoles = () => {
                             <td className="border px-4 py-2">{usuario.pais}</td>
                             <td className="border px-4 py-2">{usuario.Roles.nombre}</td>
                             <td className="border px-4 py-2">
-                                <button 
-                                    onClick={() => handleEditRole(usuario)} 
+                                <button
+                                    onClick={() => handleEditRole(usuario)}
                                     className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
                                 >
                                     Editar Rol
@@ -139,8 +191,8 @@ const AdministracionRoles = () => {
                 </tbody>
             </table>
 
-            <button 
-                onClick={handleBack} 
+            <button
+                onClick={handleBack}
                 className="bg-red-500 text-white p-2 rounded mb-4 mt-4 cursor-pointer"
             >
                 Volver
@@ -173,13 +225,13 @@ const AdministracionRoles = () => {
                         {mensaje && <p className="mt-4 text-red-500">{mensaje}</p>} {/* Mostrar mensaje */}
 
                         <div className="mt-4 flex justify-between">
-                            <button 
+                            <button
                                 onClick={closeModal}
                                 className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-300"
                             >
                                 Cancelar
                             </button>
-                            <button 
+                            <button
                                 onClick={handleSaveRole}
                                 className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-300"
                             >

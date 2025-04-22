@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react';
 import { FaEdit } from 'react-icons/fa';
 import Link from 'next/link';
 
-const VistaCategoriaEventos = ({ userRole = 'admin', Auxcategoria }) => {
+const VistaCategoriaEventos = ({Auxcategoria }) => {
   const [eventos, setEventos] = useState([]);
   const [carga, setCarga] = useState(true);
+  const [userRole, setUserRole] =  useState(null);
 
   // Leer inscripciones de localStorage al inicio
   const [inscripciones, setInscripciones] = useState(() => {
@@ -17,6 +18,12 @@ const VistaCategoriaEventos = ({ userRole = 'admin', Auxcategoria }) => {
     localStorage.setItem('inscripciones', JSON.stringify(updatedInscripciones));
     setInscripciones(updatedInscripciones); // Actualiza el estado local también
   };
+
+  //Obtener Rol
+  useEffect(() => {
+    const role = localStorage.getItem('rol');
+    setUserRole(role);
+  }, []);
 
   // Obtener eventos
   useEffect(() => {
@@ -186,7 +193,7 @@ const VistaCategoriaEventos = ({ userRole = 'admin', Auxcategoria }) => {
               >
                 VER MÁS
               </Link>
-              {userRole === 'admin' && (
+              {(userRole === 'Administrador' || userRole === 'administrador_eventos') && (
                 <Link href={`/eventos/editar/${ev.id_evento}`}>
                   <button className="text-yellow py-2 px-6 rounded-full hover:text-red-500">
                     <FaEdit size={20} />

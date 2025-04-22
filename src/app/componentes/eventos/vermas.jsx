@@ -16,7 +16,7 @@ export default function VerMasEvento() {
   const [idUsuario, setIdUsuario] = useState(null);
 
   useEffect(() => {
-    const id = localStorage.getItem('user_id');
+    const id = localStorage.getItem('id_user');
     if (id) {
       setIdUsuario(id); 
     }
@@ -86,7 +86,7 @@ export default function VerMasEvento() {
   const handleInscripcion = async (eventoId) => {
     const id_usuario = localStorage.getItem('id_user');
     if (!id_usuario) {
-      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
+      alert('❌ Debes iniciar sesión para poder agendar un evento.');
       return;
     }
 

@@ -7,11 +7,18 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import ModuloComentarios from './comentarios-carrusel';
 
-const CarruselEventos = ({ userRole = 'admin', departamento }) => {
+const CarruselEventos = ({departamento }) => {
   const [eventos, setEventos] = useState([]);
   const [indexActual, setIndexActual] = useState(0);
   const [carga, setCarga] = useState(true);
+  const [userRole, setUserRole] = useState(null);
   const router = useRouter();
+
+  //Obtener Rol
+  useEffect(() => {
+    const role = localStorage.getItem('rol');
+    setUserRole(role);
+  }, []);
 
   // Obtener eventos
   useEffect(() => {
@@ -153,7 +160,7 @@ const CarruselEventos = ({ userRole = 'admin', departamento }) => {
                 <Link href={`/eventos/vermas/${eventosDepartamento[indexActual].id_evento}`} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
                   VER MÁS
                 </Link>
-                {userRole === 'admin' && (
+                {userRole === 'Administrador' || 'administrador_eventos' && (
                   <Link href={`/eventos/editar/${eventosDepartamento[indexActual].id_evento}`}>
                     <button className="text-yellow py-2 px-6 rounded-full hover:text-red-500">
                       <FaEdit size={20} />

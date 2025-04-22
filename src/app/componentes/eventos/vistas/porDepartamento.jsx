@@ -4,9 +4,10 @@ import Image from 'next/image';
 import { FaEdit } from 'react-icons/fa';
 import Link from 'next/link';
 
-const VistaDepartamentoEventos = ({ userRole = 'admin', departamento }) => {
+const VistaDepartamentoEventos = ({ departamento }) => {
   const [eventos, setEventos] = useState([]);
   const [carga, setCarga] = useState(true);
+  const [userRole, setUserRole] =  useState(null);
 
   // Leer inscripciones desde localStorage (si existen)
   const [inscripciones, setInscripciones] = useState(() => {
@@ -14,6 +15,11 @@ const VistaDepartamentoEventos = ({ userRole = 'admin', departamento }) => {
     return storedInscripciones ? JSON.parse(storedInscripciones) : {};
   });
   
+  //Obtener Rol
+  useEffect(() => {
+    const role = localStorage.getItem('rol');
+    setUserRole(role);
+  }, []);
 
   const updateInscripcionesInLocalStorage = (updatedInscripciones) => {
     localStorage.setItem('inscripciones', JSON.stringify(updatedInscripciones));
@@ -167,7 +173,7 @@ const VistaDepartamentoEventos = ({ userRole = 'admin', departamento }) => {
               </Link>
 
               {/* Si el usuario es admin, mostrar el botón de edición */}
-              {userRole === 'admin' && (
+              {(userRole === 'Administrador' || userRole === 'administrador_eventos') && (
                 <Link href={`/eventos/editar/${ev.id_evento}`}>
                   <button className="text-yellow py-2 px-6 rounded-full hover:text-red-500">
                     <FaEdit size={20} />

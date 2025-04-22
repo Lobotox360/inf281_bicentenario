@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from "react";
-import { FaUser, FaSearch } from 'react-icons/fa';
+import { FaUser, FaSearch, FaBars, FaTimes } from 'react-icons/fa'; // Agregamos el ícono de hamburguesa y el ícono de cerrar
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
@@ -14,6 +14,8 @@ export default function Navbar() {
   const [fotoUsuario, setFotoUsuario] = useState(null);
   const [userId, setUserId] = useState(null);
   const [token, setToken] = useState(null);
+  const [rol, setRol] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);  // Estado para el menú hamburguesa
   const router = useRouter();
 
   useEffect(() => {
@@ -21,10 +23,12 @@ export default function Navbar() {
       try {
         const token = localStorage.getItem("access_token");
         const id = localStorage.getItem("id_user");
+        const rol = localStorage.getItem("rol");
   
         // Actualizar estados locales
         setToken(token);
         setUserId(id);
+        setRol(rol);
         setEstadoLogin(!!token);
   
         // Validar antes de llamar a la API
@@ -52,14 +56,17 @@ export default function Navbar() {
   
     cargarDatosUsuario();
   }, []);
-  
 
   const handleLogout = () => {
-    setUserId(localStorage.getItem("id_user"));
-    setToken(localStorage.getItem("access_token"));
+    localStorage.removeItem("id_user");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("rol");
+    setUserId(null);
+    setToken(null);
+    setRol(null);
     setEstadoLogin(false);
     setMenuUsuario(false);
-    router.push('/login');
+    router.push('/');
   };
 
   const desplegarMenuUsuario = (menuName) => {
@@ -76,18 +83,45 @@ export default function Navbar() {
     // Aquí agregas tu lógica de búsqueda real
   };
 
+  // Función para manejar el toggle del menú hamburguesa
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full p-3 shadow-lg z-50 flex items-center justify-between bg-gradient-to-b from-black to-transparent">
       <Image src="/assets/logo1.png" width={80} height={32} alt="Bicentenario de Bolivia" />
       
-      <div className="absolute left-1/2 transform -translate-x-1/2 flex space-x-6 text-white text-lg md:text-xl">
+      {/* Menú de navegación para pantallas grandes */}
+      <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6 text-white text-lg md:text-xl">
         <Link href="/" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">INICIO</Link>
         <Link href="/eventos" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">EVENTOS</Link>
         <Link href="/micalendario" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENDA</Link>
         <Link href="/agente" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENTE VIRTUAL</Link>
       </div>
 
+      {/* Menú desplegable en móviles */}
+      {menuOpen && (
+      <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out opacity-100 translate-y-0">
+        <div className="flex flex-col space-y-4 text-white text-lg">
+          <Link href="/" className="mt-4 hover:text-yellow-400">INICIO</Link>
+          <Link href="/eventos" className="hover:text-yellow-400">EVENTOS</Link>
+          <Link href="/micalendario" className="hover:text-yellow-400">AGENDA</Link>
+          <Link href="/agente" className="hover:text-yellow-400">AGENTE VIRTUAL</Link>
+        </div>
+      </div>
+    )}
+
+
+      {/* Menú de usuario */}
       <div className="ml-auto flex items-center gap-4 text-white text-3xl relative">
+        {/* Menú hamburguesa */}
+        <div className="md:hidden flex items-center">
+          <button onClick={toggleMenu} className="text-white text-3xl cursor-pointer hover:bg-yellow-500">
+            {menuOpen ? <FaTimes /> : <FaBars />} {/* Mostrar icono de barras o cerrar */}
+          </button>
+        </div>
+
         {/* Botón Buscador */}
         <button onClick={desplegarBarraBusqueda} aria-label="Buscar" className="hover:text-yellow-400">
           <FaSearch />
