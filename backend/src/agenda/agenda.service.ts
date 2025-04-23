@@ -153,6 +153,9 @@ export class AgendaService {
       where: {
         id_usuario,
       },
+      include: {
+        Eventos: true, // Esto incluirá los eventos asociados a la agenda
+      },
     });
   
     if (!agenda || agenda.length === 0) {
