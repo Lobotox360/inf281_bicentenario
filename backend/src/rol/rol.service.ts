@@ -26,6 +26,7 @@ export class RolService {
             email: true,
             telefono: true,
             pais: true,
+            ciudad: true,
             Roles: {
                 select: {
                     nombre: true,

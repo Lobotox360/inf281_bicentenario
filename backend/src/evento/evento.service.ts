@@ -345,4 +345,85 @@ export class EventoService {
     return { mensaje: '✅ Foto actualizado correctamente'};
   }
   
+  async obtenerEventosPorUsuario(id_usuario: string) {
+    const eventos = await this.prisma.agenda.findMany({
+      where: {
+        id_usuario: id_usuario,
+      },
+      include: {
+        Eventos: {
+          select: {
+            id_evento: true,
+            titulo: true,
+            descripcion: true,
+            fecha: true,
+            hora_inicio: true,
+            hora_fin: true,
+            modalidad: true,
+            puntuacion: true,
+            link_reunion: true,
+            reunion_iniciada: true,
+            foto_evento: true,
+            Ubicacion: {  // Incluimos la ubicación solo una vez aquí
+              select: {
+                ubicacion: true,
+                departamento: true,
+                latitud: true,
+                longitud: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  
+    if (!eventos || eventos.length === 0) {
+      throw new Error('No se encontraron eventos para este usuario.');
+    }
+  
+    // Mapeamos los eventos, y dentro de cada evento, asignamos la ubicación solo una vez
+    return eventos.map((agenda) => {
+      const evento = agenda.Eventos;
+      return {
+        ...evento
+      };
+    });
+  }
+  
+  
+  async obtenerTodosLosEventos() {
+    const eventos = await this.prisma.eventos.findMany({
+      include: {
+        Ubicacion: {
+          select: {
+            ubicacion: true,
+            departamento: true,
+            latitud: true,
+            longitud: true,
+          },
+        },
+      },
+    });
+  
+    if (!eventos || eventos.length === 0) {
+      throw new Error('No se encontraron eventos.');
+    }
+  
+    // Asegurarse de que la ubicación solo se incluya una vez en el evento
+    return eventos.map((evento) => ({
+      id_evento: evento.id_evento,
+      titulo: evento.titulo,
+      descripcion: evento.descripcion,
+      fecha: evento.fecha,
+      hora_inicio: evento.hora_inicio,
+      hora_fin: evento.hora_fin,
+      modalidad: evento.modalidad,
+      puntuacion: evento.puntuacion,
+      link_reunion: evento.link_reunion,
+      reunion_iniciada: evento.reunion_iniciada,
+      foto_evento: evento.foto_evento,
+      ubicacion: evento.Ubicacion, // Incluir ubicación solo una vez
+    }));
+  }
+  
 }

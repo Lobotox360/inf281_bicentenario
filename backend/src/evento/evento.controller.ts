@@ -93,6 +93,21 @@ export class EventoController {
     const evento = await this.eventoService.obtenerEventoPorId(+id);
     return evento;
   }
+
+  //Obtiene todos los eventos de un usuario
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @Get('evento/usuario/:id')
+  async obtenerEventosPorId(@Param('id') id: string) {
+    return this.eventoService.obtenerEventosPorUsuario(id);
+  }
+
+  // Obtiene todos los eventos mas su ubicacion
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @Get('calendario/evento')
+  async obtenerTodosLosEventos() {
+    return this.eventoService.obtenerTodosLosEventos();
+  }
+  
   
   // Edita datos de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
@@ -168,5 +183,6 @@ export class EventoController {
   async getTop10Eventos() {
     return this.eventoService.getTop10Eventos();
   }
+
 
 }
