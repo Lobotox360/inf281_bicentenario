@@ -12,96 +12,90 @@ const EditarPerfil = () => {
     const [revisible, setRevisible] = useState(false);
     const [usuario, setUsuario] = useState(null);
 
-    
     const { register, handleSubmit, setValue } = useForm();
 
     // Obtener datos del usuario desde la API
     useEffect(() => {
         if (typeof window !== "undefined") {
-          // Acceder a localStorage solo en el cliente
-          const userId = localStorage.getItem("id_user");
-          const token = localStorage.getItem("access_token");
-      
-          if (!userId || !token) {
-            console.error("No hay usuario logueado.");
-            return;
-          }
-      
-          const fetchUserData = async () => {
-            try {
-              const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
-                method: "GET",
-                headers: {
-                  "Authorization": `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              });
-      
-              if (!response.ok) throw new Error("Error al obtener los datos del usuario.");
-      
-              const userData = await response.json();
-              setUsuario(userData);
-      
-              // Rellenar los valores en el formulario
-              setValue("nombre", userData.nombre);
-              setValue("apellidopaterno", userData.apellidopaterno);
-              setValue("apellidomaterno", userData.apellidomaterno);
-              setValue("genero", userData.genero);
-              setValue("telefono", userData.telefono);
-              setValue("email", userData.email);
-              setValue("pais", userData.pais);
-              setValue("ciudad", userData.ciudad);
-      
-            } catch (error) {
-              console.error("Error al obtener datos del usuario:", error);
-            }
-          };
-      
-          fetchUserData();
-        }
-      }, [setValue]);
+            const userId = localStorage.getItem("id_user");
+            const token = localStorage.getItem("access_token");
 
-      const cambiarFoto = async (e) => {
+            if (!userId || !token) {
+                console.error("No hay usuario logueado.");
+                return;
+            }
+
+            const fetchUserData = async () => {
+                try {
+                    const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    });
+
+                    if (!response.ok) throw new Error("Error al obtener los datos del usuario.");
+
+                    const userData = await response.json();
+                    setUsuario(userData);
+
+                    setValue("nombre", userData.nombre);
+                    setValue("apellidopaterno", userData.apellidopaterno);
+                    setValue("apellidomaterno", userData.apellidomaterno);
+                    setValue("genero", userData.genero);
+                    setValue("telefono", userData.telefono);
+                    setValue("email", userData.email);
+                    setValue("pais", userData.pais);
+                    setValue("ciudad", userData.ciudad);
+
+                } catch (error) {
+                    console.error("Error al obtener datos del usuario:", error);
+                }
+            };
+
+            fetchUserData();
+        }
+    }, [setValue]);
+
+    const cambiarFoto = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-      
 
         const formData = new FormData();
         formData.append("foto", file);
         try {
-          const id = localStorage.getItem("id_user");
-          const token = localStorage.getItem("access_token");
-            
-          const response = await fetch(`https://inf281-production.up.railway.app/usuario/foto/${id}`, {
-            method: "PUT",
-            headers: {
-              "Authorization": `Bearer ${token}`,
-            },
-            body: formData,
-          });
-      
-          if (!response.ok) throw new Error("Error al subir la foto");
-      
-          const result = await response.json();
-          window.location.reload();
-          alert("✅ Foto de perfil actualizada.");
-          setUsuario(prev => ({ ...prev, foto: result.foto })); // actualizar foto en el estado
+            const id = localStorage.getItem("id_user");
+            const token = localStorage.getItem("access_token");
+
+            const response = await fetch(`https://inf281-production.up.railway.app/usuario/foto/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error("Error al subir la foto");
+
+            const result = await response.json();
+            window.location.reload();
+            alert("✅ Foto de perfil actualizada.");
+            setUsuario(prev => ({ ...prev, foto: result.foto })); // actualizar foto en el estado
         } catch (error) {
-          console.error("Error al cambiar la foto:", error);
-          alert("❌ No se pudo cambiar la foto.");
+            console.error("Error al cambiar la foto:", error);
+            alert("❌ No se pudo cambiar la foto.");
         }
-      };
-      
-      
+    };
 
     // Función para actualizar los datos del usuario
     const onSubmit = async (data) => {
         const userId = localStorage.getItem("id_user");  // Leer directamente desde localStorage
         const token = localStorage.getItem("access_token");
-    
+
         // Filtrar solo los datos necesarios
         const { nombre, apellidopaterno, apellidomaterno, telefono, pais, ciudad, genero } = data;
-        
+
         // Crear un nuevo objeto con solo los datos que necesitas
         const datos = {
             nombre,
@@ -112,7 +106,7 @@ const EditarPerfil = () => {
             ciudad,
             genero
         };
-            
+
         try {
             const response = await fetch(`https://inf281-production.up.railway.app/usuario/${userId}`, {
                 method: "PUT",
@@ -122,30 +116,29 @@ const EditarPerfil = () => {
                 },
                 body: JSON.stringify(datos),  // Enviar solo los datos necesarios
             });
-    
+
             if (!response.ok) throw new Error("Error al actualizar los datos.");
-    
+
             alert("✅ Perfil actualizado con éxito.");
         } catch (error) {
             console.error("Error en la actualización del perfil:", error);
             alert("❌ No se pudo actualizar el perfil.");
         }
     };
-    
 
     const handleBack = () => {
-        router.back(); // Regresa a la página anterior en el historial
-      };  
+        router.back();
+    };
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-red-800 via-yellow-600 to-green-800 p-6">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
-                <div className="grid grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Caja izquierda - Foto de perfil */}
-                    <div className="flex flex-col items-center justify-start">
+                    <div className="flex flex-col items-center justify-start md:col-span-1">
                         <h2 className="text-xl font-semibold text-center mb-4">FOTO DE PERFIL</h2>
                         <img
-                            src={usuario?.foto || '../assets/ads.jpg'} // Imagen de perfil, si no hay, se usa una imagen por defecto
+                            src={usuario?.foto || '../assets/cargando.png'} // Imagen de perfil, si no hay, se usa una imagen por defecto
                             alt="Foto de perfil"
                             className="w-65 h-65 rounded-full object-cover mb-4"
                         />
@@ -161,11 +154,11 @@ const EditarPerfil = () => {
                                 htmlFor="fileInput"
                                 className="bg-orange-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-yellow-400"
                             >
-                                Seleccionar archivo
+                                Cambiar Foto
                             </label>
-                            </div>
-                        
                         </div>
+                    </div>
+
                     {/* Caja derecha - Formulario */}
                     <div className="col-span-2">
                         <h2 className="text-xl font-semibold text-center mb-4">MIS DATOS PERSONALES</h2>
@@ -242,19 +235,17 @@ const EditarPerfil = () => {
                             </div>
                             {/* Botones */}
                             <div className="flex justify-between space-x-4 mt-6">
-                                <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600" onClick={handleBack}>
+                                <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-red-600" onClick={handleBack}>
                                     Salir sin guardar
                                 </button>
                                 <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-green-600">
                                     Guardar cambios
                                 </button>
                             </div>
-                    
+
                         </form>
                     </div>
-                    
                 </div>
-                    
             </div>
         </div>
     );

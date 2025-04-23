@@ -14,10 +14,10 @@ const ModuloComentarios = ({eventoId}) => {
   useEffect(() => {
     const fetchComentarios = async () => {
         try {
-            const response = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/${eventoId}`); 
-            const data = await response.json();
-            if (response.ok) {
-                setComentarios(data);
+            const res = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/${eventoId}`); 
+            const datos = await res.json();
+            if (res.ok) {
+                setComentarios(datos);
             } else {
                 console.error('Error al obtener los comentarios');
             }
@@ -102,12 +102,10 @@ const ModuloComentarios = ({eventoId}) => {
     }
   };
 
-
-
   return (
     <div>
       <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
-        {comentarios.length > 0 ? (
+        {comentarios.length > 0 && !comentarios.every(com => com.comentario === null) ? (
           comentarios.map((com, index) => (
             // Verifica si el comentario no es nulo o vacío antes de mostrar el bloque
             com.comentario && com.comentario.trim() !== "" && (
@@ -148,7 +146,7 @@ const ModuloComentarios = ({eventoId}) => {
                 ></textarea>
             </div>
             <div className='flex justify-between'>
-              <select value={puntuacionUsuario} onChange={handlePuntuacionChange}>
+              <select value={puntuacionUsuario} onChange={handlePuntuacionChange} className='cursor-pointer'>
                 <option value="" disabled>Calificación</option>
                 <option value="1">1</option>
                 <option value="2">2</option>

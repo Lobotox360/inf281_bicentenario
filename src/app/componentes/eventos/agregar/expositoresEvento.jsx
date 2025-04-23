@@ -88,7 +88,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
             <button
                 type="button"
                 onClick={() => setMostrarAgregar(true)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
             >
                 Crear Nuevo Expositor
             </button>
@@ -134,7 +134,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
                 <button
                 type="button"
                 onClick={handleAgregarExpositor}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-green-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-green-400"
                 >
                 Guardar Nuevo Expositor
                 </button>
@@ -148,11 +148,11 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
           <ul>
             {expositoresAgregados.map((expositor, index) => (
                 <li key={index} className="flex justify-between items-center mb-2">
-                    <span>{expositor.nombre} - {expositor.especialidad}</span>
+                    <span>{expositor.nombre} - {expositor.especialidad} - {expositor.institucion} - {expositor.contacto}</span>
                     <button
                     type="button"
                     onClick={() => handleQuitarExpositor(index)}
-                    className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                    className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                     >
                     Eliminar
                     </button>
@@ -166,7 +166,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
           <button
             type="button"
             onClick={anteriorPaso}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
           >
             Volver
           </button>
@@ -174,7 +174,7 @@ const ExpositoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, even
           <button
             type="button"
             onClick={handleSiguientePaso} // Validar antes de avanzar
-            className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente
           </button>

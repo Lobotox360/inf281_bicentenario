@@ -63,7 +63,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
           <button
             type="button"
             onClick={() => setMostrarAgregar(true)}
-            className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
           >
             Crear Nuevo Teléfono
           </button>
@@ -85,7 +85,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
               <button
                 type="button"
                 onClick={handleAgregarTelefono}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
               >
                 Guardar Teléfono
               </button>
@@ -103,7 +103,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
                 <button
                   type="button"
                   onClick={() => handleQuitarTelefono(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                 >
                   Eliminar
                 </button>
@@ -117,7 +117,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
           <button
             type="button"
             onClick={anteriorPaso}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
           >
             Volver
           </button>
@@ -125,7 +125,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
           <button
             type="button"
             onClick={handleSiguientePaso} // Validar antes de avanzar
-            className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente
           </button>

@@ -131,26 +131,26 @@ const CarruselEventos = ({departamento }) => {
             <h2 className="text-white text-3xl font-semibold text-center mb-4">EVENTOS EN {departamento.toUpperCase()}</h2>
             <div key={indexActual} className="relative bg-gray-200 rounded-lg overflow-hidden shadow-lg animate-fadeIn">
               <h2 className="text-xl font-semibold text-center">{eventosDepartamento[indexActual].titulo}</h2>
-              <div className="flex justify-between items-center bg-white">
-                <div className="w-full px-6">
+              <div className="flex flex-col md:flex-row justify-between items-center bg-white">
+                <div className="relative sm:w-3xl w-full max-w order-1 md:order-2">
+                  <Image src={eventosDepartamento[indexActual].foto_evento} alt="Evento" width={500} height={320} className="rounded-lg"/>
+                </div>
+                
+                <div className="w-full px-6 order-2 md:order-1">
                   <p className="text-gray-600 mt-2 mx-10 text-center">{eventosDepartamento[indexActual].descripcion}</p>
                   <p className="text-gray-600 mt-2 mx-10 text-left"><strong>HORARIO: </strong> {hora_inicio} a {hora_fin}</p>
                   <p className="text-gray-600 mt-2 mx-10 text-left"><strong>FECHA: </strong> {fecha}</p>
                   <p className="text-gray-600 mt-2 mx-10 text-left"><strong>ESTADO: </strong>{eventosDepartamento[indexActual].estado} <strong>MODALIDAD: </strong>{eventosDepartamento[indexActual].modalidad}</p>
                   <p className="text-gray-600 mt-2 mx-10 text-left"><strong>COSTO: </strong>{eventosDepartamento[indexActual].costo} Bs.</p>
                 </div>
-                <div className="relative sm:w-3xl w-full max-w">
-                  <Image src={eventosDepartamento[indexActual].foto_evento} alt="Evento" width={500} height={320} className="rounded-lg"/>
-                </div>
               </div>
-
               <div className="absolute top-1/2 left-0 transform -translate-y-1/2 pl-4">
-                <button onClick={handleAnterior} className="bg-red-500 text-white p-3 rounded-full hover:bg-yellow-500">
+                <button onClick={handleAnterior} className="cursor-pointer bg-red-500 text-white p-3 rounded-full hover:bg-yellow-500">
                   <FaArrowLeft />
                 </button>
               </div>
               <div className="absolute top-1/2 right-0 transform -translate-y-1/2 pr-4">
-                <button onClick={handleSiguiente} className="bg-red-500 text-white p-3 rounded-full hover:bg-yellow-500">
+                <button onClick={handleSiguiente} className="cursor-pointer bg-red-500 text-white p-3 rounded-full hover:bg-yellow-500">
                   <FaArrowRight />
                 </button>
               </div>
@@ -160,9 +160,9 @@ const CarruselEventos = ({departamento }) => {
                 <Link href={`/eventos/vermas/${eventosDepartamento[indexActual].id_evento}`} className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400">
                   VER MÁS
                 </Link>
-                {userRole === 'Administrador' || 'administrador_eventos' && (
+                {(userRole === 'Administrador' || userRole === 'administrador_eventos') && (
                   <Link href={`/eventos/editar/${eventosDepartamento[indexActual].id_evento}`}>
-                    <button className="text-yellow py-2 px-6 rounded-full hover:text-red-500">
+                    <button className="cursor-pointer text-yellow py-2 px-6 rounded-full hover:text-red-500">
                       <FaEdit size={20} />
                     </button>
                   </Link>

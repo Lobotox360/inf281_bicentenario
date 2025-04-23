@@ -216,12 +216,12 @@ export default function VerMasEvento() {
           </div>
         </div>
         <div className="flex justify-between">
-          <Link href={'../'} className="bg-red-500 text-white py-2 px-6 rounded-full hover:bg-orange-400">
+          <Link href={'../'} className="cursor-pointer bg-red-500 text-white py-2 px-6 rounded-full hover:bg-orange-400">
               VOLVER
           </Link>
           <button
                 onClick={() => yaAgendado ? handleDesinscripcion(eventoId) : handleInscripcion(eventoId)} 
-                className="bg-green-500 text-white py-2 px-6 rounded-full hover:bg-yellow-300"
+                className="cursor-pointer bg-green-500 text-white py-2 px-6 rounded-full hover:bg-yellow-300"
           >
             {yaAgendado ? "DESAGENDAR" : "AGENDAR"} 
           </button>

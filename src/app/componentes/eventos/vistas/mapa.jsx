@@ -18,7 +18,7 @@ const MapaEvento = ({ latitud, longitud, direccion }) => {
         <GoogleMap
           mapContainerStyle={{ width: '100%', height: '500px' }}
           center={coordenadas || { lat: -16.5, lng: -68.1193 }}  // Coordenadas predeterminadas razonables si aún no se tienen
-          zoom={14}
+          zoom={17}
         >
           {coordenadas && <Marker position={coordenadas} title={direccion}/>}
         </GoogleMap>

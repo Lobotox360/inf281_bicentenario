@@ -7,7 +7,7 @@ import Navbar from '../inicio/navbar';
 const EventosAdmin = () => {
     const router = useRouter();
     const [eventos, setEventos] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const [barraBusqueda, setBarraBusqueda] = useState('');
     const [modalidadFiltro, setModalidadFiltro] = useState('');  // Nuevo estado para modalidad
     const [estadoFiltro, setEstadoFiltro] = useState('');  // Nuevo estado para estado
 
@@ -22,7 +22,6 @@ const EventosAdmin = () => {
         }
     };
 
-    // Llamar a la función fetchEventos cuando el componente se monta
     useEffect(() => {
         fetchEventos();
     }, []);
@@ -31,12 +30,10 @@ const EventosAdmin = () => {
         router.push(`/eventos/agregar`);
     };
 
-    // Función para manejar la edición del evento
     const handleEditarEvento = (id_evento) => {
         router.push(`/eventos/editar/${id_evento}`);
     };
 
-    // Función para eliminar un evento
     const handleEliminarEvento = async (id_evento) => {
         const confirmarEliminar = window.confirm("¿Estás seguro de eliminar este evento?");
         if (confirmarEliminar) {
@@ -53,12 +50,11 @@ const EventosAdmin = () => {
         }
     };
 
-    // Filtrar eventos según el término de búsqueda, modalidad y estado
     const eventosFiltrados = eventos.filter(evento =>
-        (evento.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        evento.descripcion.toLowerCase().includes(searchTerm.toLowerCase())||
-        evento.modalidad.toLowerCase().includes(searchTerm.toLowerCase())||
-        evento.estado.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        (evento.titulo.toLowerCase().includes(barraBusqueda.toLowerCase()) ||
+        evento.descripcion.toLowerCase().includes(barraBusqueda.toLowerCase())||
+        evento.modalidad.toLowerCase().includes(barraBusqueda.toLowerCase())||
+        evento.estado.toLowerCase().includes(barraBusqueda.toLowerCase())) &&
         (modalidadFiltro === '' || evento.modalidad === modalidadFiltro) &&
         (estadoFiltro === '' || evento.estado === estadoFiltro)
     );
@@ -74,8 +70,8 @@ const EventosAdmin = () => {
                     type="text"
                     placeholder="Buscar eventos..."
                     className="px-4 py-2 border rounded-lg w-full"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}  
+                    value={barraBusqueda}
+                    onChange={(e) => setBarraBusqueda(e.target.value)}  
                 />
             </div>
 
@@ -91,7 +87,6 @@ const EventosAdmin = () => {
                     <option value="presencial">Presencial</option>
                     <option value="virtual">Virtual</option>
                     <option value="hibrida">Hibrida</option>
-                    {/* Agrega más opciones de modalidad si es necesario */}
                 </select>
 
                 {/* Filtro por estado */}
@@ -104,7 +99,6 @@ const EventosAdmin = () => {
                     <option value="Próximo">Próximo</option>
                     <option value="En curso">En curso</option>
                     <option value="Finalizado">Finalizado</option>
-                    {/* Agrega más opciones de estado si es necesario */}
                 </select>
             </div>
 
@@ -151,10 +145,7 @@ const EventosAdmin = () => {
             </table>
 
             <div className='flex justify-center'>
-                <button
-                    onClick={() => handleAgregarEvento()}
-                    className="bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400"
-                >
+                <button onClick={() => handleAgregarEvento()} className="bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400">
                     Agregar
                 </button>
             </div>

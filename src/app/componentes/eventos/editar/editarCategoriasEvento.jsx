@@ -59,6 +59,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
     }
   }, [eventoId]);
   // Función para agregar una categoría seleccionada
+// Función para agregar una categoría seleccionada
   const handleAgregarCategoria = () => {
     if (!selectedCategoria) return;
 
@@ -66,7 +67,8 @@ const EditarCategoriasEvento = ({ eventoId}) => {
       (categoria) => categoria.id_categoria === selectedCategoria.value
     );
 
-    if (categoriaSeleccionada && !addedCategorias.some(c => c.value === categoriaSeleccionada.value)) {
+    // Verificar si la categoría ya ha sido añadida
+    if (categoriaSeleccionada && !addedCategorias.some(c => c.id_categoria === categoriaSeleccionada.id_categoria)) {
       const nuevosCategorias = [...addedCategorias, categoriaSeleccionada];
       setAddedCategorias(nuevosCategorias);
       setSelectedCategoria(''); // Limpiar la selección
@@ -170,7 +172,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
             <button
                 type="button"
                 onClick={handleAgregarCategoria}
-                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+                className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
             >
                 Añadir Categoría
             </button>
@@ -181,7 +183,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
             <button
                 type="button"
                 onClick={() => setShowAddForm(true)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
             >
                 Crear Nueva Categoría
             </button>
@@ -211,7 +213,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
               <button
                 type="button"
                 onClick={handleAgregarNuevaCategoria}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
               >
                 Guardar Nueva Categoría
               </button>
@@ -230,7 +232,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
                 <button
                   type="button"
                   onClick={() => handleQuitarCategoria(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                 >
                   Eliminar
                 </button>
@@ -244,14 +246,14 @@ const EditarCategoriasEvento = ({ eventoId}) => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
           >
             Salir sin guardar
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Guardar cambios y salir
           </button>

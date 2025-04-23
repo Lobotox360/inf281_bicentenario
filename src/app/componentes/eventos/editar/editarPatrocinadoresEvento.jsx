@@ -183,7 +183,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
           <button
             type="button"
             onClick={handleAgregarPatrocinador}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Añadir Patrocinador
           </button>
@@ -192,7 +192,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
           <button
             type="button"
             onClick={() => setShowAddForm(true)}
-            className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
           >
             Crear Nuevo Patrocinador
           </button>
@@ -222,7 +222,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
               <button
                 type="button"
                 onClick={handleAgregarNuevoPatrocinador}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-300"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-300"
               >
                 Guardar Nuevo Patrocinador
               </button>
@@ -240,7 +240,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
                 <button
                   type="button"
                   onClick={() => handleQuitarPatrocinador(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                 >
                   Eliminar
                 </button>
@@ -254,14 +254,14 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
           >
             Salir sin guardar
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Guardar cambios y salir
           </button>

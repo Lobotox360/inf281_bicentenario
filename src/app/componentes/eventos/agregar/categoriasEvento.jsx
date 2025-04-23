@@ -132,7 +132,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
               <button
                 type="button"
                 onClick={handleAgregarCategoria}
-                className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+                className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
               >
                 Añadir Categoría
               </button>
@@ -143,7 +143,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
               <button
                 type="button"
                 onClick={() => setShowAddForm(true)}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
               >
                 Crear Nueva Categoría
               </button>
@@ -174,7 +174,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
               <button
                 type="button"
                 onClick={handleAgregarNuevaCategoria}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
               >
                 Guardar Nueva Categoría
               </button>
@@ -192,7 +192,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
                 <button
                   type="button"
                   onClick={() => handleQuitarCategoria(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                 >
                   Eliminar
                 </button>
@@ -206,7 +206,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
           <button
             type="button"
             onClick={anteriorPaso}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
           >
             Volver
           </button>
@@ -214,7 +214,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
           <button
             type="button"
             onClick={handleSiguientePaso} // Validar antes de avanzar
-            className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Siguiente
           </button>

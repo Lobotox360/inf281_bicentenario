@@ -30,17 +30,14 @@ const EditarTelefonosEvento = ({ eventoId }) => {
 
   // Función para agregar teléfono
   const handleAgregarTelefono = () => {
-    if (!nuevoTelefono.telefono) return; // Validar que el número de teléfono no esté vacío
-  
-    // Evitar agregar teléfonos repetidos
-    if (!telefonosAgregados.some(telofono => telofono.telefono === nuevoTelefono.telefono)) {
+    if (!nuevoTelefono.telefono) return;
+    if (!telefonosAgregados.some(telofono => telofono.numero === nuevoTelefono.telefono)) {
       const nuevosTelefonos = [...telefonosAgregados, nuevoTelefono];
       setTelefonosAgregados(nuevosTelefonos);
-      
-      // Limpiar el campo de teléfono después de agregar
-      setNuevoTelefono({ telefono: '' }); 
+      setNuevoTelefono({ telefono: '' });
     }
   };
+
 
   // Función para quitar un teléfono
   const handleQuitarTelefono = (index) => {
@@ -95,7 +92,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
           <button
             type="button"
             onClick={() => setMostrarAgregar(true)}
-            className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
           >
             Crear Nuevo Teléfono
           </button>
@@ -117,7 +114,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
               <button
                 type="button"
                 onClick={handleAgregarTelefono}
-                className="bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
               >
                 Guardar Teléfono
               </button>
@@ -135,7 +132,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
                 <button
                   type="button"
                   onClick={() => handleQuitarTelefono(index)}
-                  className="bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
                 >
                   Eliminar
                 </button>
@@ -149,14 +146,14 @@ const EditarTelefonosEvento = ({ eventoId }) => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
           >
             Salir sin guardar
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Guardar cambios y salir
           </button>

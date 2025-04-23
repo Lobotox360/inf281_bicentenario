@@ -3,11 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
-  const [informacion, setInformacion] = useState(eventoData.informacion || {}); // Inicializa con los datos previos
-  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const [informacion, setInformacion] = useState(eventoData.informacion || {}); 
+  const [error, setError] = useState(''); 
+  const router = useRouter();
 
   useEffect(() => {
-    // Si los datos de `eventoData` cambian, actualizar `informacion`
     setInformacion(eventoData.informacion || {});
   }, [eventoData]);
 
@@ -38,6 +38,11 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
       siguientePaso(); // Avanza al siguiente paso
     }
   };
+
+  const handleBack = () => {
+    router.back();
+};  
+
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -76,7 +81,7 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
               id="modalidad"
               value={informacion.modalidad || ''}
               onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
               required
             >
               <option value="" disabled>Seleccione una modalidad</option>
@@ -108,7 +113,7 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
               name="horaInicio"
               value={informacion.horaInicio || ''}
               onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
           <div className="w-full">
@@ -119,18 +124,17 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
               name="horaFin"
               value={informacion.horaFin || ''}
               onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
         </div>
 
         {/* Botón para avanzar al siguiente paso */}
-        <div className="flex justify-center">
-          <button
-            type="button"
-            onClick={handleSubmit}  // Enviar los datos y avanzar
-            className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-          >
+        <div className="flex justify-between">
+          <button type="button" onClick={handleBack} className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-red-400">
+            Volver
+          </button>
+          <button type="button" onClick={handleSubmit} className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400">
             Siguiente
           </button>
         </div>

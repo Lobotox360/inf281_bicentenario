@@ -98,7 +98,7 @@ const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
           <button
             type="button"
             onClick={anteriorPaso}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
           >
             Volver
           </button>
@@ -106,7 +106,7 @@ const FotoEvento = ({anteriorPaso, handleUpdateData, eventoData }) => {
           <button
             type="button"
             onClick={handleFinalSubmit}  // Guarda la imagen y todos los datos
-            className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Finalizar
           </button>

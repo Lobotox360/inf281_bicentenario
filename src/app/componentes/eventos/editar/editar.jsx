@@ -26,6 +26,7 @@ const EditarEvento = ({ eventoId }) => {
     // Llamar a la función fetchEditar solo cuando el componente esté montado
     fetchEditar();
   }, [eventoId]);  // Solo se ejecutará cuando el eventoId cambie
+  
 
   return (
     <div>
@@ -73,6 +74,9 @@ const EditarEvento = ({ eventoId }) => {
           <Link href={`/eventos/editar/${eventoId}/foto`}>
             <h3 className="text-white text-center text-xl font-semibold">Editar foto</h3>
           </Link>
+        </div>
+        <div>
+          
         </div>
       </div>
     </div>

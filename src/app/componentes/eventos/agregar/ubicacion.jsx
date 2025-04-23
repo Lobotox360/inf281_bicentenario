@@ -101,6 +101,35 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     });
   };
 
+  // Función para actualizar la ubicación en el mapa cuando se hace clic en "Buscar"
+  const handleBuscarUbicacion = () => {
+    if (!ubicacion) return; // Evitar buscar si el campo está vacío
+    geolocalizarUbicacion(ubicacion);
+  };
+
+  // Función para geolocalizar la ubicación ingresada
+  const geolocalizarUbicacion = async (direccion) => {
+    if (!direccion) return;
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ address: direccion }, (results, status) => {
+      if (status === 'OK') {
+        const latLng = results[0].geometry.location;
+        const nuevaUbicacion = {
+          lat: latLng.lat(),
+          lng: latLng.lng(),
+        };
+
+        setCoordenadas(nuevaUbicacion);
+        setLatitud(nuevaUbicacion.lat);
+        setLongitud(nuevaUbicacion.lng);
+        setUbicacion(results[0].formatted_address);
+      } else {
+        console.error('No se pudo encontrar la ubicación: ' + status);
+      }
+    });
+  };
+
   // Validación antes de avanzar al siguiente paso
   const handleSiguientePaso = () => {
     // Verificar que todos los campos necesarios estén llenos
@@ -146,7 +175,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
               id="departamento"
               value={departamento}
               onChange={handleDepartamentoChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="" disabled>Seleccione un departamento</option>
               <option value="La Paz">La Paz</option>
@@ -162,23 +191,29 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
           </div>
 
           {/* Campo ubicación */}
-          <div className="mb-4">
-            <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700">Ubicación</label>
+          <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700">Ubicación</label>
+          <div className="flex justify-between mb-4 ">
             <input
               type="text"
               id="ubicacion"
               value={ubicacion}
               onChange={(e) => setUbicacion(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
-              disabled
             />
+            <button
+              type="button"
+              onClick={handleBuscarUbicacion} // Buscar ubicación al hacer clic en el botón
+              className="cursor-pointer bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-400"
+            >
+              Buscar
+            </button>
           </div>
 
           {/* Mapa de Google */}
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '400px' }}
             center={coordenadas}
-            zoom={10}
+            zoom={12}
             onClick={handleMapClick}
           >
             <Marker position={coordenadas} />
@@ -201,14 +236,14 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
             <button
               type="button"
               onClick={anteriorPaso}
-              className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+              className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
             >
               Volver
             </button>
             <button
               type="button"
               onClick={handleSiguientePaso} // Validar antes de avanzar
-              className="bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+              className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
             >
               Siguiente
             </button>

@@ -102,13 +102,13 @@ const EditarFotoEvento = ({eventoId }) => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
           >
             Salir sin guardar
           </button>
           <button
             type="submit" // Cambiado a 'submit' para enviar el formulario
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Guardar cambios y salir
           </button>

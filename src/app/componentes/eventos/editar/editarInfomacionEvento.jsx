@@ -129,7 +129,7 @@ const EditarInformacionEvento = ({eventoId}) => {
               id="modalidad"
               value={informacion.modalidad}
               onChange={handleInputChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
             >
               <option value="" disabled>Selecciona una modalidad</option>
               <option value="presencial">Presencial</option>
@@ -180,14 +180,14 @@ const EditarInformacionEvento = ({eventoId}) => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
           >
             Salir sin guardar
           </button>
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
           >
             Guardar cambios y salir
           </button>
