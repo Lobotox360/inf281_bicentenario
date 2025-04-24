@@ -101,18 +101,17 @@ export default function Navbar() {
       </div>
 
       {/* Menú desplegable en móviles */}
-      {menuOpen && (
-        <div 
-          className={`absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
-        >
-          <div className="flex flex-col space-y-4 text-white text-lg">
-            <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
-            <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
-            <Link href="/micalendario" className="text-center hover:text-yellow-400">AGENDA</Link>
-            <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE VIRTUAL</Link>
-          </div>
+      <div 
+        className={`absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[-100%] pointer-events-none'}`}
+      >
+        <div className="flex flex-col space-y-4 text-white text-lg">
+          <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
+          <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
+          <Link href="/micalendario" className="text-center hover:text-yellow-400">AGENDA</Link>
+          <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE VIRTUAL</Link>
         </div>
-      )}
+      </div>
+
 
 
 
@@ -120,11 +119,8 @@ export default function Navbar() {
       <div className="ml-auto flex items-center gap-4 text-white text-3xl relative">
         {/* Menú hamburguesa */}
         <div className="md:hidden flex items-center">
-          <button 
-            onClick={toggleMenu} 
-            className="text-white text-3xl cursor-pointer hover:bg-yellow-500"
-          >
-            {menuOpen ? <FaTimes /> : <FaBars />} {/* Mostrar icono de barras o cerrar */}
+          <button onClick={() => setMenuOpen(!menuOpen)}>
+            {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
 
