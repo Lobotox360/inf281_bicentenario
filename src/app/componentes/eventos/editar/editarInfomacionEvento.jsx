@@ -150,7 +150,7 @@ const EditarInformacionEvento = ({eventoId}) => {
             />
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
+        <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4">
           <div className="w-full">
             <label htmlFor="hora_inicio" className="block text-sm font-medium text-gray-700">Hora inicio</label>
             <input
@@ -162,7 +162,7 @@ const EditarInformacionEvento = ({eventoId}) => {
               className="w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
-          <div className="w-full">
+          <div className="w-full mt-4 sm:mt-0">
             <label htmlFor="hora_fin" className="block text-sm font-medium text-gray-700">Hora fin</label>
             <input
               type="datetime-local"
@@ -175,8 +175,9 @@ const EditarInformacionEvento = ({eventoId}) => {
           </div>
         </div>
 
+
         {/* Botón para guardar los cambios */}
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
           <button
             type="button"
             onClick={handleBack}

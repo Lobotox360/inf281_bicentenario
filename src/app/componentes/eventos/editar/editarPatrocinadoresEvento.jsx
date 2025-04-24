@@ -179,7 +179,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
         </div>
 
         {/* Botón para agregar patrocinador de la lista */}
-        <div className="flex justify-center mt-4 space-x-8">
+        <div className="flex flex-col sm:flex-row justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-8">
           <button
             type="button"
             onClick={handleAgregarPatrocinador}
@@ -250,7 +250,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
         </div>
 
         {/* Botones de navegación */}
-        <div className="flex justify-between mt-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
           <button
             type="button"
             onClick={handleBack}

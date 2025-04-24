@@ -142,7 +142,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
         </div>
 
         {/* Botones de navegación */}
-        <div className="flex justify-between mt-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
           <button
             type="button"
             onClick={handleBack}
