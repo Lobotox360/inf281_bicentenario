@@ -104,7 +104,7 @@ const InformacionEvento = ({ siguientePaso, handleUpdateData, eventoData }) => {
             />
           </div>
         </div>
-        <div className="mb-4 flex space-x-4">
+        <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4">
           <div className="w-full">
             <label htmlFor="hora_inicio" className="block text-sm font-medium text-gray-700">Hora inicio</label>
             <input

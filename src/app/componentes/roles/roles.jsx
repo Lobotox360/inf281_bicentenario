@@ -202,7 +202,7 @@ const AdministracionRoles = () => {
             {/* Modal */}
             {modalAbierto && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-md w-1/3">
+                    <div className="bg-white p-6 rounded-md w-3/4">
                         <h3 className="text-center text-xl font-semibold mb-4">Editar rol de {usuarioSeleccionado?.nombre}</h3>
                         <p className="font-semibold mb-4">Rol actual: {usuarioSeleccionado?.Roles.nombre}</p>
                         <div>

@@ -167,27 +167,23 @@ const EditarCategoriasEvento = ({ eventoId}) => {
         </div>
 
         {/* Botón para agregar categoría de la lista */}
-        <div className="flex justify-center mt-4 space-x-8">
-            <div className="mb-4">
-            <button
-                type="button"
-                onClick={handleAgregarCategoria}
-                className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-            >
-                Añadir Categoría
-            </button>
-            </div>
+        <div className="flex flex-col sm:flex-row justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-8">
+          <button
+            type="button"
+            onClick={handleAgregarCategoria}
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+          >
+            Añadir Categoría
+          </button>
 
-            {/* Formulario para agregar nueva categoría */}
-            <div className="mb-4">
-            <button
-                type="button"
-                onClick={() => setShowAddForm(true)}
-                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-            >
-                Crear Nueva Categoría
-            </button>
-            </div>
+          {/* Formulario para agregar nueva categoría */}
+          <button
+            type="button"
+            onClick={() => setShowAddForm(true)}
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+          >
+            Crear Nueva Categoría
+          </button>
         </div>
         {/* Mostrar formulario de nueva categoría */}
         {showAddForm && (
@@ -242,7 +238,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
         </div>
 
         {/* Botones de navegación */}
-        <div className="flex justify-between mt-4">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
           <button
             type="button"
             onClick={handleBack}

@@ -176,7 +176,7 @@ const CarruselEventos = ({departamento }) => {
           <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} latitud={eventosDepartamento[indexActual]?.Ubicacion?.latitud} longitud={eventosDepartamento[indexActual]?.Ubicacion?.longitud} />
         </div>
         <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">COMENTARIOS</h2>
-        <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
+        <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
           <ModuloComentarios eventoId = {eventosDepartamento[indexActual].id_evento}/>
         </div>
 

@@ -130,28 +130,25 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
           />
         </div>
 
-        <div className="flex justify-center mt-4 space-x-8">
-            {/* Botón para agregar patrocinador de la lista */}
-            <div className="mb-4">
-              <button
-                  type="button"
-                  onClick={handleAgregarPatrocinador}
-                  className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-              >
-                  Añadir Patrocinador
-              </button>
-            </div>
+        <div className="flex flex-col sm:flex-row justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-8">
+          {/* Botón para agregar patrocinador de la lista */}
+          <button
+            type="button"
+            onClick={handleAgregarPatrocinador}
+            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+          >
+            Añadir Patrocinador
+          </button>
 
-            {/* Formulario para agregar nuevo patrocinador */}
-            <div className="mb-4">
-              <button
-                  type="button"
-                  onClick={() => setShowAddForm(true)}
-                  className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-              >
-                  Crear Nuevo Patrocinador
-              </button>
-            </div>
+
+          {/* Formulario para agregar nuevo patrocinador */}
+          <button
+            type="button"
+            onClick={() => setShowAddForm(true)}
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+          >
+            Crear Nuevo Patrocinador
+          </button>
         </div>
 
         {/* Mostrar formulario de nuevo patrocinador */}
