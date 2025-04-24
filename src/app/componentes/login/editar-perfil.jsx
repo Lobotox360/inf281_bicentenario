@@ -203,7 +203,7 @@ const EditarPerfil = () => {
                                 </div>
                             </div>
 
-                            {/* Contraseña */}
+                            {/* Contraseña 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <label className="block font-medium">Contraseña</label>
@@ -232,7 +232,7 @@ const EditarPerfil = () => {
                                         </button>
                                     </div>
                                 </div>
-                            </div>
+                            </div>*/}
                             {/* Botones */}
                             <div className="flex justify-between space-x-4 mt-6">
                                 <button type="button" className="bg-red-500 text-white px-4 py-2 rounded-full cursor-pointer hover:bg-red-600" onClick={handleBack}>

@@ -50,6 +50,23 @@ const EventosAdmin = () => {
         }
     };
 
+    const handleIniciarTransmicion = async (id_evento) => {
+        try {
+            const res = await fetch(`https://inf281-production.up.railway.app/eventos/iniciar-reunion/${id_evento}`, {
+                method: 'PUT', 
+            });
+            if (!res.ok) {
+                throw new Error(`Error: ${res.status} - ${res.statusText}`);
+            }
+            const datos = await res.json();
+            alert(datos.message);
+            console.log('Enlace a la reunión:', datos.link);
+        } catch (error) {
+            console.error('Error al iniciar la transmisión:', error);
+        }
+    };
+    
+
     const eventosFiltrados = eventos.filter(evento =>
         (evento.titulo.toLowerCase().includes(barraBusqueda.toLowerCase()) ||
         evento.descripcion.toLowerCase().includes(barraBusqueda.toLowerCase())||
@@ -127,6 +144,15 @@ const EventosAdmin = () => {
                         <td className="border px-4 py-2">{evento.estado}</td>
                         <td className="border px-4 py-2">{evento.link_reunion}</td>
                         <td className="border px-4 py-2">
+                        {evento.estado !== 'Finalizado' && (
+                            <button
+                                onClick={() => handleIniciarTransmicion(evento.id_evento)}
+                                className="w-full bg-green-500 text-white px-2 py-2 mb-2 rounded cursor-pointer hover:bg-green-400"
+                            >
+                                Iniciar jitsi
+                            </button>
+                            )}
+
                             <button
                                 onClick={() => handleEditarEvento(evento.id_evento)}
                                 className="w-full bg-blue-500 text-white px-2 py-2 mb-2 rounded cursor-pointer hover:bg-blue-400"

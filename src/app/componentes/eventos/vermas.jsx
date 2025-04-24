@@ -215,17 +215,27 @@ export default function VerMasEvento() {
             </div>
           </div>
         </div>
-        <div className="flex justify-between">
-          <Link href={'../'} className="cursor-pointer bg-red-500 text-white py-2 px-6 rounded-full hover:bg-orange-400">
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <Link href={'../'} className="text-center cursor-pointer bg-red-500 text-white py-2 px-6 rounded-full hover:bg-orange-400">
               VOLVER
           </Link>
-          <button
-                onClick={() => yaAgendado ? handleDesinscripcion(eventoId) : handleInscripcion(eventoId)} 
-                className="cursor-pointer bg-green-500 text-white py-2 px-6 rounded-full hover:bg-yellow-300"
-          >
-            {yaAgendado ? "DESAGENDAR" : "AGENDAR"} 
-          </button>
-          <p>{estrellas}</p>
+          {yaAgendado ? (
+              <button
+                  onClick={() => handleDesinscripcion(eventoId)}
+                  className="text-center cursor-pointer bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-orange-300"
+              >
+                  DESAGENDAR
+              </button>
+          ) : (
+              <button
+                  onClick={() => handleInscripcion(eventoId)}
+                  className="text-center cursor-pointer bg-green-500 text-white py-2 px-6 rounded-full hover:bg-green-300"
+              >
+                  AGENDAR
+              </button>
+          )}
+
+          <p className='text-center'>{estrellas}</p>
         </div>
       </div>
       <div className="max-w-4xl mx-auto mt-4">

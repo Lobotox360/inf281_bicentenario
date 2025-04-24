@@ -9,6 +9,7 @@ export default function CalendarioUsuario({ id_usuario }) {
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
   const calendarioRef = useRef(null)
 
+  // Obtener eventos desde la API
   useEffect(() => {
     const fetchEventos = async () => {
       try {
@@ -21,8 +22,8 @@ export default function CalendarioUsuario({ id_usuario }) {
             id: evento.id_evento.toString(),
             title: evento.actividades,
             start: fechaInicio.toISOString(),
+            url: evento.Eventos.link_reunion, 
             end: fechaFin.toISOString(),
-            url: evento.Eventos.link_reunion,  // URL del evento
             backgroundColor: 'blue',
           }
         })
@@ -36,27 +37,37 @@ export default function CalendarioUsuario({ id_usuario }) {
     if (id_usuario) fetchEventos()
   }, [id_usuario])
 
+  // Cambiar vista al hacer clic en un día
   const handleDateClick = (arg) => {
     const calendarApi = calendarioRef.current?.getApi()
     calendarApi?.changeView('timeGridDay', arg.date)
     setVistaActual('timeGridDay')
   }
 
+  // Función para volver a la vista mensual
   const volverAlMes = () => {
     const calendarApi = calendarioRef.current?.getApi()
     calendarApi?.changeView('dayGridMonth')
     setVistaActual('dayGridMonth')
   }
 
-  // Función para personalizar el contenido del evento en la vista de día
-  const eventRender = (info) => {
-    if (vistaActual === 'timeGridDay' && info.event.url) {
-      // Agregar un botón solo en la vista diaria
-      const button = document.createElement('button')
-      button.innerHTML = 'Ir a reunión'
-      button.className = 'ml-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-      button.onclick = () => window.open(info.event.url, '_blank')
-      info.el.appendChild(button) // Agregar el botón al evento
+  // Manejo de evento de clic (cuando se hace clic en un evento)
+  const handleEventClick = async (info) => {
+    const eventoId = info.event.id
+    try {
+      const response = await fetch('https://inf281-production.up.railway.app/agenda/asistencia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_usuario: id_usuario, 
+          id_evento: parseInt(eventoId)   
+        }),
+      })
+    } catch (error) {
+      console.error('❌ Error al registrar la asistencia:', error)
+      alert('Hubo un error con la conexión')
     }
   }
 
@@ -99,7 +110,7 @@ export default function CalendarioUsuario({ id_usuario }) {
           center: 'title'
         }}
         headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
-        eventRender={eventRender}  // Solo para la vista diaria
+        eventClick={handleEventClick} // Evento de clic para registrar la asistencia
       />
     </div>
   )

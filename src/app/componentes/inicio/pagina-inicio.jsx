@@ -63,7 +63,7 @@ export default function Inicio() {
             <section className="p-10 text-center">
                 <h2 className="text-3xl font-bold">Contenido Multimedia</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-                    {Array(8).fill(null).map((_, idx) => (
+                    {Array(4).fill(null).map((_, idx) => (
                         <iframe
                             key={idx}
                             src="https://www.youtube.com/embed/dQw4w9WgXcQ"
