@@ -8,25 +8,28 @@ const ModuloComentarios = ({eventoId}) => {
   const [comentarioUsuario, setComentarioUsuario] = useState(""); 
   const [puntuacionUsuario, setPuntuacionUsuario] = useState("");
   const [comentarios, setComentarios] = useState([]);
-  
 
 
   useEffect(() => {
     const fetchComentarios = async () => {
-        try {
-            const res = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/${eventoId}`); 
-            const datos = await res.json();
-            if (res.ok) {
-                setComentarios(datos);
-            } else {
-                console.error('Error al obtener los comentarios');
-            }
-        } catch (error) {
-            console.error('Hubo un problema con la solicitud:', error);
+      try {
+        const res = await fetch(`https://inf281-production.up.railway.app/agenda/comentarios/${eventoId}`);
+        const datos = await res.json();
+        if (res.ok) {
+          setComentarios(datos);
+        } else {
+          console.error('Error al obtener los comentarios');
         }
+      } catch (error) {
+        console.error('Hubo un problema con la solicitud:', error);
+      }
     };
-    fetchComentarios();
-  }, []);
+    
+    if (eventoId) {
+      fetchComentarios();
+    }
+  }, [eventoId]);  // Agregar eventoId como dependencia
+  
   
   useEffect(() => {
     const id = localStorage.getItem('id_user');
@@ -145,9 +148,9 @@ const ModuloComentarios = ({eventoId}) => {
                 required
                 ></textarea>
             </div>
-            <div className='flex justify-between'>
-              <select value={puntuacionUsuario} onChange={handlePuntuacionChange} className='cursor-pointer'>
-                <option value="" disabled>Calificación</option>
+            <div className='flex flex-col sm:flex-row justify-between'>
+              <select value={puntuacionUsuario} onChange={handlePuntuacionChange} className='p-2 mb-2 border-2 border-gray-500 cursor-pointer'>
+                <option value="" disabled className='text-center'>Calificación</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>

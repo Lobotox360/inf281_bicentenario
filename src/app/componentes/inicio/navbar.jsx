@@ -102,25 +102,32 @@ export default function Navbar() {
 
       {/* Menú desplegable en móviles */}
       {menuOpen && (
-      <div className="absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out opacity-100 translate-y-0">
-        <div className="flex flex-col space-y-4 text-white text-lg">
-          <Link href="/" className="mt-4 hover:text-yellow-400">INICIO</Link>
-          <Link href="/eventos" className="hover:text-yellow-400">EVENTOS</Link>
-          <Link href="/micalendario" className="hover:text-yellow-400">AGENDA</Link>
-          <Link href="/agente" className="hover:text-yellow-400">AGENTE VIRTUAL</Link>
+        <div 
+          className={`absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+        >
+          <div className="flex flex-col space-y-4 text-white text-lg">
+            <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
+            <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
+            <Link href="/micalendario" className="text-center hover:text-yellow-400">AGENDA</Link>
+            <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE VIRTUAL</Link>
+          </div>
         </div>
-      </div>
-    )}
+      )}
+
 
 
       {/* Menú de usuario */}
       <div className="ml-auto flex items-center gap-4 text-white text-3xl relative">
         {/* Menú hamburguesa */}
         <div className="md:hidden flex items-center">
-          <button onClick={toggleMenu} className="text-white text-3xl cursor-pointer hover:bg-yellow-500">
+          <button 
+            onClick={toggleMenu} 
+            className="text-white text-3xl cursor-pointer hover:bg-yellow-500"
+          >
             {menuOpen ? <FaTimes /> : <FaBars />} {/* Mostrar icono de barras o cerrar */}
           </button>
         </div>
+
 
         {/* Botón Buscador */}
         <button onClick={desplegarBarraBusqueda} aria-label="Buscar" className="hover:text-yellow-400">
@@ -132,20 +139,21 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="rounded-full object-cover border-2 border-yellow-400"/>
+                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="rounded-full object-cover border-2 border-yellow-400" />
               ) : (
                 <FaUser />
               )}
             </button>        
-            {menuUsuario && (
-              <div className="absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl">
-                <Link href={`/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
-                <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
-                <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
-                <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>
-              </div>
-            )}
+            <div 
+              className={`absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl transition-all duration-300 ease-in-out ${menuUsuario ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
+            >
+            <Link href={`/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
+            <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
+            <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
+            <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>
           </div>
+        </div>
+        
         ) : (
           <Link href="/login" className="hover:text-yellow-400"><FaUser /></Link>
         )}

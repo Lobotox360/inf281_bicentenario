@@ -76,7 +76,7 @@ const EventosAdmin = () => {
             </div>
 
             {/* Filtros por modalidad y estado */}
-            <div className="mb-4 flex gap-4">
+            <div className="mb-4 flex gap-4 flex-col sm:flex-row">
                 {/* Filtro por modalidad */}
                 <select
                     className="px-4 py-2 border rounded-lg"
@@ -102,8 +102,9 @@ const EventosAdmin = () => {
                 </select>
             </div>
 
-            <table className="min-w-full border-collapse border border-gray-300">
-                <thead>
+            <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full"> {/* Agrega max-height si quieres limitar el tamaño vertical */}
+                <table className="min-w-full max-w-full border-collapse border border-gray-300">
+                    <thead>
                     <tr>
                         <th className="border px-4 py-2">Título</th>
                         <th className="border px-4 py-2">Descripción</th>
@@ -114,38 +115,40 @@ const EventosAdmin = () => {
                         <th className="border px-4 py-2">Link</th>
                         <th className="border px-4 py-2">Acciones</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {eventosFiltrados.map((evento) => (
                         <tr key={evento.id_evento}>
-                            <td className="border px-4 py-2">{evento.titulo}</td>
-                            <td className="border px-4 py-2">{evento.descripcion}</td>
-                            <td className="border px-4 py-2">{new Date(evento.fecha).toLocaleString()}</td>
-                            <td className="border px-4 py-2">{evento.modalidad}</td>
-                            <td className="border px-4 py-2">{evento.costo} Bs.</td>
-                            <td className="border px-4 py-2">{evento.estado}</td>
-                            <td className="border px-4 py-2">{evento.link_reunion}</td>
-                            <td className="border px-4 py-2">
-                                <button
-                                    onClick={() => handleEditarEvento(evento.id_evento)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded mr-2 cursor-pointer hover:bg-blue-400"
+                        <td className="border px-4 py-2">{evento.titulo}</td>
+                        <td className="border px-4 py-2">{evento.descripcion}</td>
+                        <td className="border px-4 py-2">{new Date(evento.fecha).toLocaleString()}</td>
+                        <td className="border px-4 py-2">{evento.modalidad}</td>
+                        <td className="border px-4 py-2">{evento.costo} Bs.</td>
+                        <td className="border px-4 py-2">{evento.estado}</td>
+                        <td className="border px-4 py-2">{evento.link_reunion}</td>
+                        <td className="border px-4 py-2">
+                            <button
+                                onClick={() => handleEditarEvento(evento.id_evento)}
+                                className="w-full bg-blue-500 text-white px-2 py-2 mb-2 rounded cursor-pointer hover:bg-blue-400"
                                 >
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => handleEliminarEvento(evento.id_evento)}
-                                    className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-400"
+                                Editar
+                            </button>
+                            <button
+                                onClick={() => handleEliminarEvento(evento.id_evento)}
+                                className="w-full bg-red-500 text-white px-2 py-2 rounded cursor-pointer hover:bg-red-400"
                                 >
-                                    Eliminar
-                                </button>
-                            </td>
+                                Eliminar
+                            </button>
+                        </td>
                         </tr>
                     ))}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+                </div>
+
 
             <div className='flex justify-center'>
-                <button onClick={() => handleAgregarEvento()} className="bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400">
+                <button onClick={() => handleAgregarEvento()} className="w-full sm:w-auto bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400">
                     Agregar
                 </button>
             </div>

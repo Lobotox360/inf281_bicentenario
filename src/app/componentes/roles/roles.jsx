@@ -131,7 +131,7 @@ const AdministracionRoles = () => {
             </div>
 
             {/* Filtros por rol y país */}
-            <div className="mb-4 flex gap-4">
+            <div className="mb-4 flex gap-4 flex-col sm:flex-row">
                 {/* Filtro por rol */}
                 <select
                     className="px-4 py-2 border rounded-lg"
@@ -141,7 +141,7 @@ const AdministracionRoles = () => {
                     <option value="">Seleccionar rol</option>
                     {roles.map(role => (
                         <option key={role.id_rol} value={role.nombre}>
-                            {role.nombre} - {role.descripcion_rol}
+                            {role.nombre}
                         </option>
                     ))}
                 </select>
@@ -158,42 +158,43 @@ const AdministracionRoles = () => {
                     ))}
                 </select>
             </div>
-
-            <table className="min-w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr>
-                        <th className="border px-4 py-2">Nombre</th>
-                        <th className="border px-4 py-2">Email</th>
-                        <th className="border px-4 py-2">Teléfono</th>
-                        <th className="border px-4 py-2">País</th>
-                        <th className="border px-4 py-2">Rol</th>
-                        <th className="border px-4 py-2">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usuariosFiltrados.map((usuario, index) => (
-                        <tr key={index}>
-                            <td className="border px-4 py-2">{usuario.nombre}</td>
-                            <td className="border px-4 py-2">{usuario.email}</td>
-                            <td className="border px-4 py-2">{usuario.telefono}</td>
-                            <td className="border px-4 py-2">{usuario.pais}</td>
-                            <td className="border px-4 py-2">{usuario.Roles.nombre}</td>
-                            <td className="border px-4 py-2">
-                                <button
-                                    onClick={() => handleEditRole(usuario)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
-                                >
-                                    Editar Rol
-                                </button>
-                            </td>
+            
+            <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full"> {/* Agrega max-height si quieres limitar el tamaño vertical */}
+                <table className="min-w-full max-w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr>
+                            <th className="border px-4 py-2">Nombre</th>
+                            <th className="border px-4 py-2">Email</th>
+                            <th className="border px-4 py-2">Teléfono</th>
+                            <th className="border px-4 py-2">País</th>
+                            <th className="border px-4 py-2">Rol</th>
+                            <th className="border px-4 py-2">Acciones</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-
+                    </thead>
+                    <tbody>
+                        {usuariosFiltrados.map((usuario, index) => (
+                            <tr key={index}>
+                                <td className="border px-4 py-2">{usuario.nombre}</td>
+                                <td className="border px-4 py-2">{usuario.email}</td>
+                                <td className="border px-4 py-2">{usuario.telefono}</td>
+                                <td className="border px-4 py-2">{usuario.pais}</td>
+                                <td className="border px-4 py-2">{usuario.Roles.nombre}</td>
+                                <td className="border px-4 py-2">
+                                    <button
+                                        onClick={() => handleEditRole(usuario)}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+                                    >
+                                        Editar Rol
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
             <button
                 onClick={handleBack}
-                className="bg-red-500 text-white p-2 rounded mb-4 mt-4 cursor-pointer"
+                className="bg-red-500 text-white p-2 rounded mb-4 mt-4 cursor-pointer w-full sm:w-auto"
             >
                 Volver
             </button>
@@ -203,7 +204,7 @@ const AdministracionRoles = () => {
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div className="bg-white p-6 rounded-md w-1/3">
                         <h3 className="text-center text-xl font-semibold mb-4">Editar rol de {usuarioSeleccionado?.nombre}</h3>
-                        <h3 className="text-xl font-semibold mb-4">Rol actual: {usuarioSeleccionado?.Roles.nombre}</h3>
+                        <p className="font-semibold mb-4">Rol actual: {usuarioSeleccionado?.Roles.nombre}</p>
                         <div>
                             <label htmlFor="roles" className="block text-sm font-medium text-gray-700">Seleccionar Rol:</label>
                             <select
@@ -211,7 +212,7 @@ const AdministracionRoles = () => {
                                 name="roles"
                                 value={rolSeleccionado || ''}
                                 onChange={handleRoleChange}
-                                className="mt-2 block w-full p-2 border border-gray-300 rounded-md"
+                                className="mt-2 mb-3 block w-full p-2 border border-gray-300 rounded-md"
                             >
                                 <option value="">Seleccione un rol</option>
                                 {roles.map(role => (
@@ -224,7 +225,7 @@ const AdministracionRoles = () => {
 
                         {mensaje && <p className="mt-4 text-red-500">{mensaje}</p>} {/* Mostrar mensaje */}
 
-                        <div className="mt-4 flex justify-between">
+                        <div className="flex justify-center mb-4 flex gap-4 flex-col sm:flex-row">
                             <button
                                 onClick={closeModal}
                                 className="bg-red-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-red-300"

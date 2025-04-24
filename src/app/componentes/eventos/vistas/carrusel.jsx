@@ -177,7 +177,7 @@ const CarruselEventos = ({departamento }) => {
         </div>
         <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">COMENTARIOS</h2>
         <div className="bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
-          <ModuloComentarios eventoId = {eventosDepartamento[indexActual]?.id_evento}/>
+          <ModuloComentarios eventoId = {eventosDepartamento[indexActual].id_evento}/>
         </div>
 
       </div>
