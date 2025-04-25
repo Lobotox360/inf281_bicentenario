@@ -60,6 +60,13 @@ export default function AgenteVirtual() {
     }
   }, [historial]);
 
+  const manejarEnter = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      enviarPregunta();
+    }
+  };
+
   return (
     <><Navbar />
         <div className="mt-20 min-h-screen bg-gradient-to-b from-red-600 to-green-600 flex flex-col items-center justify-center p-4 text-white relative">
@@ -85,7 +92,10 @@ export default function AgenteVirtual() {
                       value={pregunta}
                       onChange={(e) => setPregunta(e.target.value)}
                       className="flex-1 p-3 rounded-lg text-black"
-                      placeholder="¿Quién fue el primer presidente de Bolivia?" />
+                      placeholder="¿Quién fue el primer presidente de Bolivia?" 
+                      onKeyDown={manejarEnter}
+                  />
+                      
                   <button
                       onClick={() => setGrabando((prev) => !prev)}
                       className={`cursor-pointer p-3 rounded-lg ${grabando ? "bg-red-500" : "bg-yellow-400"}`}
