@@ -14,6 +14,103 @@ export class EventoService {
     private emailService: EmailService,
   ) {}
 
+
+    
+  async getAsistenciaEvento(id_evento: number) {
+    // 1. Verificamos que el evento exista
+    const evento = await this.prisma.eventos.findUnique({
+      where: { id_evento },
+    });
+
+    if (!evento) {
+      throw new NotFoundException(`❌ Evento con ID ${id_evento} no encontrado`);
+    }
+
+    // 2. Obtenemos todos los registros de agenda y usuarios para este evento
+    const asistentes = await this.prisma.agenda.findMany({
+      where: {
+        id_evento,
+      },
+      include: {
+        Usuarios: true, // Incluimos todos los datos de los usuarios
+        Eventos: {
+          select: {
+            titulo: true,
+            fecha: true,
+            hora_inicio: true,
+            hora_fin: true,
+            modalidad: true,
+          },
+        },
+      },
+    });
+
+    if (!asistentes || asistentes.length === 0) {
+      return { 
+        mensaje: `👥 No hay asistentes registrados para el evento con ID ${id_evento}`,
+        evento: {
+          id_evento: evento.id_evento,
+          titulo: evento.titulo,
+          fecha: evento.fecha,
+          hora_inicio: evento.hora_inicio,
+          hora_fin: evento.hora_fin,
+          modalidad: evento.modalidad,
+        },
+        asistentes: [],
+        estadisticas: {
+          total_agendados: 0,
+          total_asistentes: 0,
+          porcentaje_asistencia: 0
+        }
+      };
+    }
+
+    // 3. Formateamos los datos para el reporte en el frontend
+    const asistentesFormateados = asistentes.map(asistente => {
+      return {
+        usuario: {
+          id_usuario: asistente.Usuarios.id_usuario,
+          nombre: asistente.Usuarios.nombre,
+          apellidoPaterno: asistente.Usuarios.apellidopaterno,
+          apellidoMaterno: asistente.Usuarios.apellidomaterno,
+          email: asistente.Usuarios.email,
+          telefono: asistente.Usuarios.telefono,
+          pais: asistente.Usuarios.pais,
+          ciudad: asistente.Usuarios.ciudad,
+          genero: asistente.Usuarios.genero,
+          foto: asistente.Usuarios.foto,
+        },
+        asistencia: {
+          asistio: asistente.asistio,
+          hora_ingreso: asistente.hora_ingreso,
+        },
+        actividades: asistente.actividades,
+      };
+    });
+
+    // 4. Calculamos estadísticas de asistencia
+    const totalAsistentes = asistentesFormateados.filter(a => a.asistencia.asistio).length;
+    const porcentajeAsistencia = Math.round((totalAsistentes / asistentesFormateados.length) * 100);
+
+    // 5. Devolvemos el reporte completo
+    return {
+      evento: {
+        titulo: evento.titulo,
+        fecha: evento.fecha,
+        hora_inicio: evento.hora_inicio,
+        hora_fin: evento.hora_fin,
+        modalidad: evento.modalidad,
+      },
+      asistentes: asistentesFormateados,
+      estadisticas: {
+        total_agendados: asistentesFormateados.length,
+        total_asistentes: totalAsistentes,
+        porcentaje_asistencia: porcentajeAsistencia
+      }
+    };
+  }
+  
+
   async notificarInicioReunion(id_evento: number) {
     const evento = await this.prisma.eventos.findUnique({
       where: { id_evento },

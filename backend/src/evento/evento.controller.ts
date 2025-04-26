@@ -24,6 +24,19 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
+    
+  @Get('asistencia/evento/:id_evento')
+  async getAsistenciaEvento(@Param('id_evento') id_evento: string) {
+    const eventoId = parseInt(id_evento, 10);
+    if (isNaN(eventoId)) {
+      throw new HttpException(
+        'El id_evento debe ser un número válido',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.eventoService.getAsistenciaEvento(eventoId);
+  }
+
   // Inicia la reunion de un evento
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('iniciar-reunion/:id_evento')
