@@ -22,7 +22,7 @@ export class EmailService {
     direccion?: string;
     telefonos?: { nombre: string; numero: string }[];
     imagen_url?: string;
-    nombre_usuario?: string;  // Agregado para incluir el nombre del usuario
+    nombre_usuario?: string;
   }) {
     const senderEmail = process.env.EMAIL_FROM;
     if (!senderEmail) throw new Error('EMAIL_FROM no está definido en .env');
@@ -36,18 +36,44 @@ export class EmailService {
     const telHtml = (datos.telefonos || [])
       .map(tel => `<li><strong>${tel.nombre}:</strong> ${tel.numero}</li>`)
       .join('');
-  
-    const ubicacionLink = datos.ubicacion
-      ? `<div style="text-align: center; margin-top: 10px;">
-          <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(datos.ubicacion)}"
-             target="_blank"
-             style="background: linear-gradient(to right, #ff7043, #ffb74d); color: white; padding: 12px 24px;
-                    border-radius: 10px; text-decoration: none; font-weight: bold;
-                    box-shadow: 0 3px 10px rgba(255,112,67,0.3); display: inline-block;">
-            🗺️ Ver en Google Maps
-          </a>
-        </div>`
-      : '';
+    
+    // Condicionalmente crear la sección de ubicación basada en la modalidad
+    let ubicacionHtml = '';
+    if (datos.modalidad.toLowerCase() === 'presencial' || datos.modalidad.toLowerCase() === 'híbrida') {
+      const ubicacionLink = datos.ubicacion
+        ? `<div style="text-align: center; margin-top: 10px;">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(datos.ubicacion)}"
+               target="_blank"
+               style="background: linear-gradient(to right, #ff7043, #ffb74d); color: white; padding: 12px 24px;
+                      border-radius: 10px; text-decoration: none; font-weight: bold;
+                      box-shadow: 0 3px 10px rgba(255,112,67,0.3); display: inline-block;">
+              🗺️ Ver en Google Maps
+            </a>
+          </div>`
+        : '';
+      
+      ubicacionHtml = `
+        <div style="margin-top: 25px;">
+          <h4 style="color: #b71c1c;">📍 Ubicación</h4>
+          <p style="color: #444;">${datos.ubicacion || 'Ubicación no especificada'}</p>
+          ${ubicacionLink}
+        </div>
+      `;
+    }
+    
+    // Condicionalmente crear mensaje para reunión virtual basado en la modalidad
+    let reunionHtml = '';
+    if (datos.modalidad.toLowerCase() === 'virtual' || datos.modalidad.toLowerCase() === 'híbrida') {
+      reunionHtml = `
+        <div style="margin-top: 25px; background: #e8f5e9; padding: 18px; border-radius: 10px; border-left: 4px solid #2e7d32;">
+          <h4 style="color: #2e7d32; margin-top: 0;">🖥️ Información para Reunión Virtual</h4>
+          <p style="color: #1b5e20; margin-bottom: 0;">
+            Cuando se inicie la reunión virtual, recibirás un correo electrónico con el enlace para unirte a la sesión.
+            Por favor, mantén este correo electrónico a mano para referencia futura.
+          </p>
+        </div>
+      `;
+    }
   
     const msg: sgMail.MailDataRequired = {
       to: email,
@@ -63,7 +89,7 @@ export class EmailService {
             ¡Tu registro ha sido exitoso y el evento ha sido agregado a tu agenda del sistema <strong style="color: #d84315;">Bicentenario</strong>! 🇧🇴
           </p>
           <p style="font-size: 16px; color: #616161;">
-            Hola, <strong>${datos.nombre_usuario}</strong>, ¡felicidades por tu inscripción!
+            Hola, <strong>${datos.nombre_usuario || 'Usuario'}</strong>, ¡felicidades por tu inscripción!
           </p>
         </div>
   
@@ -95,11 +121,8 @@ export class EmailService {
           <ul style="padding-left: 20px; color: #424242;">${telHtml || '<li>No disponibles</li>'}</ul>
         </div>
   
-        <div style="margin-top: 25px;">
-          <h4 style="color: #b71c1c;">📍 Ubicación</h4>
-          <p style="color: #444;">${datos.ubicacion || 'Ubicación no especificada'}</p>
-          ${ubicacionLink}
-        </div>
+        ${ubicacionHtml}
+        ${reunionHtml}
   
         <div style="margin-top: 30px; background: #fffde7; border: 1px dashed #fbc02d; padding: 15px; border-radius: 10px; color: #f57f17; text-align: center;">
           ✅ ¡Este evento ha sido agendado correctamente en tu cuenta!
@@ -122,9 +145,4 @@ export class EmailService {
       console.error('❌ Error al enviar correo de inscripción:', error.response?.body || error);
     }
   }
-  
-  
-  
-
-  
 }

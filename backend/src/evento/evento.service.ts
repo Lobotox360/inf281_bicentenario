@@ -123,16 +123,23 @@ export class EventoService {
       },
     });
   
-    if (!evento || !evento.reunion_iniciada) {
+    if (!evento) {
+      throw new BadRequestException('El evento no existe.');
+    }
+  
+    if (!evento.reunion_iniciada) {
       throw new BadRequestException('No se ha iniciado la reunión.');
     }
+  
+    const sistemaUrl = 'https://inf281-bicentenario-goofy.vercel.app/';
   
     for (const agenda of evento.Agenda) {
       const usuario = agenda.Usuarios;
       await this.emailService.sendReunionIniciadaEmail(usuario.email, {
         nombre_usuario: usuario.nombre,
         titulo: evento.titulo,
-        link_reunion: evento.link_reunion!,
+        modalidad: evento.modalidad,
+        sistemaUrl: sistemaUrl
       });
     }
   
@@ -150,7 +157,11 @@ export class EventoService {
     if (!evento) {
       throw new NotFoundException('Evento no encontrado.');
     }
-  
+
+    if (evento.modalidad.toLowerCase() === 'presencial') {
+      throw new BadRequestException('No se pueden enviar notificaciones de inicio de reunión para eventos presenciales.');
+    }
+    
     // Convertimos hora_inicio y hora_fin a objetos Date
     const ahora = new Date();
     const horaInicio = new Date(evento.hora_inicio);
