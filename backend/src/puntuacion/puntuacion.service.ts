@@ -8,6 +8,11 @@ export class PuntuacionService {
   // Obtener los top N usuarios por puntaje
   async getTopUsuarios(limit: number) {
     return await this.prisma.usuarios.findMany({
+      where: {
+        Roles: {
+          nombre: 'usuario_casual',  // Aquí se accede a la relación "Roles" y se filtra por el nombre del rol
+        },
+      },
       orderBy: {
         puntaje: 'desc',
       },
@@ -22,6 +27,7 @@ export class PuntuacionService {
       },
     });
   }
+  
 
   // Obtener datos de un solo usuario por ID
   async getUsuarioData(id_usuario: string) {

@@ -154,7 +154,24 @@ export class AgendaService {
   
 
   private async revisarLogro(id_usuario: string) {
-
+    // Obtener al usuario y su rol
+    const usuario = await this.prisma.usuarios.findUnique({
+      where: { id_usuario },
+      include: {
+        Roles: true,  // Usamos "Roles" en lugar de "rol"
+      },
+    });
+  
+    // Si no existe o no es usuario_casual, no hace nada
+    if (!usuario || usuario.Roles.nombre !== 'usuario_casual') {
+      return {
+        logro: 'No aplica',
+        puntosExtra: 0,
+        puntajeTotal: usuario?.puntaje || 0,
+      };
+    }
+  
+    // Sumar puntos por participar
     await this.prisma.usuarios.update({
       where: {
         id_usuario,
@@ -165,7 +182,7 @@ export class AgendaService {
         },
       },
     });
-
+  
     const cantidadInscripciones = await this.prisma.agenda.count({
       where: { id_usuario },
     });
@@ -217,6 +234,7 @@ export class AgendaService {
       puntajeTotal: usuarioActualizado?.puntaje || 0,
     };
   }
+  
   
   
   
