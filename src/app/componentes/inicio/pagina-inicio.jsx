@@ -63,16 +63,22 @@ export default function Inicio() {
             <section className="p-10 text-center">
                 <h2 className="text-3xl font-bold">Contenido Multimedia</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-                    {Array(4).fill(null).map((_, idx) => (
+                    {[
+                        "https://www.youtube.com/embed/KG0VZR4pfKk",
+                        "https://www.youtube.com/embed/raNV1-ySpc4",
+                        "https://www.youtube.com/embed/4nKoR25rxeY",
+                        "https://www.youtube.com/embed/vtwMmpn63XE"
+                    ].map((videoUrl, idx) => (
                         <iframe
                             key={idx}
-                            src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                            src={videoUrl}
                             className="w-full h-48"
                             allowFullScreen
                         ></iframe>
                     ))}
                 </div>
             </section>
+
 
             {/* Pie de página */}
             <footer className="bg-green-700 p-6 text-center">

@@ -96,7 +96,7 @@ export default function Navbar() {
       <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6 text-white text-lg md:text-xl">
         <Link href="/" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">INICIO</Link>
         <Link href="/eventos" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">EVENTOS</Link>
-        <Link href="/micalendario" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENDA</Link>
+        <Link href="/calendario" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENDA</Link>
         <Link href="/agente" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENTE VIRTUAL</Link>
       </div>
 
@@ -107,7 +107,7 @@ export default function Navbar() {
         <div className="flex flex-col space-y-4 text-white text-lg">
           <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
           <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
-          <Link href="/micalendario" className="text-center hover:text-yellow-400">AGENDA</Link>
+          <Link href="/calendario" className="text-center hover:text-yellow-400">AGENDA</Link>
           <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE VIRTUAL</Link>
         </div>
       </div>
@@ -143,8 +143,8 @@ export default function Navbar() {
             <div 
               className={`absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl transition-all duration-300 ease-in-out ${menuUsuario ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
             >
-            <Link href={`/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
-            <Link href="#" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
+            <Link href={`/usuario/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
+            <Link href="/usuario/miseventos" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
             <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
             <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>
           </div>

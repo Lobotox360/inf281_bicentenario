@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/micalendario/[id]/page.jsx", "src/app/api/asistencias/route.jsx", "src/app/componentes/calendario/calendario.jsx", "src/app/componentes/login/subirfoto.jsx", "src/app/componentes/login/restablecer.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/usuario/micalendario/[id]/page.jsx", "src/app/api/asistencias/route.jsx", "src/app/componentes/calendario/calendario.jsx", "src/app/componentes/login/subirfoto.jsx", "src/app/componentes/login/restablecer.jsx"],
   "exclude": ["node_modules"]
 }

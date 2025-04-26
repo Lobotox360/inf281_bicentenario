@@ -1,9 +1,8 @@
 // app/mi-calendario/page.jsx
 'use client'
 
-import dynamic from 'next/dynamic'
-import CalendarioUsuario from '../componentes/calendario/calendario'
-import Navbar from '../componentes/inicio/navbar'
+import CalendarioUsuario from '../../componentes/usuario/mi-agenda'
+import Navbar from '../../componentes/inicio/navbar'
 
 export default function MiCalendarioPage() {
   return (

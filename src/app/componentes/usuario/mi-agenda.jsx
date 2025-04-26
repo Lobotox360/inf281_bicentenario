@@ -4,7 +4,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useState, useEffect, useRef } from 'react'
 
-export default function Calendario() {
+export default function CalendarioUsuario({ id_usuario }) {
   const [eventos, setEventos] = useState([])
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
   const calendarioRef = useRef(null)
@@ -13,19 +13,20 @@ export default function Calendario() {
   useEffect(() => {
     const fetchEventos = async () => {
       try {
-        const res = await fetch(`https://inf281-production.up.railway.app/eventos/calendario/evento`)
+        const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}`)
         const data = await res.json()
         const eventosFormateados = data.map(evento => {
-          const fechaInicio = new Date(evento.hora_inicio)
-          const fechaFin = new Date(evento.hora_fin)
+          const fechaInicio = new Date(evento.Eventos.hora_inicio)
+          const fechaFin = new Date(evento.Eventos.hora_fin)
           return {
             id: evento.id_evento.toString(),
-            title: evento.titulo,
+            title: evento.actividades,
             start: fechaInicio.toISOString(),
             end: fechaFin.toISOString(),
-            url: `/eventos/vermas/${evento.id_evento}`,
-            backgroundColor: '#009472',
-            borderColor: '#009472',
+            url: "#",
+            backgroundColor: 'blue',
+            reunionIniciada: evento.Eventos.reunion_iniciada,  // Añadido: validación si la reunión ha comenzado
+            link_reunion: evento.Eventos.link_reunion, // Guardamos el enlace solo aquí
           }
         })
 
@@ -35,8 +36,8 @@ export default function Calendario() {
       }
     }
 
-    fetchEventos()
-  }, [])
+    if (id_usuario) fetchEventos()
+  }, [id_usuario])
 
   // Cambiar vista al hacer clic en un día
   const handleDateClick = (arg) => {
@@ -52,12 +53,42 @@ export default function Calendario() {
     setVistaActual('dayGridMonth')
   }
 
+  // Manejo de evento de clic (cuando se hace clic en un evento)
+  const handleEventClick = async (info) => {
+    const eventoId = info.event.id
+    const evento = info.event.extendedProps
 
+    // Verificar si la reunión ha comenzado
+    if (!evento.reunionIniciada) {
+      alert('La reunión aún no ha comenzado o ya ha finalizado. Intenta más tarde.')
+      return 
+    }
+
+    // Si la reunión ha comenzado, abrir el enlace
+    window.open(evento.link_reunion, '_blank')
+
+    // Registrar asistencia
+    try {
+      const response = await fetch('https://inf281-production.up.railway.app/agenda/asistencia', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_usuario: id_usuario, 
+          id_evento: parseInt(eventoId)   
+        }),
+      })
+    } catch (error) {
+      console.error('❌ Error al registrar la asistencia:', error)
+      alert('Hubo un error con la conexión')
+    }
+  }
 
   return (
     <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
-        Calendario general
+        Mi Calendario Personal
       </h2>
 
       {vistaActual === 'timeGridDay' && (
@@ -93,6 +124,7 @@ export default function Calendario() {
           center: 'title'
         }}
         headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
+        eventClick={handleEventClick} // Evento de clic para registrar la asistencia
       />
     </div>
   )

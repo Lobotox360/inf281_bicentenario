@@ -7,15 +7,23 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 export default function NoticiasSlider() {
-  const noticias = ['Noticia 1', 'Noticia 2', 'Noticia 3', 'Noticia 4', 'Noticia 5', 'Noticia 6'];
-
+  const [eventos, setEventos] = useState([]);
   const [swiperReady, setSwiperReady] = useState(false);
   const anteriorRef = useRef(null);
   const siguienteRef = useRef(null);
-  const swiperRef = useRef(null); // Nuevo: para acceder al swiper
+  const swiperRef = useRef(null); 
 
-  // Se asegura de que los refs estén listos antes de inicializar la navegación
+  // Fetch de eventos desde la API
   useEffect(() => {
+    fetch('https://inf281-production.up.railway.app/eventos')
+      .then((response) => response.json())
+      .then((data) => {
+        const eventosOrdenados = data.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+        setEventos(eventosOrdenados);
+      })
+      .catch((error) => console.error('Error al cargar los eventos:', error));
+
+    // Se asegura de que los refs estén listos antes de inicializar la navegación
     if (
       swiperRef.current &&
       anteriorRef.current &&
@@ -34,7 +42,7 @@ export default function NoticiasSlider() {
 
   return (
     <section className="p-10">
-      <h2 className="text-3xl font-bold text-center mb-6">Noticias del Bicentenario</h2>
+      <h2 className="text-3xl font-bold text-center mb-6">Eventos más virales del Bicentenario</h2>
       <div className="relative">
         {/* Botón izquierdo */}
         <button ref={anteriorRef} className="absolute z-10 left-0 top-1/2 -translate-y-1/2 bg-black px-3 py-3 rounded-full hover:bg-gray-800">
@@ -56,12 +64,14 @@ export default function NoticiasSlider() {
               nextEl: siguienteRef.current,
             }}
           >
-            {noticias.map((noticia, idx) => (
-              <SwiperSlide key={idx}>
+            {eventos.map((evento) => (
+              <SwiperSlide key={evento.id_evento}>
                 <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
-                  <h2 className="text-xl font-bold mb-4">EVENTOS EN TENDENCIA</h2>
-                  <img src="/assets/simon.jpg" alt="Imagen de la noticia" className="max-w-full h-auto mb-4 mx-auto"/>
-                  <p className="text-base text-white">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maxime libero, nam sit nisi sequi quas reiciendis quo expedita, enim quia sapiente nostrum distinctio a eaque delectus recusandae, qui accusamus placeat.</p>
+                  <h2 className="text-xl font-bold mb-4">{evento.titulo}</h2>
+                  <img src={evento.foto_evento} alt="Imagen del evento" className="max-w-full h-auto mb-4 mx-auto"/>
+                  <p className="text-base text-white">{evento.descripcion}</p>
+                  <p className="text-base text-white">{evento.Ubicacion.departamento}</p>
+                  <p className="text-white mt-4">{evento.puntuacion}</p>
                 </div>
               </SwiperSlide>
             ))}

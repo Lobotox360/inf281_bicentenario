@@ -95,7 +95,7 @@ export default function AgenteVirtual() {
                       placeholder="¿Quién fue el primer presidente de Bolivia?" 
                       onKeyDown={manejarEnter}
                   />
-                      
+                
                   <button
                       onClick={() => setGrabando((prev) => !prev)}
                       className={`cursor-pointer p-3 rounded-lg ${grabando ? "bg-red-500" : "bg-yellow-400"}`}
