@@ -3,6 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import AOS from 'aos';import 'aos/dist/aos.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -15,6 +16,7 @@ export default function NoticiasSlider() {
 
   // Fetch de eventos desde la API
   useEffect(() => {
+    AOS.init({ duration: 1000 });
     fetch('https://inf281-production.up.railway.app/eventos')
       .then((response) => response.json())
       .then((data) => {
@@ -41,7 +43,7 @@ export default function NoticiasSlider() {
   }, []);
 
   return (
-    <section className="p-10">
+    <section className="p-10" data-aos="fade-up">
       <h2 className="text-3xl font-bold text-center mb-6">Eventos más virales del Bicentenario</h2>
       <div className="relative">
         {/* Botón izquierdo */}
@@ -65,7 +67,7 @@ export default function NoticiasSlider() {
             }}
           >
             {eventos.map((evento) => (
-              <SwiperSlide key={evento.id_evento}>
+              <SwiperSlide key={evento.id_evento} data-aos="fade-up"> 
                 <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
                   <h2 className="text-xl font-bold mb-4">{evento.titulo}</h2>
                   <img src={evento.foto_evento} alt="Imagen del evento" className="max-w-full h-auto mb-4 mx-auto"/>

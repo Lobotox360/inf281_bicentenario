@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { FaArrowLeft, FaArrowRight, FaEdit } from 'react-icons/fa';
 import MapaEvento from './mapa';
 import { useRouter } from 'next/navigation';
+import AOS from 'aos';import 'aos/dist/aos.css';
 import Link from 'next/link';
 import ModuloComentarios from './comentarios-carrusel';
 
@@ -22,6 +23,7 @@ const CarruselEventos = ({departamento }) => {
 
   // Obtener eventos
   useEffect(() => {
+    AOS.init({ duration: 1000 });
     const fetchEventos = async () => {
       try {
         const response = await fetch('https://inf281-production.up.railway.app/eventos');
@@ -64,72 +66,13 @@ const CarruselEventos = ({departamento }) => {
     setIndexActual((prevIndex) => (prevIndex - 1 + eventosDepartamento.length) % eventosDepartamento.length);
   };
 
-  const handleInscripcion = async (eventoId) => {
-    const id_usuario = localStorage.getItem('id_user');
-    if (!id_usuario) {
-      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
-      return;
-    }
-
-    try {
-      const res = await fetch('https://inf281-production.up.railway.app/agenda', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id_usuario,
-          id_evento: eventoId,
-        }),
-      });
-
-      if (!res.ok) throw new Error('Error al registrar inscripción');
-
-      const data = await res.json();
-      alert(data.mensaje); // Mostrar mensaje
-
-    } catch (error) {
-      console.error(error);
-      alert('❌ Ocurrió un error al registrar la inscripción.');
-    }
-  };
-
-  const handleDesinscripcion = async (eventoId) => {
-    const id_usuario = localStorage.getItem('id_user');
-    if (!id_usuario) {
-      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
-      return;
-    }
-
-    try {
-      const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}/${eventoId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id_usuario,
-          id_evento: eventoId,
-        }),
-      });
-
-      if (!res.ok) throw new Error('Error al desinscribir');
-
-      const data = await res.json();
-      alert(data.mensaje); // Mostrar mensaje
-    } catch (error) {
-      console.error(error);
-      alert('❌ Ocurrió un error al desinscribir.');
-    }
-  };
-
   return (
     <div className="relative p-4">
       <div className="max-w-4xl mx-auto">
         {eventosDepartamento.length > 0 && (
           <>
-            <h2 className="text-white text-3xl font-semibold text-center mb-4">EVENTOS EN {departamento.toUpperCase()}</h2>
-            <div key={indexActual} className="relative bg-gray-200 rounded-lg overflow-hidden shadow-lg animate-fadeIn">
+            <h2 className="text-white text-3xl font-semibold text-center mb-4" data-aos="fade-up">EVENTOS EN {departamento.toUpperCase()}</h2>
+            <div key={indexActual} className="relative bg-gray-200 rounded-lg overflow-hidden shadow-lg animate-fadeIn" data-aos="fade-up">
               <h2 className="text-xl font-semibold text-center">{eventosDepartamento[indexActual].titulo}</h2>
               <div className="flex flex-col md:flex-row justify-between items-center bg-white">
                 <div className="relative sm:w-3xl w-full max-w order-1 md:order-2">
@@ -172,11 +115,11 @@ const CarruselEventos = ({departamento }) => {
           </>
         )}
 
-        <div className="flex justify-center mt-8">
+        <div className="flex justify-center mt-8" data-aos="fade-up">
           <MapaEvento direccion={eventosDepartamento[indexActual]?.Ubicacion?.ubicacion} latitud={eventosDepartamento[indexActual]?.Ubicacion?.latitud} longitud={eventosDepartamento[indexActual]?.Ubicacion?.longitud} />
         </div>
-        <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center">COMENTARIOS</h2>
-        <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
+        <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center" data-aos="fade-up">COMENTARIOS</h2>
+        <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4" data-aos="fade-up">
           <ModuloComentarios eventoId = {eventosDepartamento[indexActual].id_evento}/>
         </div>
 
