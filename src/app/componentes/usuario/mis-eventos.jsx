@@ -45,7 +45,7 @@ const MisEventos = () => {
   }
 
   return (
-    <div className="mt-25 space-y-10">
+    <div className="mt-25 space-y-10 mx-20">
       <h2 className="text-white text-3xl font-semibold text-center p-4">
         MIS EVENTOS
       </h2>

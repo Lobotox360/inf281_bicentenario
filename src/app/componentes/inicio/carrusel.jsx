@@ -71,7 +71,8 @@ export default function NoticiasSlider() {
                   <img src={evento.foto_evento} alt="Imagen del evento" className="max-w-full h-auto mb-4 mx-auto"/>
                   <p className="text-base text-white">{evento.descripcion}</p>
                   <p className="text-base text-white">{evento.Ubicacion.departamento}</p>
-                  <p className="text-white mt-4">{evento.puntuacion}</p>
+                  <p className="text-white mt-4">{Array.from({ length: 5 }, (_, index) => {return index < evento.puntuacion ? '⭐' : '☆';}).join(' ')}</p>
+                  
                 </div>
               </SwiperSlide>
             ))}
