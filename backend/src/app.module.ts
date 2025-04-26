@@ -13,6 +13,7 @@ import { PatrocinadorModule } from './patrocinador/patrocinador.module';
 import { AgendaModule } from './agenda/agenda.module';
 import { TelefonoModule } from './telefono/telefono.module';
 import { ExpositorModule } from './expositor/expositor.module';
+import { PuntuacionModule } from './puntuacion/puntuacion.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { ExpositorModule } from './expositor/expositor.module';
     PatrocinadorModule,
     AgendaModule,
     TelefonoModule,
-    ExpositorModule, 
+    ExpositorModule,
+    PuntuacionModule, 
   ],
 })
 export class AppModule {}

@@ -140,10 +140,84 @@ export class AgendaService {
       imagen_url: evento.foto_evento || 'https://res.cloudinary.com/djxsfzosx/image/upload/v1744514657/eventos/dlmsljwa7clnbrsobxdp.png',
     });
   
+
+
+    const resultadoLogro = await this.revisarLogro(data.id_usuario);
+
     return {
       mensaje: `✅ Felicidades, ${usuario.nombre}, te has registrado correctamente en el evento "${evento.titulo}".`,
+      logro: resultadoLogro.logro,
+      puntosExtra: resultadoLogro.puntosExtra,
+      puntajeTotal: resultadoLogro.puntajeTotal,
     };
   }
+  
+
+  private async revisarLogro(id_usuario: string) {
+
+    await this.prisma.usuarios.update({
+      where: {
+        id_usuario,
+      },
+      data: {
+        puntaje: {
+          increment: 10,
+        },
+      },
+    });
+
+    const cantidadInscripciones = await this.prisma.agenda.count({
+      where: { id_usuario },
+    });
+  
+    let logro = 'Ninguno';
+    let puntosExtra = 0;
+  
+    if (cantidadInscripciones === 1) {
+      logro = 'Nivel Bronce';
+      puntosExtra = 5;
+    } else if (cantidadInscripciones === 5) {
+      logro = 'Nivel Plata';
+      puntosExtra = 10;
+    } else if (cantidadInscripciones === 10) {
+      logro = 'Nivel Oro';
+      puntosExtra = 15;
+    } else if (cantidadInscripciones === 25) {
+      logro = 'Nivel Platino';
+      puntosExtra = 20;
+    } else if (cantidadInscripciones === 50) {
+      logro = 'Nivel Diamante';
+      puntosExtra = 25;
+    } else if (cantidadInscripciones === 100) {
+      logro = 'Nivel Maestro';
+      puntosExtra = 30;
+    }
+  
+    if (puntosExtra > 0) {
+      await this.prisma.usuarios.update({
+        where: { id_usuario },
+        data: {
+          puntaje: {
+            increment: puntosExtra,
+          },
+        },
+      });
+    }
+  
+    const usuarioActualizado = await this.prisma.usuarios.findUnique({
+      where: { id_usuario },
+      select: {
+        puntaje: true,
+      },
+    });
+  
+    return {
+      logro,
+      puntosExtra,
+      puntajeTotal: usuarioActualizado?.puntaje || 0,
+    };
+  }
+  
   
   
   
@@ -166,6 +240,7 @@ export class AgendaService {
   }
   
   async remove(id_usuario: string, id_evento: number) {
+    // Eliminar la agenda
     await this.prisma.agenda.delete({
       where: {
         id_usuario_id_evento: {
@@ -175,10 +250,24 @@ export class AgendaService {
       },
     });
   
+    // Restar 10 puntos del usuario
+    await this.prisma.usuarios.update({
+      where: {
+        id_usuario,
+      },
+      data: {
+        puntaje: {
+          decrement: 10,
+        },
+      },
+    });
+    
+  
     return {
-      mensaje: '🗑️ Registro de agenda eliminado correctamente.',
+      mensaje: '🗑️ Registro de agenda eliminado correctamente. Puntos restados.',
     };
   }
+  
   
   async addComentario(createAgendaDto: CreateAgendaDto) {
     const { id_usuario, id_evento, comentario } = createAgendaDto;

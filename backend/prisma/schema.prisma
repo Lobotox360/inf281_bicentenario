@@ -25,6 +25,7 @@ model Usuarios {
   verificado                  Boolean                 @default(false)
   expiracionTokenRecuperacion DateTime?
   tokenRecuperacion           String?                 @db.VarChar(100)
+  puntaje                     Int                     @default(0)
   Agenda                      Agenda[]
   Historial_Actividades       Historial_Actividades[]
   Preferencias_Usuario        Preferencias_Usuario[]
