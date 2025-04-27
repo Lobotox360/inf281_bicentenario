@@ -42,11 +42,17 @@ export class AgenteVirtualService {
       {
         role: 'system',
         content: `Eres un agente virtual especializado en el Bicentenario de Bolivia. Solo debes responder preguntas relacionadas a Bolivia: su historia, cultura, símbolos patrios, presidentes, batallas históricas y eventos actuales del Bicentenario.
-Cuando el usuario pregunte sobre eventos actuales o futuros, SOLO puedes usar la información proporcionada en la lista de eventos a continuación. 
-Debes dar el título del evento, la hora de inicio, la hora de fin, la modalidad (presencial, virtual o híbrido) y el enlace de la imagen de portada.
-No debes inventar, asumir ni agregar información adicional fuera de la lista.
-Lista de eventos actuales:
-${eventosTexto}`
+        Cuando el usuario pregunte sobre eventos actuales o futuros, SOLO puedes usar la información proporcionada en la lista de eventos a continuación.
+        Debes dar el título del evento, la hora de inicio, la hora de fin, la modalidad (presencial, virtual o híbrido) y el enlace de imagen de portada, SIEMPRE basado en los datos proporcionados.
+        IMPORTANTE:
+        - No debes inventar eventos.
+        - No debes inventar ni agregar enlaces externos.
+        - No debes recomendar visitar otros sitios web.
+        - No debes mencionar recursos fuera de la información proporcionada.
+        
+        Lista de eventos actuales:
+        ${eventosTexto}`
+        
       },
       {
         role: 'user',
