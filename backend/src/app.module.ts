@@ -14,6 +14,7 @@ import { AgendaModule } from './agenda/agenda.module';
 import { TelefonoModule } from './telefono/telefono.module';
 import { ExpositorModule } from './expositor/expositor.module';
 import { PuntuacionModule } from './puntuacion/puntuacion.module';
+import { AgenteVirtualModule } from './agente-virtual/agente-virtual.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { PuntuacionModule } from './puntuacion/puntuacion.module';
     AgendaModule,
     TelefonoModule,
     ExpositorModule,
-    PuntuacionModule, 
+    PuntuacionModule,
+    AgenteVirtualModule, 
   ],
 })
 export class AppModule {}
