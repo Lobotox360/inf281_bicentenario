@@ -2,6 +2,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import AOS from 'aos';import 'aos/dist/aos.css';
 import { useState, useEffect, useRef } from 'react'
 
 export default function Calendario() {
@@ -11,6 +12,7 @@ export default function Calendario() {
 
   // Obtener eventos desde la API
   useEffect(() => {
+    AOS.init({ duration: 1000 });
     const fetchEventos = async () => {
       try {
         const res = await fetch(`https://inf281-production.up.railway.app/eventos/calendario/evento`)
@@ -55,7 +57,7 @@ export default function Calendario() {
 
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto">
+    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto" data-aos="fade-up">
       <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
         Calendario general
       </h2>
@@ -72,6 +74,7 @@ export default function Calendario() {
       )}
 
       <FullCalendar
+        
         ref={calendarioRef}
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"

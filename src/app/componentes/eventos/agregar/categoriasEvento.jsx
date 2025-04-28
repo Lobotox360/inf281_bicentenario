@@ -67,7 +67,7 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
   // Enviar nueva categoría al backend
   const handleAgregarNuevaCategoria = async () => {
     try {
-      const res = await fetch('https://inf281-production.up.railway.app/eventos/categoria', {
+      const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

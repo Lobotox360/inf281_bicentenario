@@ -1,6 +1,6 @@
 // app/mi-calendario/page.jsx
 'use client'
-import EventosAdmin from "../componentes/crud-eventos/eventos-crud"
+import EventosAdmin from "../componentes/crud-eventos/crud"
 
 export default function RolesPagina() {
   return (

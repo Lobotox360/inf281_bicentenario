@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../inicio/navbar';
 
-const EventosAdmin = () => {
+const CrudEventos = () => {
     const router = useRouter();
     const [eventos, setEventos] = useState([]);
     const [barraBusqueda, setBarraBusqueda] = useState('');
@@ -182,4 +182,4 @@ const EventosAdmin = () => {
     );
 };
 
-export default EventosAdmin;
+export default CrudEventos;

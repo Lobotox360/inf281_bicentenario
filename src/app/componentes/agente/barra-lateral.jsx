@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 export default function BarraHistorial({ historial = [] }) {
-  const [abierto, setAbierto] = useState(true);
+  const [abierto, setAbierto] = useState(false);
 
   return (
     <div

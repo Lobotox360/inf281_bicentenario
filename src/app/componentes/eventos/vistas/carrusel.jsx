@@ -75,7 +75,7 @@ const CarruselEventos = ({departamento }) => {
             <div key={indexActual} className="relative bg-gray-200 rounded-lg overflow-hidden shadow-lg animate-fadeIn" data-aos="fade-up">
               <h2 className="text-xl font-semibold text-center">{eventosDepartamento[indexActual].titulo}</h2>
               <div className="flex flex-col md:flex-row justify-between items-center bg-white">
-                <div className="relative sm:w-3xl w-full max-w order-1 md:order-2">
+                <div className="relative order-1 md:order-2">
                   <Image src={eventosDepartamento[indexActual].foto_evento} alt="Evento" width={500} height={320} className="rounded-lg"/>
                 </div>
                 

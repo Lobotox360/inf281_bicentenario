@@ -3,6 +3,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useState, useEffect, useRef } from 'react'
+import AOS from 'aos';import 'aos/dist/aos.css';
 
 export default function CalendarioUsuario({ id_usuario }) {
   const [eventos, setEventos] = useState([])
@@ -11,6 +12,7 @@ export default function CalendarioUsuario({ id_usuario }) {
 
   // Obtener eventos desde la API
   useEffect(() => {
+    AOS.init({ duration: 1000 });
     const fetchEventos = async () => {
       try {
         const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}`)
@@ -86,7 +88,7 @@ export default function CalendarioUsuario({ id_usuario }) {
   }
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto">
+    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto" data-aos="fade-up">
       <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
         Mi Calendario Personal
       </h2>

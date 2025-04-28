@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { FaFacebook, FaYoutube, FaTiktok, FaTwitter  } from "react-icons/fa";
 import AOS from 'aos';import 'aos/dist/aos.css';
 import NoticiasSlider from '../inicio/carrusel';
+import PiePagina from './footer';
 import Navbar from "./navbar";
 
 export default function Inicio() {
@@ -47,7 +48,7 @@ export default function Inicio() {
             </section>
 
             {/* Contador */}
-            <section className="bg-gradient-to-r from-red-500 via-yellow-500 to-yellow-500 text-center max-w-4xl mx-auto " data-aos="fade-up">
+            <section className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-center max-w-4xl mx-auto rounded-md " data-aos="fade-up">
                 <h2 className="text-4xl font-bold mb-4">CUENTA REGRESIVA</h2>
                 <div className="text-3xl">
                     <span>{timeLeft.days} días </span>
@@ -80,17 +81,8 @@ export default function Inicio() {
                 </div>
             </section>
 
-
-            {/* Pie de página */}
-            <footer className="bg-green-700 p-6 text-center">
-                <p>&copy; 2025 Bicentenario de Bolivia</p>
-                <div className="flex justify-center space-x-4 mt-2">
-                <a href="https://www.facebook.com/profile.php?id=61561370416171" target="_blank" rel="noopener noreferrer"><FaFacebook className="text-2xl cursor-pointer hover:text-blue-500" /></a>
-                <a href="https://www.youtube.com/@BicentenarioBolivia2025" target="_blank" rel="noopener noreferrer"><FaYoutube className="text-2xl cursor-pointer hover:text-red-500" /></a> 
-                <a href="https://www.tiktok.com/@bicentenario.de.b" target="_blank" rel="noopener noreferrer"><FaTiktok className="text-2xl cursor-pointer hover:text-pink-500" /></a> 
-                <a href="https://twitter.com/delegaPresiden" target="_blank" rel="noopener noreferrer"><FaTwitter  className="text-2xl cursor-pointer hover:text-blue-400" /></a> 
-                </div>
-            </footer>
+        <PiePagina/>
+            
         </div>
     );
 }

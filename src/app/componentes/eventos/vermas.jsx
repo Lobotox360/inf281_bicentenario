@@ -74,7 +74,7 @@ export default function VerMasEvento() {
 
   // Mostrar un mensaje de carga si el evento aún no está disponible
   if (!evento) {
-    return <p className="text-center text-white text-xl font-semibold">Cargando evento...</p>;
+    return <p className="mt-30 text-center text-white text-xl font-semibold">Cargando evento...</p>;
   }
 
   const hora_inicio = String(new Date(evento?.hora_inicio).getHours()).padStart(2, '0') + ':' + String(new Date(evento?.hora_inicio).getMinutes()).padStart(2, '0');

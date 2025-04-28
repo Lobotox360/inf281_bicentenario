@@ -43,9 +43,9 @@ export default function NoticiasSlider() {
   }, []);
 
   return (
-    <section className="p-10" data-aos="fade-up">
-      <h2 className="text-3xl font-bold text-center mb-6">Eventos más virales del Bicentenario</h2>
-      <div className="relative">
+    <section className="p-10" >
+      <h2 className="text-3xl font-bold text-center mb-6" data-aos="fade-up">Eventos más virales del Bicentenario</h2>
+      <div className="relative" >
         {/* Botón izquierdo */}
         <button ref={anteriorRef} className="absolute z-10 left-0 top-1/2 -translate-y-1/2 bg-black px-3 py-3 rounded-full hover:bg-gray-800">
           <FaArrowLeft />
@@ -65,9 +65,10 @@ export default function NoticiasSlider() {
               prevEl: anteriorRef.current,
               nextEl: siguienteRef.current,
             }}
+            
           >
             {eventos.map((evento) => (
-              <SwiperSlide key={evento.id_evento} data-aos="fade-up"> 
+              <SwiperSlide key={evento.id_evento} > 
                 <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
                   <h2 className="text-xl font-bold mb-4">{evento.titulo}</h2>
                   <img src={evento.foto_evento} alt="Imagen del evento" className="max-w-full h-auto mb-4 mx-auto"/>
