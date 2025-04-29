@@ -102,9 +102,28 @@ export default function AgenteVirtual() {
           {historial.map((item, index) => (
             <div key={index} className="bg-white/10 p-3 rounded-lg">
               <p className="font-semibold text-yellow-200">🧑‍💬 {item.pregunta}</p>
-              <p className="text-white whitespace-pre-wrap">{item.respuesta}</p>
+
+              {/* Mostrar respuesta: texto normal + imagen si hay */}
+              {item.respuesta.includes("![") ? (
+                <>
+                  {/* Mostrar texto antes de la imagen */}
+                  <p className="text-white whitespace-pre-wrap">
+                    {item.respuesta.split("![")[0]}
+                  </p>
+
+                  {/* Detectar URL de la imagen */}
+                  <img
+                    src={item.respuesta.match(/\((.*?)\)/)?.[1]}
+                    alt="Imagen de la respuesta"
+                    className="mt-4 rounded-lg mx-auto max-h-80"
+                  />
+                </>
+              ) : (
+                <p className="text-white whitespace-pre-wrap">{item.respuesta}</p>
+              )}
             </div>
           ))}
+
         </div>
         <label className="block mt-3 mb-2 text-lg">Haz tu pregunta:</label>
         <div className="flex flex-col gap-2 mb-4 sm:flex-row">
@@ -112,7 +131,7 @@ export default function AgenteVirtual() {
             type="text"
             value={pregunta}
             onChange={(e) => setPregunta(e.target.value)}
-            className="flex-1 p-3 rounded-lg text-black"
+            className="border  flex-1 p-3 rounded-lg text-black"
             placeholder="¿Quién fue el primer presidente de Bolivia?"
             onKeyDown={manejarEnter}
           />

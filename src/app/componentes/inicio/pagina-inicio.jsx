@@ -48,15 +48,40 @@ export default function Inicio() {
             </section>
 
             {/* Contador */}
-            <section className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-center max-w-4xl mx-auto rounded-md " data-aos="fade-up">
-                <h2 className="text-4xl font-bold mb-4">CUENTA REGRESIVA</h2>
-                <div className="text-3xl">
-                    <span>{timeLeft.days} días </span>
-                    <span>{timeLeft.hours} horas </span>
-                    <span>{timeLeft.minutes} minutos </span>
-                    <span>{timeLeft.seconds} segundos</span>
+            <section className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-center max-w-4xl mx-auto rounded-md p-8" data-aos="fade-up">
+            <h2 className="text-4xl font-bold mb-8">CUENTA REGRESIVA</h2>
+            <div className="flex justify-center gap-6 flex-wrap">
+                {/* Días */}
+                <div className="flex flex-col items-center">
+                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                    {timeLeft.days}
                 </div>
+                <span className="mt-2 font-semibold text-lg">Días</span>
+                </div>
+                {/* Horas */}
+                <div className="flex flex-col items-center">
+                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                    {timeLeft.hours}
+                </div>
+                <span className="mt-2 font-semibold text-lg">Horas</span>
+                </div>
+                {/* Minutos */}
+                <div className="flex flex-col items-center">
+                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                    {timeLeft.minutes}
+                </div>
+                <span className="mt-2 font-semibold text-lg">Minutos</span>
+                </div>
+                {/* Segundos */}
+                <div className="flex flex-col items-center">
+                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                    {timeLeft.seconds}
+                </div>
+                <span className="mt-2 font-semibold text-lg">Segundos</span>
+                </div>
+            </div>
             </section>
+
 
             {/* Sección de noticias */}
             <NoticiasSlider  />

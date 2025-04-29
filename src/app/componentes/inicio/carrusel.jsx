@@ -43,7 +43,7 @@ export default function NoticiasSlider() {
   }, []);
 
   return (
-    <section className="p-10" >
+    <section className="p-10"  data-aos="fade-up">
       <h2 className="text-3xl font-bold text-center mb-6" data-aos="fade-up">Eventos más virales del Bicentenario</h2>
       <div className="relative" >
         {/* Botón izquierdo */}
