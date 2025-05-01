@@ -12,7 +12,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className={`fixed sm:relative bg-gradient-to-b from-blue-900 to-blue-700 text-white min-h-screen transition-all duration-300 ${isSidebarVisible ? 'w-64' : 'w-0'} overflow-hidden`}>
+    <div className={`fixed sm:relative bg-gradient-to-b from-blue-900 to-blue-700 text-white min-h-screen transition-all duration-300 ${isSidebarVisible ? 'w-64' : 'w-0'} overflow-hidden z-50`}>
       
       <button
         onClick={toggleSidebar}
