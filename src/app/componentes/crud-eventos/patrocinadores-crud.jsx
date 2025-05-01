@@ -109,7 +109,7 @@ const CrudPatrocinadores = () => {
     };
 
     return (
-        <div>
+        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg max-w-5xl">
             <h2 className="text-2xl font-semibold mb-4">Administración de Patrocinadores</h2>
 
             {/* Barra de búsqueda */}

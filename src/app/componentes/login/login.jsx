@@ -48,13 +48,13 @@ const Login = ({ openModal }) => {
             router.push('/');
             break;
           case 'Administrador':
-            router.push('/roles');
+            router.push('/dashboard');
             break;
           case 'administrador_eventos':
-            router.push('/eventos-admin');
+            router.push('/dashboard');
             break;
           case 'administrador_contenido':
-            router.push('/contenido');
+            router.push('/dashboard');
             break;
           default:
             router.push('/'); // Si el rol no es reconocido, redirigir a la página principal

@@ -76,18 +76,21 @@ const CrudEventos = () => {
     );
 
     return (
-        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
+        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg max-w-5xl">
             <h2 className="text-2xl font-semibold mb-4">Administración de Eventos</h2>
 
             {/* Barra de búsqueda */}
-            <div className="mb-4">
+            <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <input
                     type="text"
                     placeholder="Buscar eventos..."
-                    className="px-4 py-2 border rounded-lg w-full"
+                    className="px-4 py-2 border rounded-lg w-full sm:w-full"
                     value={barraBusqueda}
                     onChange={(e) => setBarraBusqueda(e.target.value)}  
                 />
+                <button onClick={() => handleAgregarEvento()} className="cursor-pointer px-6 py-2 bg-green-500 text-white rounded hover:bg-green-400">
+                    Agregar
+                </button>
             </div>
 
             {/* Filtros por modalidad y estado */}
@@ -168,12 +171,6 @@ const CrudEventos = () => {
                     ))}
                     </tbody>
                 </table>
-                </div>
-
-            <div className='flex justify-center'>
-                <button onClick={() => handleAgregarEvento()} className="w-full sm:w-auto bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400">
-                    Agregar
-                </button>
             </div>
         </div>
     );

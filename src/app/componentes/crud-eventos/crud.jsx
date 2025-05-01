@@ -10,7 +10,7 @@ const EventosAdmin = () => {
     const [pestanaActiva, setPestanaActiva] = useState('eventos');
 
     return (
-        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
+        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg mb-10 mt-10">
             {/* Menú de pestañas */}
             <div className="mb-6">
                 {/* Versión PC - botones */}
