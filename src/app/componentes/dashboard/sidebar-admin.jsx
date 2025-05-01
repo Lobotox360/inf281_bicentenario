@@ -79,7 +79,7 @@ export default function Sidebar() {
         <div className="flex flex-col items-center p-6">
           {/* Avatar */}
           <div className="w-24 h-24 rounded-full overflow-hidden shadow-md mb-4 border-4 border-white">
-            <img src={fotoUsuario || "/assets/simon.jpg"} alt="User Avatar" className="w-full h-full object-cover" />
+            <img src={fotoUsuario || "/assets/cargando.png"} alt="User Avatar" className="w-full h-full object-cover" />
           </div>
 
           {/* Nombre y correo */}

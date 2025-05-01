@@ -143,6 +143,11 @@ export default function Navbar() {
             <div 
               className={`absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl transition-all duration-300 ease-in-out ${menuUsuario ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
             >
+            {["Administrador", "administrador_eventos", "administrador_contenido"].includes(rol) && (
+              <Link href={`/dashboard`} className="block px-4 py-2 hover:bg-yellow-400">
+                Dashboard
+              </Link>
+            )}
             <Link href={`/usuario/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
             <Link href="/usuario/miseventos" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
             <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
