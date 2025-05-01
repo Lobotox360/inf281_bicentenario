@@ -44,7 +44,7 @@ export default function Sidebar() {
               <FaHome /> <Link href="/">Inicio</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaBookOpen /> <Link href="/admin-eventos">Administrar Eventos</Link>
+              <FaBookOpen /> <Link href="/eventos-admin">Administrar Eventos</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaScroll /> <Link href="/roles">Administrar Roles</Link>
