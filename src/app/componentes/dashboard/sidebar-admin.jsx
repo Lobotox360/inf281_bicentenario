@@ -44,19 +44,19 @@ export default function Sidebar() {
               <FaHome /> <Link href="/">Inicio</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaBookOpen /> <Link href="/file">Administrar Eventos</Link>
+              <FaBookOpen /> <Link href="/admin-eventos">Administrar Eventos</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaScroll /> <Link href="/messages">Administrar Roles</Link>
+              <FaScroll /> <Link href="/roles">Administrar Roles</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaFolder /> <Link href="/location">Eventos</Link>
+              <FaFolder /> <Link href="/eventos">Eventos</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaCalendarAlt /> <Link href="/notifications">Calendario General</Link>
+              <FaCalendarAlt /> <Link href="/calendario">Calendario General</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaRobot /> <Link href="/notifications">Agente</Link>
+              <FaRobot /> <Link href="/agente">Agente</Link>
             </li>
           </ul>
         </div>
