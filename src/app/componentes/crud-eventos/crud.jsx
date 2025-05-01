@@ -11,9 +11,6 @@ const EventosAdmin = () => {
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
-            {/* Navbar */}
-            <Navbar />
-
             {/* Menú de pestañas */}
             <div className="mb-6">
                 {/* Versión PC - botones */}

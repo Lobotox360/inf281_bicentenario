@@ -15,7 +15,7 @@ export default function BarraHistorial({ historial = [] }) {
         onClick={() => setAbierto(!abierto)}
         className="absolute right-[-50px] cursor-pointer bg-transparent text-white px-4 py-4 shadow-md hover:text-black hover:bg-blue-100"
       >
-        {abierto ? <FaArrowLeft/> : <FaArrowRight/>}
+        {abierto ? <FaArrowLeft /> : <FaArrowRight />}
       </button>
 
       <div className="p-4 overflow-y-auto h-full">
@@ -27,7 +27,9 @@ export default function BarraHistorial({ historial = [] }) {
             {historial.map((item, index) => (
               <li key={index} className="bg-white/10 p-2 rounded-lg">
                 <p className="font-semibold">{item.pregunta}</p>
-                <p className="text-sm text-gray-200">{item.respuesta}</p>
+                <p className="text-sm text-gray-200 whitespace-pre-wrap break-words">
+                  {item.respuesta}
+                </p>
               </li>
             ))}
           </ul>

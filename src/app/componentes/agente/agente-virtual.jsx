@@ -2,14 +2,15 @@ import { useState, useEffect, useRef } from "react";
 import BarraHistorial from "./barra-lateral";
 import Navbar from '../inicio/navbar';
 import PiePagina from '../inicio/footer';
-import AOS from 'aos';import 'aos/dist/aos.css';
-
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 export default function AgenteVirtual() {
   const [pregunta, setPregunta] = useState("");
   const [respuesta, setRespuesta] = useState("");
   const [grabando, setGrabando] = useState(false);
   const [historial, setHistorial] = useState([]);
+  const [imagenCargada, setImagenCargada] = useState(false);
   const chatRef = useRef(null);
 
   useEffect(() => {
@@ -41,7 +42,6 @@ export default function AgenteVirtual() {
     setHistorial((prev) => [...prev, nuevaEntrada]);
     setPregunta(""); 
   
-    // Aquí haces la llamada a la API
     try {
       const response = await fetch('https://inf281-production.up.railway.app/agente', {
         method: 'POST',
@@ -66,13 +66,15 @@ export default function AgenteVirtual() {
           return nuevoHistorial;
         });
         i++;
-        if (i > respuesta.length) clearInterval(interval);
+        if (i > respuesta.length) {
+          clearInterval(interval);
+          setImagenCargada(true); 
+        }
       }, 25); 
     } catch (error) {
       console.error("Error al obtener la respuesta:", error);
     }
   };
-  
 
   useEffect(() => {
     if (chatRef.current) {
@@ -85,6 +87,16 @@ export default function AgenteVirtual() {
       event.preventDefault();
       enviarPregunta();
     }
+  };
+
+  const renderImagen = (respuesta) => {
+    // Detecta si la respuesta contiene un enlace a Cloudinary o cualquier URL de imagen
+    const regex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|webp))/i;
+    const imagenURL = respuesta.match(regex);
+    if (imagenURL) {
+      return <img src={imagenURL[0]} alt="Imagen de la respuesta" className="mt-4 rounded-lg mx-auto max-h-80" />;
+    }
+    return null;
   };
 
   return (
@@ -103,31 +115,18 @@ export default function AgenteVirtual() {
             <div key={index} className="bg-white/10 p-3 rounded-lg">
               <p className="font-semibold text-yellow-200">🧑‍💬 {item.pregunta}</p>
 
-              {/* Mostrar respuesta: texto normal + imagen si hay */}
-              {item.respuesta.includes("![") ? (
-                <>
-                  {/* Mostrar texto antes de la imagen */}
-                  <p className="text-white whitespace-pre-wrap">
-                    {item.respuesta.split("![")[0]}
-                  </p>
+              {/* Mostrar respuesta */}
+              <p className="text-white whitespace-pre-wrap break-words">{item.respuesta}</p>
 
-                  {/* Detectar URL de la imagen */}
-                  <img
-                    src={item.respuesta.match(/\((.*?)\)/)?.[1]}
-                    alt="Imagen de la respuesta"
-                    className="mt-4 rounded-lg mx-auto max-h-80"
-                  />
-                </>
-              ) : (
-                <p className="text-white whitespace-pre-wrap">{item.respuesta}</p>
-              )}
+              {/* Solo mostrar la imagen después de que la respuesta esté completamente cargada */}
+              {imagenCargada && renderImagen(item.respuesta)}
             </div>
           ))}
-
         </div>
+  
         <label className="block mt-3 mb-2 text-lg">Haz tu pregunta:</label>
         <div className="flex flex-col gap-2 mb-4 sm:flex-row">
-          <input
+          <textarea
             type="text"
             value={pregunta}
             onChange={(e) => setPregunta(e.target.value)}
@@ -152,4 +151,4 @@ export default function AgenteVirtual() {
       </div>
     </div>
   );
-}  
+}

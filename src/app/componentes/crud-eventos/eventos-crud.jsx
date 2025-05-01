@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Navbar from '../inicio/navbar';
 
 const CrudEventos = () => {
     const router = useRouter();
@@ -65,12 +64,12 @@ const CrudEventos = () => {
             console.error('Error al iniciar la transmisión:', error);
         }
     };
-    
 
+    // Aplicando filtros de búsqueda, modalidad y estado
     const eventosFiltrados = eventos.filter(evento =>
         (evento.titulo.toLowerCase().includes(barraBusqueda.toLowerCase()) ||
-        evento.descripcion.toLowerCase().includes(barraBusqueda.toLowerCase())||
-        evento.modalidad.toLowerCase().includes(barraBusqueda.toLowerCase())||
+        evento.descripcion.toLowerCase().includes(barraBusqueda.toLowerCase()) ||
+        evento.modalidad.toLowerCase().includes(barraBusqueda.toLowerCase()) ||
         evento.estado.toLowerCase().includes(barraBusqueda.toLowerCase())) &&
         (modalidadFiltro === '' || evento.modalidad === modalidadFiltro) &&
         (estadoFiltro === '' || evento.estado === estadoFiltro)
@@ -78,7 +77,6 @@ const CrudEventos = () => {
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
-            <Navbar />
             <h2 className="text-2xl font-semibold mb-4">Administración de Eventos</h2>
 
             {/* Barra de búsqueda */}
@@ -120,7 +118,7 @@ const CrudEventos = () => {
             </div>
 
             <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full"> {/* Agrega max-height si quieres limitar el tamaño vertical */}
-                <table className="min-w-full max-w-full border-collapse border border-gray-300">
+                <table className=" border-collapse border border-gray-300">
                     <thead>
                     <tr>
                         <th className="border px-4 py-2">Título</th>
@@ -171,7 +169,6 @@ const CrudEventos = () => {
                     </tbody>
                 </table>
                 </div>
-
 
             <div className='flex justify-center'>
                 <button onClick={() => handleAgregarEvento()} className="w-full sm:w-auto bg-green-500 text-white px-10 py-2 mt-4 rounded mr-2 cursor-pointer hover:bg-green-400">

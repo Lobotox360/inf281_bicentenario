@@ -82,7 +82,7 @@ export default function Inicio() {
             </div>
             </section>
 
-
+            
             {/* Sección de noticias */}
             <NoticiasSlider  />
 

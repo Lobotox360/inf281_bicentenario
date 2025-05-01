@@ -8,6 +8,8 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Link from 'next/link';
+import { ToastContainer, toast } from 'react-toastify'; // Importamos Toastify
+import 'react-toastify/dist/ReactToastify.css'; // Importamos el CSS de Toastify
 
 const Login = ({ openModal }) => {
   const [visible, setVisible] = useState(false);
@@ -17,7 +19,7 @@ const Login = ({ openModal }) => {
 
   const onSubmit = async (data) => {
     if (!captchaValido) {
-      alert('Por favor, completa el reCAPTCHA.');
+      toast.error('Por favor, completa el reCAPTCHA.');
       return;
     }
 
@@ -39,30 +41,30 @@ const Login = ({ openModal }) => {
           localStorage.setItem('rol', result.rol);
         }
 
-        alert('✅ Inicio de sesión exitoso.');
+        toast.success('✅ Inicio de sesión exitoso.');
         const idRol = localStorage.getItem('rol');
         switch (idRol) {
-            case 'usuario_casual':
-                router.push('/');
-                break;
-            case 'Administrador':
-                router.push('/roles');
-                break;
-            case 'administrador_eventos':
-                router.push('/eventos-admin');
-                break;
-            case 'administrador_contenido':
-                router.push('/contenido');
-                break;
-            default:
-                router.push('/'); // Si el rol no es reconocido, redirigir a la página principal
+          case 'usuario_casual':
+            router.push('/');
+            break;
+          case 'Administrador':
+            router.push('/roles');
+            break;
+          case 'administrador_eventos':
+            router.push('/eventos-admin');
+            break;
+          case 'administrador_contenido':
+            router.push('/contenido');
+            break;
+          default:
+            router.push('/'); // Si el rol no es reconocido, redirigir a la página principal
         }
       } else {
         throw new Error(result.message || 'Credenciales incorrectas.');
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);
-      alert('❌ Error al iniciar sesión. Verifica tu correo y contraseña.');
+      toast.error('❌ Error al iniciar sesión. Verifica tu correo y contraseña.');
     }
   };
 
@@ -136,6 +138,9 @@ const Login = ({ openModal }) => {
           </button>
         </form>
       </div>
+
+      {/* Aquí se renderiza el ToastContainer */}
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </div>
   );
 };

@@ -3,16 +3,19 @@ import { useRef, useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import AOS from 'aos';import 'aos/dist/aos.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
+import Skeleton from 'react-loading-skeleton'; // Importa Skeleton
+import 'react-loading-skeleton/dist/skeleton.css'; // Importa los estilos de Skeleton
 
 export default function NoticiasSlider() {
   const [eventos, setEventos] = useState([]);
   const [swiperReady, setSwiperReady] = useState(false);
   const anteriorRef = useRef(null);
   const siguienteRef = useRef(null);
-  const swiperRef = useRef(null); 
+  const swiperRef = useRef(null);
 
   // Fetch de eventos desde la API
   useEffect(() => {
@@ -43,11 +46,16 @@ export default function NoticiasSlider() {
   }, []);
 
   return (
-    <section className="p-10"  data-aos="fade-up">
-      <h2 className="text-3xl font-bold text-center mb-6" data-aos="fade-up">Eventos más virales del Bicentenario</h2>
-      <div className="relative" >
+    <section className="p-10" data-aos="fade-up">
+      <h2 className="text-3xl font-bold text-center mb-6" data-aos="fade-up">
+        Eventos más virales del Bicentenario
+      </h2>
+      <div className="relative">
         {/* Botón izquierdo */}
-        <button ref={anteriorRef} className="absolute z-10 left-0 top-1/2 -translate-y-1/2 bg-black px-3 py-3 rounded-full hover:bg-gray-800">
+        <button
+          ref={anteriorRef}
+          className="absolute z-10 left-0 top-1/2 -translate-y-1/2 bg-black px-3 py-3 rounded-full hover:bg-gray-800"
+        >
           <FaArrowLeft />
         </button>
 
@@ -65,25 +73,72 @@ export default function NoticiasSlider() {
               prevEl: anteriorRef.current,
               nextEl: siguienteRef.current,
             }}
-            
           >
-            {eventos.map((evento) => (
-              <SwiperSlide key={evento.id_evento} > 
-                <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
-                  <h2 className="text-xl font-bold mb-4">{evento.titulo}</h2>
-                  <img src={evento.foto_evento} alt="Imagen del evento" className="max-w-full h-auto mb-4 mx-auto"/>
-                  <p className="text-base text-white">{evento.descripcion}</p>
-                  <p className="text-base text-white">{evento.Ubicacion.departamento}</p>
-                  <p className="text-white mt-4">{Array.from({ length: 5 }, (_, index) => {return index < evento.puntuacion ? '⭐' : '☆';}).join(' ')}</p>
-                  
-                </div>
-              </SwiperSlide>
-            ))}
+            {eventos.length > 0 ? (
+              eventos.map((evento) => (
+                <SwiperSlide key={evento.id_evento}>
+                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
+                    <h2 className="text-xl font-bold mb-4">{evento.titulo}</h2>
+                    <img
+                      src={evento.foto_evento}
+                      alt="Imagen del evento"
+                      className="max-w-full h-auto mb-4 mx-auto"
+                    />
+                    <p className="text-base text-white">{evento.descripcion}</p>
+                    <p className="text-base text-white">{evento.Ubicacion.departamento}</p>
+                    <p className="text-white mt-4">
+                      {Array.from({ length: 5 }, (_, index) => {
+                        return index < evento.puntuacion ? '⭐' : '☆';
+                      }).join(' ')}
+                    </p>
+                  </div>
+                </SwiperSlide>
+              ))
+            ) : (
+              // Skeleton cargando cuando no hay eventos
+              <>
+                <SwiperSlide>
+                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
+                    <Skeleton height={30} width={150} className="mb-4" />
+                    <Skeleton height={200} className="mb-4" />
+                    <Skeleton height={20} width={100} className="mb-2" />
+                    <Skeleton height={20} width={80} />
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
+                    <Skeleton height={30} width={150} className="mb-4" />
+                    <Skeleton height={200} className="mb-4" />
+                    <Skeleton height={20} width={100} className="mb-2" />
+                    <Skeleton height={20} width={80} />
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
+                    <Skeleton height={30} width={150} className="mb-4" />
+                    <Skeleton height={200} className="mb-4" />
+                    <Skeleton height={20} width={100} className="mb-2" />
+                    <Skeleton height={20} width={80} />
+                  </div>
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
+                    <Skeleton height={30} width={150} className="mb-4" />
+                    <Skeleton height={200} className="mb-4" />
+                    <Skeleton height={20} width={100} className="mb-2" />
+                    <Skeleton height={20} width={80} />
+                  </div>
+                </SwiperSlide>
+              </>
+            )}
           </Swiper>
         )}
 
         {/* Botón derecho */}
-        <button ref={siguienteRef} className="absolute z-10 right-0 top-1/2 -translate-y-1/2 bg-black text-white px-3 py-3 rounded-full hover:bg-gray-800">
+        <button
+          ref={siguienteRef}
+          className="absolute z-10 right-0 top-1/2 -translate-y-1/2 bg-black text-white px-3 py-3 rounded-full hover:bg-gray-800"
+        >
           <FaArrowRight />
         </button>
       </div>
