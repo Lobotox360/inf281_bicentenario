@@ -15,7 +15,9 @@ export class AgenteVirtualService {
   async preguntarAlAgente(pregunta: string): Promise<string> {
     const eventos = await this.prisma.eventos.findMany({
       where: {
-        fecha: { gte: new Date() }
+        hora_fin: {
+          gte: new Date().toISOString().slice(0, 16)
+        }
       },
       select: {
         titulo: true,

@@ -15,6 +15,7 @@ import { TelefonoModule } from './telefono/telefono.module';
 import { ExpositorModule } from './expositor/expositor.module';
 import { PuntuacionModule } from './puntuacion/puntuacion.module';
 import { AgenteVirtualModule } from './agente-virtual/agente-virtual.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { AgenteVirtualModule } from './agente-virtual/agente-virtual.module';
     TelefonoModule,
     ExpositorModule,
     PuntuacionModule,
-    AgenteVirtualModule, 
+    AgenteVirtualModule,
+    DashboardModule, 
   ],
 })
 export class AppModule {}

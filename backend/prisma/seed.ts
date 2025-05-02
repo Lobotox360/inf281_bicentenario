@@ -53,11 +53,31 @@ async function main() {
     { id_rol: admin.id_rol, objeto: 'rol', accion: 'put', descripcion_permiso: 'Cambiar roles de usuario' },
     { id_rol: admin.id_rol, objeto: 'rol', accion: 'get', descripcion_permiso: 'Ve los roles de usuario' },
 
+    { id_rol: admin.id_rol, objeto: 'evento', accion: 'post', descripcion_permiso: 'Crear eventos' },
+    { id_rol: admin.id_rol, objeto: 'evento', accion: 'put', descripcion_permiso: 'Editar eventos' },
+    { id_rol: admin.id_rol, objeto: 'evento', accion: 'delete', descripcion_permiso: 'Eliminar eventos' },
     { id_rol: admin.id_rol, objeto: 'evento', accion: 'get', descripcion_permiso: 'Ver los eventos' },
+
+    { id_rol: admin.id_rol, objeto: 'patrocinador', accion: 'get', descripcion_permiso: 'Ver a los patrocinadores' },
+    { id_rol: admin.id_rol, objeto: 'patrocinador', accion: 'put', descripcion_permiso: 'Editar patrocinadores' },
+    { id_rol: admin.id_rol, objeto: 'patrocinador', accion: 'delete', descripcion_permiso: 'Eliminar patrocinadores' },
+    { id_rol: admin.id_rol, objeto: 'patrocinador', accion: 'post', descripcion_permiso: 'Agregar patrocinadores' },
+    
+    { id_rol: admin.id_rol, objeto: 'categoria', accion: 'get', descripcion_permiso: 'Ver a las categorias' },
+    { id_rol: admin.id_rol, objeto: 'categoria', accion: 'put', descripcion_permiso: 'Editar categorias' },
+    { id_rol: admin.id_rol, objeto: 'categoria', accion: 'delete', descripcion_permiso: 'Eliminar categorias' },
+    { id_rol: admin.id_rol, objeto: 'categoria', accion: 'post', descripcion_permiso: 'Agregar categorias' },
+
+    { id_rol: admin.id_rol, objeto: 'telefono', accion: 'get', descripcion_permiso: 'Ver los telefonos' },
+    { id_rol: admin.id_rol, objeto: 'telefono', accion: 'put', descripcion_permiso: 'Editar los telefonos' },
+
+    { id_rol: admin.id_rol, objeto: 'expositor', accion: 'get', descripcion_permiso: 'Ver los expositores' },
+    { id_rol: admin.id_rol, objeto: 'expositor', accion: 'put', descripcion_permiso: 'Editar los expositores' },
 
     { id_rol: admin.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
     { id_rol: admin.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
     { id_rol: admin.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
+
     // Permisos del usuario casual
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
