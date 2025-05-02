@@ -27,7 +27,7 @@ const Recuperar = () => {
       console.log("✅ Correo de recuperación enviado a:", data.email);
 
       // Mostrar notificación de éxito
-      toast.success("✅ ¡Correo enviado! Revisa tu bandeja de entrada.");
+      toast.success("¡Correo enviado! Revisa tu bandeja de entrada.");
 
       // Opcional: Redireccionar al usuario después de unos segundos
       setTimeout(() => router.push('/login'), 4000);
@@ -36,7 +36,7 @@ const Recuperar = () => {
       console.error("Error en la recuperación de contraseña:", error);
       
       // Mostrar notificación de error
-      toast.error("❌ Error al enviar el correo. Verifica tu dirección e inténtalo de nuevo.");
+      toast.error("Error al enviar el correo. Verifica tu dirección e inténtalo de nuevo.");
     }
   };
 

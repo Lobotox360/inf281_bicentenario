@@ -5,7 +5,7 @@ import { FaEdit } from 'react-icons/fa';
 import AOS from 'aos';import 'aos/dist/aos.css';
 import Link from 'next/link';
 
-const VistaDepartamentoEventos = ({ departamento }) => {
+const VistaDepartamentoEventos = ({ departamento, modalidad, estado, montoMinimo, montoMaximo }) => {
   const [eventos, setEventos] = useState([]);
   const [carga, setCarga] = useState(true);
   const [userRole, setUserRole] =  useState(null);
@@ -33,16 +33,27 @@ const VistaDepartamentoEventos = ({ departamento }) => {
       try {
         const respuesta = await fetch('https://inf281-production.up.railway.app/eventos');
         const datos = await respuesta.json();
-        setEventos(datos);
+  
+        // Filtrar los eventos según los diferentes parámetros
+        const eventosFiltrados = datos.filter(evento => {
+        const filtrarPorDepartamento = evento.Ubicacion?.departamento === departamento;
+        const filtrarPorModalidad = modalidad ? evento.modalidad === modalidad : true;
+        const filtrarPorEstado = estado ? evento.estado === estado : true;
+        const filtrarPorMonto = (montoMinimo ? evento.costo >= montoMinimo : true) && (montoMaximo ? evento.costo <= montoMaximo : true);
+        
+        return filtrarPorDepartamento && filtrarPorModalidad && filtrarPorEstado && filtrarPorMonto;
+        });
+  
+        setEventos(eventosFiltrados);
       } catch (error) {
         console.error('Error al cargar los eventos:', error);
       } finally {
         setCarga(false);
       }
     };
-
+  
     fetchEventos();
-  }, []); 
+  }, [departamento, modalidad, estado, montoMinimo, montoMaximo]);
 
   useEffect(() => {
     // Guardar inscripciones en localStorage cuando cambien
@@ -51,14 +62,11 @@ const VistaDepartamentoEventos = ({ departamento }) => {
     }
   }, [inscripciones]);
 
-  // Filtrar los eventos según el departamento seleccionado
-  const eventosDepartamento = eventos.filter(evento => evento.Ubicacion?.departamento === departamento);
-
   if (carga) {
     return <p className='text-center text-white text-xl font-semibold'>Cargando eventos...</p>;
   }
 
-  if (eventosDepartamento.length === 0) {
+  if (eventos.length === 0) {
     return <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles en {departamento}</p>;
   }
 
@@ -68,7 +76,7 @@ const VistaDepartamentoEventos = ({ departamento }) => {
         EVENTOS EN {departamento.toUpperCase()}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {eventosDepartamento.map((ev) => (
+        {eventos.map((ev) => (
           <div key={ev.id_evento} className="bg-white p-2 rounded shadow" data-aos="fade-up">
             <h4 className="font-semibold text-center p-4">{ev.titulo}</h4>
             <Image

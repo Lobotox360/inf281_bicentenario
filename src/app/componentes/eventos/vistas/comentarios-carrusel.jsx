@@ -20,6 +20,7 @@ const ModuloComentarios = ({eventoId}) => {
           setComentarios(datos);
         } else {
           console.error('Error al obtener los comentarios');
+          setComentarios([]);
         }
       } catch (error) {
         console.error('Hubo un problema con la solicitud:', error);

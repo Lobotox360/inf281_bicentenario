@@ -4,21 +4,10 @@ import { FaEdit } from 'react-icons/fa';
 import AOS from 'aos';import 'aos/dist/aos.css';
 import Link from 'next/link';
 
-const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, montoMaximo }) => {
+const VistaPatrocinadorEventos = ({patrocinador, modalidad, estado, montoMinimo, montoMaximo }) => {
   const [eventos, setEventos] = useState([]);
   const [carga, setCarga] = useState(true);
   const [userRole, setUserRole] =  useState(null);
-
-  // Leer inscripciones de localStorage al inicio
-  const [inscripciones, setInscripciones] = useState(() => {
-    const storedInscripciones = localStorage.getItem('inscripciones');
-    return storedInscripciones ? JSON.parse(storedInscripciones) : {};
-  });
-
-  const updateInscripcionesInLocalStorage = (updatedInscripciones) => {
-    localStorage.setItem('inscripciones', JSON.stringify(updatedInscripciones));
-    setInscripciones(updatedInscripciones); // Actualiza el estado local también
-  };
 
   //Obtener Rol
   useEffect(() => {
@@ -29,20 +18,19 @@ const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, mo
   // Obtener eventos
   useEffect(() => {
     AOS.init({ duration: 1000 });
+  
     const fetchEventos = async () => {
       try {
         const respuesta = await fetch('https://inf281-production.up.railway.app/eventos');
         const datos = await respuesta.json();
-
-        // Filtrar eventos según la categoría seleccionada (Auxcategoria)
         const eventosFiltrados = datos.filter(evento => {
-          const filtrarPorCategoria = evento.CategoriasEvento.some(categoria => categoria.categoria.nombre === Auxcategoria);
+          const filtrarPorPatrocinador = evento.Eventos_Patrocinadores.some(patro => patro.Patrocinadores.institucion === patrocinador);
           const filtrarPorModalidad = modalidad ? evento.modalidad === modalidad : true;
           const filtrarPorEstado = estado ? evento.estado === estado : true;
-          const filtrarPorMonto = (montoMinimo ? evento.costo >= montoMinimo : true) && (montoMaximo ? evento.costo <= montoMaximo : true);  
-          return filtrarPorCategoria && filtrarPorModalidad && filtrarPorEstado && filtrarPorMonto;
+          const filtrarPorMonto = (montoMinimo ? evento.costo >= montoMinimo : true) && (montoMaximo ? evento.costo <= montoMaximo : true);
+  
+          return filtrarPorPatrocinador && filtrarPorModalidad && filtrarPorEstado && filtrarPorMonto;
         });
-
         setEventos(eventosFiltrados);
       } catch (error) {
         console.error('Error al obtener eventos:', error);
@@ -50,16 +38,10 @@ const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, mo
         setCarga(false);
       }
     };
-
+  
     fetchEventos();
-  }, [Auxcategoria, modalidad, estado, montoMinimo, montoMaximo]);
-
-  // Guardar inscripciones en localStorage cuando cambien
-  useEffect(() => {
-    if (Object.keys(inscripciones).length > 0) {
-      localStorage.setItem('inscripciones', JSON.stringify(inscripciones));
-    }
-  }, [inscripciones]);
+  }, [patrocinador, modalidad, estado, montoMinimo, montoMaximo]);
+  
 
   // Si está cargando los eventos
   if (carga) {
@@ -68,13 +50,13 @@ const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, mo
 
   // Si no hay eventos en esa categoría
   if (eventos.length === 0) {
-    return <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles para la categoría {Auxcategoria}.</p>;
+    return <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles para el patrocinador {patrocinador}.</p>;
   }
 
   return (
     <div className="space-y-10">
       <h2 className="text-white text-2xl font-semibold text-center p-4" data-aos="fade-up">
-        EVENTOS EN CATEGORÍA {Auxcategoria.toUpperCase()}
+        EVENTOS AUSPICIADOS POR {patrocinador.toUpperCase()}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {eventos.map((ev) => (
@@ -141,4 +123,4 @@ const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, mo
   );
 };
 
-export default VistaCategoriaEventos;
+export default VistaPatrocinadorEventos;
