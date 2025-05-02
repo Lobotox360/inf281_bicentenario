@@ -14,11 +14,7 @@ export class DashboardController {
     return await this.dashboardService.ObtenerGeneral();
   }
 
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
-  @Get('departamento')
-  async obtenerPorDepartamento() {
-    return await this.dashboardService.obtenerPorDepartamento();
-  }
+
 
   //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('eventos')
