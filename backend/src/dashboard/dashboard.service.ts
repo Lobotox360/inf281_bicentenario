@@ -37,69 +37,86 @@ export class DashboardService {
     }
 
     async obtenerPorDepartamento() {
-        const departamentos = [
-          'La Paz', 'Oruro', 'Cochabamba', 'Santa Cruz',
-          'Potosí', 'Chuquisaca', 'Tarija', 'Beni', 'Pando'
-        ];
+      const departamentos = [
+        'La Paz', 'Oruro', 'Cochabamba', 'Santa Cruz',
+        'Potosí', 'Chuquisaca', 'Tarija', 'Beni', 'Pando'
+      ];
     
-        const now = new Date().toISOString().slice(0, 16);
+      const now = new Date().toISOString().slice(0, 16);
+      const resultados = {};
     
-        const resultados = {};
+      for (const dep of departamentos) {
+        // 1. Contar admins de eventos por ciudad
+        const nro_admins_eventos = await this.prisma.usuarios.count({
+          where: {
+            ciudad: dep,
+            id_rol: 3,
+          },
+        });
     
-        for (const dep of departamentos) {
-          // Eventos en el departamento
-          const eventos = await this.prisma.eventos.findMany({
-            where: {
-              Ubicacion: {
-                departamento: dep,
-              },
-            },
-            include: {
-              Ubicacion: true,
-            },
-          });
+        // 2. Obtener eventos por departamento (solo IDs)
+        const eventoIds = await this.prisma.eventos.findMany({
+          where: {
+            Ubicacion: { departamento: dep },
+          },
+          select: { id_evento: true },
+        });
     
-          const eventoIds = eventos.map(e => e.id_evento);
+        const ids = eventoIds.map(e => e.id_evento);
     
-          const nro_personas_agendas = await this.prisma.agenda.count({
-            where: {
-              id_evento: { in: eventoIds },
-            },
-          });
-    
-          const nro_admins_eventos = await this.prisma.usuarios.count({
-            where: {
-              ciudad: dep,
-              id_rol: 3,
-            },
-          });
-    
-          const puntuacion_promedio = eventos.length > 0
-            ? eventos.reduce((acc, curr) => acc + curr.puntuacion, 0) / eventos.length
-            : 0;
-    
-          const nro_eventos_realizados = eventos.filter(
-            e => e.hora_fin < now
-          ).length;
-    
-          const nro_comentarios = await this.prisma.agenda.count({
-            where: {
-              comentario: { not: null },
-              id_evento: { in: eventoIds },
-            },
-          });
-    
+        // Si no hay eventos, evita errores
+        if (ids.length === 0) {
           resultados[dep] = {
-            nro_personas_agendas,
+            nro_personas_agendas: 0,
             nro_admins_eventos,
-            puntuacion_promedio: parseFloat(puntuacion_promedio.toFixed(2)),
-            nro_eventos_realizados,
-            nro_comentarios,
+            puntuacion_promedio: 0,
+            nro_eventos_realizados: 0,
+            nro_comentarios: 0,
           };
+          continue;
         }
     
-        return resultados;
+        // 3. Calcular puntuación promedio y eventos realizados con aggregate
+        const { _avg, _count } = await this.prisma.eventos.aggregate({
+          where: {
+            id_evento: { in: ids },
+          },
+          _avg: { puntuacion: true },
+          _count: { id_evento: true },
+        });
+    
+        const nro_eventos_realizados = await this.prisma.eventos.count({
+          where: {
+            id_evento: { in: ids },
+            hora_fin: { lt: now },
+          },
+        });
+    
+        const nro_personas_agendas = await this.prisma.agenda.count({
+          where: {
+            id_evento: { in: ids },
+          },
+        });
+    
+        const nro_comentarios = await this.prisma.agenda.count({
+          where: {
+            id_evento: { in: ids },
+            comentario: { not: null },
+          },
+        });
+    
+        resultados[dep] = {
+          nro_personas_agendas,
+          nro_admins_eventos,
+          puntuacion_promedio: parseFloat((_avg.puntuacion ?? 0).toFixed(2)),
+          nro_eventos_realizados,
+          nro_comentarios,
+        };
       }
+    
+      return resultados;
+    }
+    
 
       async eventosResumen() {
         const now = new Date().toISOString().slice(0, 16);
