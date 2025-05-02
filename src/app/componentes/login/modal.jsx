@@ -7,7 +7,8 @@ import { CountrySelect, StateSelect } from 'react-country-state-city';
 import 'react-country-state-city/dist/react-country-state-city.css';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import dynamic from 'next/dynamic';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const Modal = ({ isOpen, onClose }) => {
   const [idPais, setIdPais] = useState(null);
@@ -15,13 +16,14 @@ const Modal = ({ isOpen, onClose }) => {
   const [visible, setVisible] = useState(false);
   const [revisible, setRevisible] = useState(false);
   const { register, watch, formState: { errors }, handleSubmit, setValue } = useForm();
-  const contrasena = watch('contrasena');
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"'<>,.?/~`\\-]).{8,}$/;
+  const validarContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}\[\]:;"'<>,.?/~`\\-]).{8,}$/;
   const router = useRouter();
+  const contrasena = watch('contrasena');
+
 
   const onSubmit = async (data) => {
     try {
-      localStorage.setItem('email', data.email); // Guardamos el email para la verificación
+      localStorage.setItem('email', data.email);
       const response = await fetch('https://inf281-production.up.railway.app/usuario/registrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -37,9 +39,14 @@ const Modal = ({ isOpen, onClose }) => {
 
       // Redirigir después del registro exitoso
       router.push('/login/verificar');
+
+      // Mostrar notificación de éxito
+      toast.success("Registro exitoso! Por favor, verifica tu correo.");
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      alert('Hubo un problema con el registro.');
+      
+      // Mostrar notificación de error
+      toast.error("Hubo un problema con el registro.");
     }
   };
 
@@ -134,13 +141,13 @@ const Modal = ({ isOpen, onClose }) => {
                   {...register('contrasena', {
                     required: true,
                     pattern: {
-                      value: passwordRegex,
+                      value: validarContrasena,
                       message: "Debe contener 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial"
                     }
                   })}
                 />
                 <button
-                  className="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                  className="cursor-pointer absolute right-3 top-3 text-gray-500 hover:text-gray-700"
                   type="button"
                   onClick={() => setVisible(!visible)}
                 >
@@ -166,7 +173,7 @@ const Modal = ({ isOpen, onClose }) => {
                   })}
                 />
                 <button
-                  className="absolute right-3 top-3 text-gray-500"
+                  className="cursor-pointer absolute right-3 top-3 text-gray-500 hover:text-gray-700"
                   type="button"
                   onClick={() => setRevisible(!revisible)}
                 >
@@ -178,12 +185,13 @@ const Modal = ({ isOpen, onClose }) => {
         </div>
 
         <div className="flex justify-end space-x-4 mt-6">
-          <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
+          <button type="submit" className="cursor-pointer bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600">
             Guardar
           </button>
-          <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" onClick={onClose}>Cancelar</button>
+          <button className="cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600" onClick={onClose}>Cancelar</button>
         </div>
       </form>
+      <ToastContainer />
     </div>,
     document.getElementById("modal-root")
   );

@@ -13,7 +13,7 @@ export default function BarraHistorial({ historial = [] }) {
     >
       <button
         onClick={() => setAbierto(!abierto)}
-        className="absolute right-[-50px] cursor-pointer bg-transparent text-white px-4 py-4 shadow-md hover:text-black hover:bg-blue-100"
+        className="mt-5 absolute right-[-50px] cursor-pointer bg-transparent text-white px-4 py-4 shadow-md hover:text-black hover:bg-blue-100"
       >
         {abierto ? <FaArrowLeft /> : <FaArrowRight />}
       </button>

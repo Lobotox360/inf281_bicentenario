@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../inicio/navbar';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdministracionRoles = () => {
     const router = useRouter();
@@ -15,31 +17,32 @@ const AdministracionRoles = () => {
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [rolFiltro, setRolFiltro] = useState('');
     const [paisFiltro, setCiudadFiltro] = useState('');
-
-    // Función para manejar el clic en el botón de retroceder
-    const handleBack = () => {
-        router.back();
-    };
+    const [loading, setLoading] = useState(false); // Para manejar la carga
 
     // Función para obtener los datos de los usuarios
     const fetchUsuarios = async () => {
+        setLoading(true);
         try {
-            const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios'); // Ruta de la API
+            const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios');
             const datos = await res.json();
-            setUsuarios(datos); // Establece los datos en el estado
+            setUsuarios(datos);
+            setLoading(false);
         } catch (error) {
             console.error('Error al cargar los usuarios:', error);
+            setLoading(false);
+            toast.error('Error al cargar los usuarios');
         }
     };
 
     // Función para obtener los roles
     const fetchRoles = async () => {
         try {
-            const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles'); // Ruta de la API
+            const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles');
             const datos = await respuesta.json();
-            setRoles(datos); // Establece los roles en el estado
+            setRoles(datos);
         } catch (error) {
             console.error('Error al cargar los roles:', error);
+            toast.error('Error al cargar los roles');
         }
     };
 
@@ -86,20 +89,20 @@ const AdministracionRoles = () => {
                     },
                     body: JSON.stringify({
                         email: usuarioSeleccionado.email,
-                        nuevoRol: parseInt(rolSeleccionado)
+                        nuevoRol: parseInt(rolSeleccionado),
                     }),
                 });
                 const data = await response.json();
                 if (data.message) {
-                    alert(data.message); // Mostrar mensaje de éxito
+                    toast.success('Rol actualizado correctamente');
                     setModalAbierto(false); // Cerrar el modal
                     fetchUsuarios(); // Actualizar la lista de usuarios
                 } else {
-                    alert('Error al actualizar el rol');
+                    toast.error('Error al actualizar el rol');
                 }
             } catch (error) {
                 console.error('Error al actualizar el rol:', error);
-                alert('Error al actualizar el rol');
+                toast.error('Error al actualizar el rol');
             }
         }
     };
@@ -115,12 +118,13 @@ const AdministracionRoles = () => {
     );
 
     return (
-        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg">
-            <Navbar />
+        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg mt-10 mb-18">
+            <ToastContainer /> {/* Toastify container */}
+
             <h2 className="text-2xl font-semibold mb-4">Administración de Roles</h2>
 
             {/* Barra de búsqueda */}
-            <div className="mb-4">
+            <div className="mb-4 shadow-lg">
                 <input
                     type="text"
                     placeholder="Buscar por nombre o email..."
@@ -131,7 +135,7 @@ const AdministracionRoles = () => {
             </div>
 
             {/* Filtros por rol y país */}
-            <div className="mb-4 flex gap-4 flex-col sm:flex-row">
+            <div className="mb-4 flex gap-4 flex-col sm:flex-row ">
                 {/* Filtro por rol */}
                 <select
                     className="px-4 py-2 border rounded-lg"
@@ -159,7 +163,8 @@ const AdministracionRoles = () => {
                 </select>
             </div>
             
-            <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full"> {/* Agrega max-height si quieres limitar el tamaño vertical */}
+            <div className="overflow-x-auto overflow-y-auto max-h-100 w-80 sm:w-full">
+                {/* Agrega max-height si quieres limitar el tamaño vertical */}
                 <table className="min-w-full max-w-full border-collapse border border-gray-300">
                     <thead>
                         <tr>
@@ -182,7 +187,7 @@ const AdministracionRoles = () => {
                                 <td className="border px-4 py-2">
                                     <button
                                         onClick={() => handleEditRole(usuario)}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+                                        className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
                                     >
                                         Editar Rol
                                     </button>
@@ -192,17 +197,11 @@ const AdministracionRoles = () => {
                     </tbody>
                 </table>
             </div>
-            <button
-                onClick={handleBack}
-                className="bg-red-500 text-white p-2 rounded mb-4 mt-4 cursor-pointer w-full sm:w-auto"
-            >
-                Volver
-            </button>
 
             {/* Modal */}
             {modalAbierto && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-6 rounded-md w-3/4">
+                    <div className="bg-white p-6 rounded-md w-3/4 sm:w-1/2">
                         <h3 className="text-center text-xl font-semibold mb-4">Editar rol de {usuarioSeleccionado?.nombre}</h3>
                         <p className="font-semibold mb-4">Rol actual: {usuarioSeleccionado?.Roles.nombre}</p>
                         <div>
@@ -212,7 +211,7 @@ const AdministracionRoles = () => {
                                 name="roles"
                                 value={rolSeleccionado || ''}
                                 onChange={handleRoleChange}
-                                className="mt-2 mb-3 block w-full p-2 border border-gray-300 rounded-md"
+                                className="cursor-pointer mt-2 mb-3 block w-full p-2 border border-gray-300 rounded-md"
                             >
                                 <option value="">Seleccione un rol</option>
                                 {roles.map(role => (

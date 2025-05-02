@@ -5,9 +5,9 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function Chart() {
-  const data = {
-    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre'],
+export default function GraficoBarras() {
+  const datos = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
     datasets: [
       {
         label: '2019',
@@ -25,7 +25,7 @@ export default function Chart() {
   return (
     <div className="mb-6 bg-white p-6 rounded-xl shadow-lg">
       <h3 className="text-xl font-semibold mb-4">Resultados</h3>
-      <Bar data={data} />
+      <Bar data={datos} />
     </div>
   );
 }

@@ -57,7 +57,7 @@ const Login = ({ openModal }) => {
             router.push('/dashboard');
             break;
           default:
-            router.push('/'); // Si el rol no es reconocido, redirigir a la página principal
+            router.push('/');
         }
       } else {
         throw new Error(result.message || 'Credenciales incorrectas.');

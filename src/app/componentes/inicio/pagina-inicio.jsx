@@ -8,34 +8,33 @@ import PiePagina from './footer';
 import Navbar from "./navbar";
 
 export default function Inicio() {
-    const [timeLeft, setTimeLeft] = useState({
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0
+    const [tiempoRestante, setTiempoRestante] = useState({
+        dias: 0,
+        horas: 0,
+        minutos: 0,
+        segundos: 0
     });
 
     useEffect(() => {
-        AOS.init({ duration: 1000 });
-        const targetDate = new Date("2025-08-06T00:00:00");
-        const interval = setInterval(() => {
-            const now = new Date();
-            const difference = targetDate - now;
+        AOS.init({ duracion: 1000 });
+        const fechaObjetivo = new Date("2025-08-06T00:00:00");
+        const intervalo = setInterval(() => {
+            const fechaActual = new Date();
+            const diferencia = fechaObjetivo - fechaActual;
 
-            if (difference <= 0) {
-                clearInterval(interval);
+            if (diferencia <= 0) {
+                clearInterval(intervalo);
                 return;
             }
 
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            setTimeLeft({ days, hours, minutes, seconds });
+            const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((diferencia % (1000 * 60)) / 1000);
+            setTiempoRestante({ dias: dias, horas: horas, minutos: minutos, segundos: segundos });
         }, 1000);
 
-        return () => clearInterval(interval);
+        return () => clearInterval(intervalo);
     }, []);
     return (
         <div className="text-white">
@@ -54,28 +53,28 @@ export default function Inicio() {
                 {/* Días */}
                 <div className="flex flex-col items-center">
                 <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {timeLeft.days}
+                    {tiempoRestante.dias}
                 </div>
                 <span className="mt-2 font-semibold text-lg">Días</span>
                 </div>
                 {/* Horas */}
                 <div className="flex flex-col items-center">
                 <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {timeLeft.hours}
+                    {tiempoRestante.horas}
                 </div>
                 <span className="mt-2 font-semibold text-lg">Horas</span>
                 </div>
                 {/* Minutos */}
                 <div className="flex flex-col items-center">
                 <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {timeLeft.minutes}
+                    {tiempoRestante.minutos}
                 </div>
                 <span className="mt-2 font-semibold text-lg">Minutos</span>
                 </div>
                 {/* Segundos */}
                 <div className="flex flex-col items-center">
                 <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {timeLeft.seconds}
+                    {tiempoRestante.segundos}
                 </div>
                 <span className="mt-2 font-semibold text-lg">Segundos</span>
                 </div>

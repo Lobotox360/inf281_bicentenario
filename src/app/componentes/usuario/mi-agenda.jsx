@@ -4,6 +4,8 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useState, useEffect, useRef } from 'react'
 import AOS from 'aos';import 'aos/dist/aos.css';
+import {ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function CalendarioUsuario({ id_usuario }) {
   const [eventos, setEventos] = useState([])
@@ -34,7 +36,7 @@ export default function CalendarioUsuario({ id_usuario }) {
 
         setEventos(eventosFormateados)
       } catch (error) {
-        console.error('❌ Error al cargar eventos del usuario:', error)
+        toast.error('Error al cargar eventos del usuario:', error)
       }
     }
 
@@ -62,7 +64,7 @@ export default function CalendarioUsuario({ id_usuario }) {
 
     // Verificar si la reunión ha comenzado
     if (!evento.reunionIniciada) {
-      alert('La reunión aún no ha comenzado o ya ha finalizado. Intenta más tarde.')
+      toast.error('La reunión aún no ha comenzado o ya ha finalizado. Intenta más tarde.')
       return 
     }
 
@@ -82,52 +84,57 @@ export default function CalendarioUsuario({ id_usuario }) {
         }),
       })
     } catch (error) {
-      console.error('❌ Error al registrar la asistencia:', error)
-      alert('Hubo un error con la conexión')
+      console.error('Error al registrar la asistencia:', error)
+      toast.error('Hubo un error con la conexión');
     }
   }
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto" data-aos="fade-up">
-      <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
-        Mi Calendario Personal
-      </h2>
+    <div>
+        <div className="p-4 mb-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto" data-aos="fade-up">
+        <h2 className="text-2xl font-bold mb-4 text-center text-blue-500">
+          Mi Calendario Personal
+        </h2>
 
-      {vistaActual === 'timeGridDay' && (
-        <div className="flex justify-end mb-2">
-          <button 
-            onClick={volverAlMes} 
-            className="bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
-          >
-            Volver al mes
-          </button>
-        </div>
-      )}
+        {vistaActual === 'timeGridDay' && (
+          <div className="flex justify-end mb-2">
+            <button 
+              onClick={volverAlMes} 
+              className="bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
+            >
+              Volver al mes
+            </button>
+          </div>
+        )}
 
-      <FullCalendar
-        ref={calendarioRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={eventos}
-        locale="es"
-        height="auto"
-        buttonText={{
-          today: 'Hoy',
-          month: 'Mes',
-          week: 'Semana',
-          day: 'Día',
-        }}
-        dateClick={handleDateClick}
-        eventColor="#10e685"
-        dayMaxEvents={3}
-        headerToolbar={{
-          right: 'today',
-          left: 'prev,next',
-          center: 'title'
-        }}
-        headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
-        eventClick={handleEventClick} // Evento de clic para registrar la asistencia
-      />
+        <FullCalendar
+          ref={calendarioRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={eventos}
+          locale="es"
+          height="auto"
+          buttonText={{
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+          }}
+          dateClick={handleDateClick}
+          eventColor="#10e685"
+          dayMaxEvents={3}
+          headerToolbar={{
+            right: 'today',
+            left: 'prev,next',
+            center: 'title'
+          }}
+          headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
+          eventClick={handleEventClick} // Evento de clic para registrar la asistencia
+        />
+        
+      </div>
+      <ToastContainer />
     </div>
+    
   )
 }

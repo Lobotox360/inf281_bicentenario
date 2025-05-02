@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from 'next/navigation';
+import { ToastContainer, toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const Recuperar = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
@@ -24,12 +26,17 @@ const Recuperar = () => {
       setEmailEnviado(true);
       console.log("✅ Correo de recuperación enviado a:", data.email);
 
+      // Mostrar notificación de éxito
+      toast.success("✅ ¡Correo enviado! Revisa tu bandeja de entrada.");
+
       // Opcional: Redireccionar al usuario después de unos segundos
       setTimeout(() => router.push('/login'), 4000);
 
     } catch (error) {
       console.error("Error en la recuperación de contraseña:", error);
-      alert("❌ Error al enviar el correo. Verifica tu dirección e inténtalo de nuevo.");
+      
+      // Mostrar notificación de error
+      toast.error("❌ Error al enviar el correo. Verifica tu dirección e inténtalo de nuevo.");
     }
   };
 
@@ -60,13 +67,14 @@ const Recuperar = () => {
 
             <button
               type="submit"
-              className="w-full mt-6 p-3 bg-orange-500 text-white rounded-md hover:bg-red-600 transition"
+              className="cursor-pointer w-full mt-6 p-3 bg-orange-500 text-white rounded-md hover:bg-red-600 transition"
             >
               Enviar enlace de recuperación
             </button>
           </form>
         )}
       </div>
+      <ToastContainer /> 
     </div>
   );
 };

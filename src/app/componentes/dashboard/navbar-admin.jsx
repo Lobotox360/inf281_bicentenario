@@ -11,15 +11,15 @@ export default function Navbar() {
     const cargarDatosUsuario = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const id = localStorage.getItem("id_user");
+        const id_usuario = localStorage.getItem("id_user");
 
         // Validar antes de llamar a la API
-        if (!token || !id) return;
+        if (!token || !id_usuario) return;
 
         // Llamada a la API del usuario
-        const response = await fetch(`https://inf281-production.up.railway.app/usuario/${id}`, {
+        const response = await fetch(`https://inf281-production.up.railway.app/usuario/${id_usuario}`, {
           headers: {
-            'Authorization': `Bearer ${token}`, // Solo si tu backend requiere token
+            'Authorization': `Bearer ${token}`,
           }
         });
 
@@ -27,7 +27,7 @@ export default function Navbar() {
 
         const data = await response.json();
         console.log(data.id_rol);
-        // Actualizar el estado con los datos del usuario
+
         if (data.foto) {
           setFotoUsuario(data.foto);
         }
@@ -61,7 +61,7 @@ export default function Navbar() {
     };
 
     cargarDatosUsuario();
-  }, []); // Solo se ejecuta una vez al montar el componente
+  }, []); 
 
   return (
     <div className="flex justify-between items-center bg-yellow-600 p-4 text-white rounded-lg mb-6">

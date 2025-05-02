@@ -4,18 +4,10 @@ import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
 
 // Registrar los elementos necesarios
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  LineElement,
-  PointElement,  // Registra el PointElement para los puntos
-  Title,
-  Tooltip,
-  Legend
-);
+ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
-export default function Chart2() {
-  const data = {
+export default function GraficoLineal() {
+  const datos = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
     datasets: [
       {
@@ -40,7 +32,7 @@ export default function Chart2() {
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Resultados</h3>
-        <Line data={data} />
+        <Line data={datos} />
     </div>
   );
 }

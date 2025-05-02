@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { FaUserCircle } from 'react-icons/fa'; 
+import { FaUserCircle } from 'react-icons/fa';
+import { ToastContainer, toast } from 'react-toastify';  // Importar Toastify
+import 'react-toastify/dist/ReactToastify.css';  // Estilos de Toastify
 
 const ModuloComentarios = ({eventoId}) => {
   // Estados para almacenar el comentario y la calificación
@@ -8,7 +10,6 @@ const ModuloComentarios = ({eventoId}) => {
   const [comentarioUsuario, setComentarioUsuario] = useState(""); 
   const [puntuacionUsuario, setPuntuacionUsuario] = useState("");
   const [comentarios, setComentarios] = useState([]);
-
 
   useEffect(() => {
     const fetchComentarios = async () => {
@@ -24,12 +25,11 @@ const ModuloComentarios = ({eventoId}) => {
         console.error('Hubo un problema con la solicitud:', error);
       }
     };
-    
+
     if (eventoId) {
       fetchComentarios();
     }
   }, [eventoId]);  // Agregar eventoId como dependencia
-  
   
   useEffect(() => {
     const id = localStorage.getItem('id_user');
@@ -37,7 +37,6 @@ const ModuloComentarios = ({eventoId}) => {
       setIdUsuario(id); 
     }
   }, []);
-
 
   const handlePuntuacionChange = (event) => {
     setPuntuacionUsuario(event.target.value); 
@@ -51,7 +50,7 @@ const ModuloComentarios = ({eventoId}) => {
     event.preventDefault(); 
 
     if (!puntuacionUsuario || !comentarioUsuario) {
-      alert("Por favor, selecciona una calificación y agrega un comentario.");
+      toast.error("Por favor, selecciona una calificación y agrega un comentario.");  // Notificación de error
       return;
     }
 
@@ -96,12 +95,11 @@ const ModuloComentarios = ({eventoId}) => {
         throw new Error("Error al agregar la calificación.");
       }
 
-      alert(`Comentario y calificación agregados correctamente.`);
+      toast.success("Comentario y calificación agregados correctamente.");  // Notificación de éxito
       window.location.reload();
     } catch (error) {
       console.error(error);
-      console.log(datos);
-      alert("Debes estar agendado a este evento para comentar y calificar.");
+      toast.error("Debes estar agendado a este evento para comentar y calificar.");  // Notificación de error
     }
   };
 
@@ -163,6 +161,7 @@ const ModuloComentarios = ({eventoId}) => {
             </div>
         </form>
       </div>
+      <ToastContainer />  {/* Aquí se muestra la notificación */}
     </div>
   );
 };

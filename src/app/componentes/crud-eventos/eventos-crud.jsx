@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CrudEventos = () => {
     const router = useRouter();
@@ -17,7 +19,7 @@ const CrudEventos = () => {
             const datos = await res.json();
             setEventos(datos);
         } catch (error) {
-            console.error('Error al cargar los eventos:', error);
+            toast.error('Error al cargar los eventos:', error);
         }
     };
 
@@ -41,10 +43,10 @@ const CrudEventos = () => {
                     method: 'DELETE',
                 });
                 const datos = await res.json();
-                alert(datos.mensaje);
+                toast.success(datos.mensaje);
                 window.location.reload();
             } catch (error) {
-                console.error('Error al eliminar el evento:', error);
+                toast.error('Error al eliminar el evento:', error);
             }
         }
     };
@@ -58,10 +60,10 @@ const CrudEventos = () => {
                 throw new Error(`Error: ${res.status} - ${res.statusText}`);
             }
             const datos = await res.json();
-            alert(datos.message);
+            toast.success(datos.message);
             console.log('Enlace a la reunión:', datos.link);
         } catch (error) {
-            console.error('Error al iniciar la transmisión:', error);
+            toast.error('Error al iniciar la transmisión:', error);
         }
     };
 
@@ -76,7 +78,8 @@ const CrudEventos = () => {
     );
 
     return (
-        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg max-w-5xl">
+        <div className="p-4 mx-auto bg-white rounded-lg shadow-lg max-w-6xl">
+            <ToastContainer/>
             <h2 className="text-2xl font-semibold mb-4">Administración de Eventos</h2>
 
             {/* Barra de búsqueda */}
@@ -97,7 +100,7 @@ const CrudEventos = () => {
             <div className="mb-4 flex gap-4 flex-col sm:flex-row">
                 {/* Filtro por modalidad */}
                 <select
-                    className="px-4 py-2 border rounded-lg"
+                    className="cursor-pointer px-4 py-2 border rounded-lg"
                     value={modalidadFiltro}
                     onChange={(e) => setModalidadFiltro(e.target.value)} // Actualizar el estado con la modalidad seleccionada
                 >
@@ -109,7 +112,7 @@ const CrudEventos = () => {
 
                 {/* Filtro por estado */}
                 <select
-                    className="px-4 py-2 border rounded-lg"
+                    className="cursor-pointer px-4 py-2 border rounded-lg"
                     value={estadoFiltro}
                     onChange={(e) => setEstadoFiltro(e.target.value)} // Actualizar el estado con el estado seleccionado
                 >

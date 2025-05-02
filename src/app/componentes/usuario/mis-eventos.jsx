@@ -45,8 +45,8 @@ const MisEventos = () => {
   }
 
   return (
-    <div className="space-y-10 mx-20">
-      <h2 className="text-white text-3xl font-semibold text-center p-4"  data-aos="fade-up">
+    <div className="space-y-10 sm:mx-20 mb-4">
+      <h2 className="text-white text-2xl font-semibold text-center p-4" data-aos="fade-up">
         MIS EVENTOS
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

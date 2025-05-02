@@ -12,7 +12,7 @@ export default function Navbar() {
   const [barraBusqueda, setBarraBusqueda] = useState(false);
   const [buscarConsulta, setBuscarConsulta] = useState("");
   const [fotoUsuario, setFotoUsuario] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [idUsuario, setIdUsuario] = useState(null);
   const [token, setToken] = useState(null);
   const [rol, setRol] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);  // Estado para el menú hamburguesa
@@ -21,33 +21,33 @@ export default function Navbar() {
   useEffect(() => {
     const cargarDatosUsuario = async () => {
       try {
+        const id_usuario = localStorage.getItem("id_user");
         const token = localStorage.getItem("access_token");
-        const id = localStorage.getItem("id_user");
         const rol = localStorage.getItem("rol");
   
         // Actualizar estados locales
         setToken(token);
-        setUserId(id);
+        setIdUsuario(id_usuario);
         setRol(rol);
         setEstadoLogin(!!token);
   
         // Validar antes de llamar a la API
-        if (!token || !id) return;
+        if (!token || !id_usuario) return;
   
         // Llamada a la API del usuario
-        const response = await fetch(`https://inf281-production.up.railway.app/usuario/${id}`, {
+        const res = await fetch(`https://inf281-production.up.railway.app/usuario/${id_usuario}`, {
           headers: {
             'Authorization': `Bearer ${token}`, // Solo si tu backend requiere token
           }
         });
   
-        if (!response.ok) throw new Error("No se pudo obtener los datos del usuario");
+        if (!res.ok) throw new Error("No se pudo obtener los datos del usuario");
   
-        const data = await response.json();
+        const datos = await res.json();
   
-        if (data.foto) {
-          setFotoUsuario(data.foto);
-          console.log("📸 Foto cargada:", data.foto);
+        if (datos.foto) {
+          setFotoUsuario(datos.foto);
+          console.log("📸 Foto cargada:", datos.foto);
         }
       } catch (error) {
         console.error("❌ Error al cargar datos del usuario:", error);
@@ -61,7 +61,7 @@ export default function Navbar() {
     localStorage.removeItem("id_user");
     localStorage.removeItem("access_token");
     localStorage.removeItem("rol");
-    setUserId(null);
+    setIdUsuario(null);
     setToken(null);
     setRol(null);
     setEstadoLogin(false);
@@ -126,7 +126,7 @@ export default function Navbar() {
 
 
         {/* Botón Buscador */}
-        <button onClick={desplegarBarraBusqueda} aria-label="Buscar" className="hover:text-yellow-400">
+        <button onClick={desplegarBarraBusqueda} aria-label="Buscar" className="cursor-pointer hover:text-yellow-400">
           <FaSearch />
         </button>
 
@@ -135,7 +135,7 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="rounded-full object-cover border-2 border-yellow-400" />
+                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="cursor-pointer rounded-full object-cover border-2 border-yellow-400" />
               ) : (
                 <FaUser />
               )}
@@ -144,14 +144,14 @@ export default function Navbar() {
               className={`absolute right-0 mt-2 w-48 bg-red-500 text-white rounded-md shadow-lg py-2 text-xl transition-all duration-300 ease-in-out ${menuUsuario ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}
             >
             {["Administrador", "administrador_eventos", "administrador_contenido"].includes(rol) && (
-              <Link href={`/dashboard`} className="block px-4 py-2 hover:bg-yellow-400">
+              <Link href={`/dashboard`} className="block px-4 py-2 hover:bg-yellow-400 border-b-2 border-yellow-400">
                 Dashboard
               </Link>
             )}
-            <Link href={`/usuario/micalendario/${userId}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
+            <Link href={`/usuario/micalendario/${idUsuario}`} className="block px-4 py-2 hover:bg-yellow-400">Mi agenda</Link>
             <Link href="/usuario/miseventos" className="block px-4 py-2 hover:bg-yellow-400">Mis eventos</Link>
             <Link href="/login/editarPerfil" className="block px-4 py-2 hover:bg-yellow-400">Editar perfil</Link>
-            <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left hover:bg-yellow-400">Cerrar sesión</button>
+            <button onClick={handleLogout} className="cursor-pointer block px-4 py-2 w-full text-left border-t-2 border-yellow-400 hover:bg-yellow-400">Cerrar sesión</button>
           </div>
         </div>
         

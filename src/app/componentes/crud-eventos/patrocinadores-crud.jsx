@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CrudPatrocinadores = () => {
     const [patrocinadores, setPatrocinadores] = useState([]);
@@ -9,14 +11,19 @@ const CrudPatrocinadores = () => {
     const [editandoPatrocinador, setEditandoPatrocinador] = useState(null);
     const [razonSocial, setRazonSocial] = useState('');
     const [institucion, setInstitucion] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const fetchPatrocinadores = async () => {
+        setLoading(true);
         try {
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador');
             const datos = await res.json();
             setPatrocinadores(datos);
+            setLoading(false);
         } catch (error) {
             console.error('Error al cargar los patrocinadores:', error);
+            setLoading(false);
+            toast.error('Error al cargar los patrocinadores');
         }
     };
 
@@ -29,6 +36,10 @@ const CrudPatrocinadores = () => {
     );
 
     const handleCrearPatrocinador = async () => {
+        if (!razonSocial || !institucion) {
+            toast.error('Por favor, complete todos los campos');
+            return;
+        }
         try {
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {
                 method: 'POST',
@@ -40,15 +51,21 @@ const CrudPatrocinadores = () => {
             });
 
             const datos = await res.json();
-            alert(datos.mensaje || 'Patrocinador creado.');
+            toast.success(datos.mensaje || 'Patrocinador creado.');
             setModalVisible(false);
             fetchPatrocinadores();
         } catch (error) {
             console.error('Error al crear el patrocinador:', error);
+            toast.error('Error al crear el patrocinador');
         }
     };
 
     const handleEditarPatrocinador = async () => {
+        if (!razonSocial || !institucion) {
+            toast.error('Por favor, complete todos los campos');
+            return;
+        }
+
         try {
             const res = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/${editandoPatrocinador.id_patrocinador}`, {
                 method: 'PUT',
@@ -60,12 +77,13 @@ const CrudPatrocinadores = () => {
             });
 
             const datos = await res.json();
-            alert(datos.mensaje || 'Patrocinador editado.');
+            toast.success(datos.mensaje || 'Patrocinador editado.');
             setModalVisible(false);
             setEditandoPatrocinador(null);
             fetchPatrocinadores();
         } catch (error) {
             console.error('Error al editar el patrocinador:', error);
+            toast.error('Error al editar el patrocinador');
         }
     };
 
@@ -78,10 +96,11 @@ const CrudPatrocinadores = () => {
                 });
 
                 const datos = await res.json();
-                alert(datos.mensaje || 'Patrocinador eliminado.');
+                toast.success(datos.mensaje || 'Patrocinador eliminado.');
                 fetchPatrocinadores();
             } catch (error) {
                 console.error('Error al eliminar el patrocinador:', error);
+                toast.error('Error al eliminar el patrocinador');
             }
         }
     };
@@ -110,6 +129,8 @@ const CrudPatrocinadores = () => {
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg max-w-5xl">
+            <ToastContainer /> {/* Toastify container */}
+
             <h2 className="text-2xl font-semibold mb-4">Administración de Patrocinadores</h2>
 
             {/* Barra de búsqueda */}
@@ -147,19 +168,19 @@ const CrudPatrocinadores = () => {
                                 <td className="border px-4 py-2 text-center">
                                     <div className="flex justify-center flex-wrap gap-2">
                                         <button
-                                        onClick={() => abrirModalEditar(patrocinador)}
-                                        className="cursor-pointer w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
+                                            onClick={() => abrirModalEditar(patrocinador)}
+                                            className="cursor-pointer w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-400"
                                         >
-                                        Editar
+                                            Editar
                                         </button>
                                         <button
-                                        onClick={() => handleEliminarPatrocinador(patrocinador.id_patrocinador)}
-                                        className="cursor-pointer w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-400"
+                                            onClick={() => handleEliminarPatrocinador(patrocinador.id_patrocinador)}
+                                            className="cursor-pointer w-full px-4 py-2 bg-red-500 text-white rounded hover:bg-red-400"
                                         >
-                                        Eliminar
+                                            Eliminar
                                         </button>
                                     </div>
-                                    </td>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

@@ -7,10 +7,12 @@ import Navbar from '@/app/componentes/inicio/navbar';
 import Link from 'next/link';
 import MapaEvento from './vistas/mapa';
 import ModuloComentarios from './vistas/comentarios-carrusel';
+import { toast, ToastContainer } from 'react-toastify';  // Importar toastify
+import 'react-toastify/dist/ReactToastify.css';  // Importar los estilos de toastify
 
 export default function VerMasEvento() {
-  const { id: eventoId } = useParams();  // Obtén el id del evento desde la URL
-  const [evento, setEvento] = useState(null); // Inicializa evento como null
+  const { id: eventoId } = useParams();  
+  const [evento, setEvento] = useState(null); 
   const [agendado, setAgendado] = useState([]);
   const [yaAgendado, setYaAgendado] = useState(false);
   const [idUsuario, setIdUsuario] = useState(null);
@@ -30,6 +32,7 @@ export default function VerMasEvento() {
         setEvento(data);
       } catch (error) {
         console.error('Error al obtener evento:', error);
+        toast.error('❌ Error al obtener el evento.');
       }
     };
 
@@ -37,7 +40,6 @@ export default function VerMasEvento() {
       fetchEvento();
     }
   }, [eventoId]);
-
 
   useEffect(() => {
     const idUsuario = localStorage.getItem('id_user')
@@ -52,6 +54,7 @@ export default function VerMasEvento() {
         }
       } catch (error) {
         console.error('Error en la solicitud:', error);
+        toast.error('❌ Error al obtener tu agenda.');
       } 
     };
 
@@ -60,19 +63,15 @@ export default function VerMasEvento() {
 
   useEffect(() => {
     if (eventoId) {
-      // Aquí verificamos si el eventoId coincide con algún evento en la agenda
       const eventoActual = agendado.find(evento => String(evento.id_evento) === String(eventoId));
       if (eventoActual) {
-        console.log('Evento encontrado en la agenda:');
         setYaAgendado(true);
       } else {
-        console.log('No se encontró el evento en la agenda');
         setYaAgendado(false);
       }
     }
   }, [eventoId, agendado]);
 
-  // Mostrar un mensaje de carga si el evento aún no está disponible
   if (!evento) {
     return <p className="mt-30 text-center text-white text-xl font-semibold">Cargando evento...</p>;
   }
@@ -82,11 +81,10 @@ export default function VerMasEvento() {
   const fecha = `${['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(evento?.hora_inicio).getDay()]}, ${new Date(evento?.hora_inicio).getDate()} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][new Date(evento?.hora_inicio).getMonth()]} de ${new Date(evento?.hora_inicio).getFullYear()}`;
   const estrellas = Array.from({ length: 5 }, (_, index) => {return index < evento.puntuacion ? '⭐' : '☆';}).join(' ');
 
-  // Manejar la inscripción al evento
   const handleInscripcion = async (eventoId) => {
     const id_usuario = localStorage.getItem('id_user');
     if (!id_usuario) {
-      alert('❌ Debes iniciar sesión para poder agendar un evento.');
+      toast.error('❌ Debes iniciar sesión para poder agendar un evento.');
       return;
     }
 
@@ -105,19 +103,18 @@ export default function VerMasEvento() {
       if (!res.ok) throw new Error('Error al registrar inscripción');
 
       const data = await res.json();
-      alert(data.mensaje);
+      toast.success(data.mensaje);
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert('❌ Ocurrió un error al registrar la inscripción.');
+      toast.error('❌ Ocurrió un error al registrar la inscripción.');
     }
   };
 
-  // Manejar la desinscripción del evento
   const handleDesinscripcion = async (eventoId) => {
     const id_usuario = localStorage.getItem('id_user');
     if (!id_usuario) {
-      alert('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
+      toast.error('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
       return;
     }
 
@@ -136,15 +133,14 @@ export default function VerMasEvento() {
       if (!res.ok) throw new Error('Error al desinscribir');
 
       const data = await res.json();
-      alert(data.mensaje);
+      toast.success(data.mensaje);
       window.location.reload();
     } catch (error) {
       console.error(error);
-      alert('❌ Ocurrió un error al desinscribir.');
+      toast.error('❌ Ocurrió un error al desinscribir.');
     }
   };
 
-  
   return (
     <div className="py-35">
       <Navbar />
@@ -153,7 +149,7 @@ export default function VerMasEvento() {
 
         <div className="flex flex-col md:flex-row gap-6 items-center">
           <Image
-            src={evento.foto_evento}  // Suponiendo que 'image' es una propiedad del objeto evento
+            src={evento.foto_evento}
             alt={evento.titulo}
             width={500}
             height={300}
@@ -165,7 +161,6 @@ export default function VerMasEvento() {
             <p className="mb-4"><strong>Fecha:</strong> {fecha} a la(s) {hora_inicio} a {hora_fin}</p>
             <p className="mb-4"><strong>Costo:</strong> {evento.costo} Bs. <strong>Modalidad:</strong> {evento.modalidad} </p>
             <p className="mb-4 text-center"><strong>Estado:</strong> {evento.estado}</p> 
-            {/* Mostrar categorías del evento */}
             <div>
               <h3 className="text-xl font-semibold">Categorías:</h3>
               <ul>
@@ -177,7 +172,6 @@ export default function VerMasEvento() {
                 ))}
               </ul>
             </div>
-            {/* Mostrar patrocinadores del evento */}
             <div>
               <h3 className="text-xl font-semibold">Patrocinadores:</h3>
               <ul>
@@ -189,7 +183,6 @@ export default function VerMasEvento() {
                 ))}
               </ul>
             </div>
-            {/* Mostrar expositores del evento */}
             <div>
               <h3 className="text-xl font-semibold">Expositores:</h3>
               <ul>
@@ -201,7 +194,6 @@ export default function VerMasEvento() {
                 ))}
               </ul>
             </div>
-            {/* Mostrar telefonos de contacto */}
             <div>
               <h3 className="text-xl font-semibold">Telefonos de contacto:</h3>
               <ul>
@@ -234,16 +226,16 @@ export default function VerMasEvento() {
                   AGENDAR
               </button>
           )}
-
           <p className='text-center'>{estrellas}</p>
         </div>
       </div>
       <div className="max-w-4xl mx-auto mt-4">
-        <MapaEvento latitud={evento.Ubicacion.latitud} longitud = {evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion}/>
+        <MapaEvento latitud={evento.Ubicacion.latitud} longitud={evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion}/>
       </div>
       <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
-        <ModuloComentarios  eventoId = {eventoId}/>
+        <ModuloComentarios eventoId={eventoId}/>
       </div>
+      <ToastContainer />
     </div>
   );
 }

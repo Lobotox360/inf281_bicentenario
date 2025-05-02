@@ -80,17 +80,17 @@ const VistaDepartamentoEventos = ({ departamento }) => {
             />
             <p className="text-sm text-gray-700 p-4">{ev.descripcion}</p>
 
-            <p className="text-sm text-gray-700 p-4">
+            <p className="text-sm text-gray-700 p-2">
               <strong>Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
             </p>
-            <p className="text-sm text-gray-700 p-4">
+            <p className="text-sm text-gray-700 p-2">
               <strong>Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
             </p>
-            <p className="text-sm text-gray-700 p-4">
+            <p className="text-sm text-gray-700 p-2">
               <strong>Modalidad: </strong>{ev.modalidad}
             </p>
 
-            <div className="flex justify-center space-x-4 py-4">
+            <div className="flex justify-center space-x-4 py-2">
               {/* Enlace ver más */}
               <Link
                 href={`/eventos/vermas/${ev.id_evento}/`}

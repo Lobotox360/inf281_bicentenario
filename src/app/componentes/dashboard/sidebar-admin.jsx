@@ -19,23 +19,22 @@ export default function Sidebar() {
     const cargarDatosUsuario = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const id = localStorage.getItem("id_user");
+        const id_usuario = localStorage.getItem("id_user");
 
         // Validar antes de llamar a la API
-        if (!token || !id) return;
+        if (!token || !id_usuario) return;
 
         // Llamada a la API del usuario
-        const response = await fetch(`https://inf281-production.up.railway.app/usuario/${id}`, {
+        const res = await fetch(`https://inf281-production.up.railway.app/usuario/${id_usuario}`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           }
         });
 
-        if (!response.ok) throw new Error("No se pudo obtener los datos del usuario");
+        if (!res.ok) throw new Error("No se pudo obtener los datos del usuario");
 
-        const data = await response.json();
+        const data = await res.json();
 
-        // Actualizar el estado con los datos del usuario
         if (data.foto) {
           setFotoUsuario(data.foto);
         }
@@ -53,21 +52,20 @@ export default function Sidebar() {
     };
 
     cargarDatosUsuario();
-  }, []); // Solo se ejecuta una vez al montar el componente
+  }, []); 
 
-  // Función para cerrar sesión
   const cerrarSesion = () => {
-    // Borrar los datos del localStorage
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_user");
+    setEmailUsuario(null);
+    setFotoUsuario(null);
+    setNombreUsuario(null);
 
-    // Redirigir al usuario a la página de inicio (o al login)
-    router.push("/login"); // Cambia "/login" por la ruta de tu página de inicio o login
+    router.push("/login");
   };
 
   return (
     <div className={`fixed sm:relative bg-gradient-to-b from-blue-900 to-blue-700 text-white min-h-screen transition-all duration-300 ${abrir ? 'w-64' : 'w-0'} overflow-hidden z-50`}>
-      
       <button
         onClick={desplegarSidebar}
         className={`cursor-pointer text-3xl fixed top-10 right-4 p-2 bg-black rounded-lg text-white z-10 transition-all duration-300 ${abrir ? 'right-16' : 'right-4'}`}
@@ -87,11 +85,9 @@ export default function Sidebar() {
             <h2 className="text-xl font-semibold">{nombreUsuario}</h2>
             <p className="text-sm text-gray-300">{emailUsuario}</p>
             <li className="p-2 mx-4 flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaUserCircle /> 
-              <button onClick={cerrarSesion} className="cursor-pointer text-white hover:text-yellow-500">Cerrar Sesión</button>
+              <FaUserCircle /> <button onClick={cerrarSesion} className="cursor-pointer text-white hover:text-yellow-500">Cerrar Sesión</button>
             </li>
           </div>
-
           {/* Menú */}
           <ul className="space-y-6 w-full px-4">
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">

@@ -100,7 +100,7 @@ export default function AgenteVirtual() {
   };
 
   return (
-    <div className="mt-20 min-h-screen bg-gradient-to-b from-red-600 to-green-600 flex flex-col items-center justify-center p-4 text-white relative">
+    <div className="mt-20 min-h-screen bg-gradient-to-b from-red-500 to-green-600 flex flex-col items-center justify-center p-4 text-white relative">
       <BarraHistorial historial={historial} />
       <h1 className="text-4xl font-bold mb-6 text-center" data-aos="fade-up">
         Agente Virtual del Bicentenario

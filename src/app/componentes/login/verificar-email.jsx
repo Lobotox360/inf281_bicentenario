@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { ToastContainer, toast } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const VerificarEmail = () => {
   const router = useRouter();
@@ -34,12 +36,14 @@ const VerificarEmail = () => {
       if (response.ok) {
         setMensaje("✅ Nuevo código enviado a tu correo.");
         setError("");
+        toast.success("✅ Nuevo código enviado a tu correo.");
       } else {
         throw new Error(result.message || "Error al reenviar el código.");
       }
     } catch (error) {
       console.error("Error en el reenvío:", error);
       setError("Error al reenviar el código. Inténtalo más tarde.");
+      toast.error("❌ Error al reenviar el código. Inténtalo más tarde.");
     }
   };
 
@@ -75,6 +79,7 @@ const VerificarEmail = () => {
       if (response.ok) {
         setMensaje("✅ Usuario registrado con éxito.");
         setError("");
+        toast.success("✅ Usuario registrado con éxito.");
         setTimeout(() => router.push("/login/subirfoto"), 2000);
       } else {
         throw new Error(result.message || "Código incorrecto. Inténtalo de nuevo.");
@@ -82,6 +87,7 @@ const VerificarEmail = () => {
     } catch (error) {
       console.error("Error en la verificación:", error);
       setError("Código incorrecto. Inténtalo de nuevo.");
+      toast.error("❌ Código incorrecto. Inténtalo de nuevo.");
     }
   };
 
@@ -114,19 +120,20 @@ const VerificarEmail = () => {
 
           <button
             type="submit"
-            className="w-full mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
+            className="cursor-pointer w-full mt-4 p-3 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
           >
             Verificar
           </button>
         </form>
 
         <button
-          className="mt-4 text-blue-800 hover:underline"
+          className="cursor-pointer mt-4 text-blue-800 hover:underline"
           onClick={reenviarCodigo}
         >
           Volver a enviar código
         </button>
       </div>
+      <ToastContainer />  
     </div>
   );
 };
