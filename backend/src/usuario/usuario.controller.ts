@@ -29,16 +29,7 @@ export class UsuarioController {
     return this.usuarioService.resendVerificationCode(email);
   }
 
-  @Post('foto')
-  @UseInterceptors(FileInterceptor('foto'))
-  async subirFoto(
-    @UploadedFile() file: Express.Multer.File,
-    @Body('email') email: string,
-  ) {
-    console.log("📥 Email recibido:", email);
-    console.log("🧾 Archivo recibido:", file);
-    return await this.usuarioService.guardarFotoEnCloudinary(email, file);
-  }
+
 
   
   // solo prueba

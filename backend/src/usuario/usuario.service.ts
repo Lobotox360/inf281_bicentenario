@@ -164,33 +164,6 @@ export class UsuarioService {
     await this.generateVerificationCode(user.id_usuario, email);
     return { message: 'Nuevo código generado. Revisa tu correo.' };
   }
-  
-  async guardarFotoEnCloudinary(email: string, file: Express.Multer.File) {
-    const user = await this.prisma.usuarios.findUnique({ where: { email } });
-  
-    if (!user) {
-      throw new NotFoundException('Usuario no encontrado.');
-    }
-  
-    const result = await this.cloudinaryService.uploadImage(file, 'perfil_usuario');
-  
-    await this.prisma.usuarios.update({
-      where: { email },
-      data: {
-        foto: result.secure_url,
-      },
-    });
-
-    await this.registrarActividad(
-      user.id_usuario,
-      'Actualización de foto',
-      'El usuario actualizó su foto de perfil.'
-    );
-
-    return {
-      message: '✅ Foto subida exitosamente',
-    };
-  }
 
   
   async findAll() {
