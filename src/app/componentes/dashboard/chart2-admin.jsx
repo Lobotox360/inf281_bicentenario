@@ -2,7 +2,8 @@
 
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend } from 'chart.js';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // Registrar los elementos necesarios
 ChartJS.register(CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip, Legend);
 
@@ -33,6 +34,7 @@ export default function GraficoLineal() {
     <div className="bg-white p-4 rounded-xl shadow-lg">
         <h3 className="text-xl font-semibold mb-4">Resultados</h3>
         <Line data={datos} />
+        <ToastContainer />
     </div>
   );
 }

@@ -97,7 +97,7 @@ const ModuloComentarios = ({eventoId}) => {
       }
 
       toast.success("Comentario y calificación agregados correctamente.");  // Notificación de éxito
-      window.location.reload();
+      setTimeout(() => {window.location.reload()}, 3000);
     } catch (error) {
       console.error(error);
       toast.error("Debes estar agendado a este evento para comentar y calificar.");  // Notificación de error
@@ -148,7 +148,7 @@ const ModuloComentarios = ({eventoId}) => {
                 ></textarea>
             </div>
             <div className='flex flex-col sm:flex-row justify-between'>
-              <select value={puntuacionUsuario} onChange={handlePuntuacionChange} className='p-2 mb-2 border-2 border-gray-500 cursor-pointer'>
+              <select value={puntuacionUsuario} onChange={handlePuntuacionChange} className='p-2 mb-2 border-2 border-gray-300 cursor-pointer'>
                 <option value="" disabled className='text-center'>Calificación</option>
                 <option value="1">1</option>
                 <option value="2">2</option>
@@ -162,7 +162,7 @@ const ModuloComentarios = ({eventoId}) => {
             </div>
         </form>
       </div>
-      <ToastContainer />  {/* Aquí se muestra la notificación */}
+      <ToastContainer /> 
     </div>
   );
 };

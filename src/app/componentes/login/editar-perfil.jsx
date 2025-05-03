@@ -75,7 +75,8 @@ const EditarPerfil = () => {
             if (!res.ok) throw new Error("Error al subir la foto");
 
             const imagen = await res.json();
-            window.location.reload(); 
+            toast.success("La foto se cambio correctamente."); 
+            setTimeout(() => {window.location.reload()}, 3000);
             setUsuario(prev => ({ ...prev, foto: imagen.foto })); 
         } catch (error) {
             console.error("Error al cambiar la foto:", error);

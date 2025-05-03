@@ -1,40 +1,30 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Navbar from '../inicio/navbar';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AdministracionRoles = () => {
-    const router = useRouter();
     const [usuarios, setUsuarios] = useState([]);
     const [roles, setRoles] = useState([]);
     const [modalAbierto, setModalAbierto] = useState(false);
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
     const [rolSeleccionado, setRolSeleccionado] = useState(null);
-    const [mensaje, setMensaje] = useState('');
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [rolFiltro, setRolFiltro] = useState('');
-    const [paisFiltro, setCiudadFiltro] = useState('');
-    const [loading, setLoading] = useState(false); // Para manejar la carga
+    const [ciudadFiltro, setCiudadFiltro] = useState('');
 
-    // Función para obtener los datos de los usuarios
     const fetchUsuarios = async () => {
-        setLoading(true);
         try {
             const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios');
             const datos = await res.json();
             setUsuarios(datos);
-            setLoading(false);
         } catch (error) {
             console.error('Error al cargar los usuarios:', error);
-            setLoading(false);
             toast.error('Error al cargar los usuarios');
         }
     };
 
-    // Función para obtener los roles
     const fetchRoles = async () => {
         try {
             const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles');
@@ -46,41 +36,40 @@ const AdministracionRoles = () => {
         }
     };
 
-    // Llamar a la función fetchUsuarios y fetchRoles cuando el componente se monta
     useEffect(() => {
         fetchUsuarios();
         fetchRoles();
     }, []);
 
     // Función para manejar la edición del rol
-    const handleEditRole = (usuario) => {
+    const handleEditarRol = (usuario) => {
         setUsuarioSeleccionado(usuario);
-        setRolSeleccionado(usuario.Roles.id_rol); // Establecer el rol actual del usuario
-        setModalAbierto(true); // Abrir el modal
+        setRolSeleccionado(usuario.Roles.id_rol);
+        setModalAbierto(true);
     };
 
     // Función para manejar el cambio de rol
-    const handleRoleChange = (event) => {
-        setRolSeleccionado(event.target.value);
+    const handleCambiarRol = (e) => {
+        setRolSeleccionado(e.target.value);
     };
 
     // Función para manejar el cierre del modal
     const closeModal = () => {
         setModalAbierto(false);
         setRolSeleccionado(null);
-        setMensaje('');
     };
 
     // Función para manejar la actualización del rol
-    const handleSaveRole = async () => {
+    const handleSubmit = async () => {
         if (rolSeleccionado && usuarioSeleccionado) {
             // Si el rol seleccionado es el mismo, no hacer nada
-            if (rolSeleccionado === usuarioSeleccionado.Roles.id_rol) {
-                setMensaje('El rol seleccionado es el mismo. No se realizarán cambios.');
+            if (rolSeleccionado === usuarioSeleccionado.Roles.nombre) {
+                toast.info('El rol seleccionado es el mismo. No se realizarán cambios.');
                 return;
             }
-
-            try {
+            const id_rol = rolSeleccionado === "usuario_casual" ? 1 : rolSeleccionado === "administrador" ? 2 :
+            rolSeleccionado === "administrador_eventos" ? 3 : rolSeleccionado === "administrador_contenido" ? 4 : 0;
+         try {
                 // Enviar solicitud PUT para cambiar el rol
                 const response = await fetch('https://inf281-production.up.railway.app/rol/cambiar-rol', {
                     method: 'PUT',
@@ -89,14 +78,14 @@ const AdministracionRoles = () => {
                     },
                     body: JSON.stringify({
                         email: usuarioSeleccionado.email,
-                        nuevoRol: parseInt(rolSeleccionado),
+                        nuevoRol: id_rol,
                     }),
                 });
                 const data = await response.json();
                 if (data.message) {
                     toast.success('Rol actualizado correctamente');
-                    setModalAbierto(false); // Cerrar el modal
-                    fetchUsuarios(); // Actualizar la lista de usuarios
+                    setModalAbierto(false);
+                    fetchUsuarios();
                 } else {
                     toast.error('Error al actualizar el rol');
                 }
@@ -114,12 +103,12 @@ const AdministracionRoles = () => {
         usuario.telefono.toLowerCase().includes(barraBusqueda.toLowerCase()) || 
         usuario.pais.toLowerCase().includes(barraBusqueda.toLowerCase())) &&
         (rolFiltro === '' || usuario.Roles.nombre === rolFiltro) &&
-        (paisFiltro === '' || usuario.pais === paisFiltro)
+        (ciudadFiltro === '' || usuario.ciudad === ciudadFiltro)
     );
 
     return (
         <div className="p-4 mx-auto bg-white rounded-lg shadow-lg mt-10 mb-18">
-            <ToastContainer /> {/* Toastify container */}
+            <ToastContainer />
 
             <h2 className="text-2xl font-semibold mb-4">Administración de Roles</h2>
 
@@ -130,7 +119,7 @@ const AdministracionRoles = () => {
                     placeholder="Buscar por nombre o email..."
                     className="px-4 py-2 border rounded-lg w-full"
                     value={barraBusqueda}
-                    onChange={(e) => setBarraBusqueda(e.target.value)}  // Actualizar el estado con el término de búsqueda
+                    onChange={(e) => setBarraBusqueda(e.target.value)}
                 />
             </div>
 
@@ -140,7 +129,7 @@ const AdministracionRoles = () => {
                 <select
                     className="px-4 py-2 border rounded-lg"
                     value={rolFiltro}
-                    onChange={(e) => setRolFiltro(e.target.value)} // Actualizar el estado con el rol seleccionado
+                    onChange={(e) => setRolFiltro(e.target.value)}
                 >
                     <option value="">Seleccionar rol</option>
                     {roles.map(role => (
@@ -153,12 +142,12 @@ const AdministracionRoles = () => {
                 {/* Filtro por país */}
                 <select
                     className="px-4 py-2 border rounded-lg"
-                    value={paisFiltro}
-                    onChange={(e) => setCiudadFiltro(e.target.value)} // Actualizar el estado con el país seleccionado
+                    value={ciudadFiltro}
+                    onChange={(e) => setCiudadFiltro(e.target.value)} 
                 >
-                    <option value="">Seleccionar país</option>
-                    {[...new Set(usuarios.map(usuario => usuario.pais))].map((pais, index) => (
-                        <option key={index} value={pais}>{pais}</option>
+                    <option value="">Seleccionar departamento</option>
+                    {[...new Set(usuarios.map(usuario => usuario.ciudad))].map((ciudad, index) => (
+                        <option key={index} value={ciudad}>{ciudad}</option>
                     ))}
                 </select>
             </div>
@@ -171,7 +160,7 @@ const AdministracionRoles = () => {
                             <th className="border px-4 py-2">Nombre</th>
                             <th className="border px-4 py-2">Email</th>
                             <th className="border px-4 py-2">Teléfono</th>
-                            <th className="border px-4 py-2">País</th>
+                            <th className="border px-4 py-2">Ciudad</th>
                             <th className="border px-4 py-2">Rol</th>
                             <th className="border px-4 py-2">Acciones</th>
                         </tr>
@@ -182,11 +171,11 @@ const AdministracionRoles = () => {
                                 <td className="border px-4 py-2">{usuario.nombre}</td>
                                 <td className="border px-4 py-2">{usuario.email}</td>
                                 <td className="border px-4 py-2">{usuario.telefono}</td>
-                                <td className="border px-4 py-2">{usuario.pais}</td>
+                                <td className="border px-4 py-2">{usuario.ciudad}</td>
                                 <td className="border px-4 py-2">{usuario.Roles.nombre}</td>
                                 <td className="border px-4 py-2">
                                     <button
-                                        onClick={() => handleEditRole(usuario)}
+                                        onClick={() => handleEditarRol(usuario)}
                                         className="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
                                     >
                                         Editar Rol
@@ -210,19 +199,17 @@ const AdministracionRoles = () => {
                                 id="roles"
                                 name="roles"
                                 value={rolSeleccionado || ''}
-                                onChange={handleRoleChange}
+                                onChange={handleCambiarRol}
                                 className="cursor-pointer mt-2 mb-3 block w-full p-2 border border-gray-300 rounded-md"
                             >
                                 <option value="">Seleccione un rol</option>
                                 {roles.map(role => (
-                                    <option key={role.id_rol} value={role.id_rol}>
+                                    <option key={role.id_rol} value={role.nombre}>
                                         {role.nombre} - {role.descripcion_rol}
                                     </option>
                                 ))}
                             </select>
                         </div>
-
-                        {mensaje && <p className="mt-4 text-red-500">{mensaje}</p>} {/* Mostrar mensaje */}
 
                         <div className="flex justify-center mb-4 flex gap-4 flex-col sm:flex-row">
                             <button
@@ -232,7 +219,7 @@ const AdministracionRoles = () => {
                                 Cancelar
                             </button>
                             <button
-                                onClick={handleSaveRole}
+                                onClick={handleSubmit}
                                 className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-green-300"
                             >
                                 Guardar Cambios

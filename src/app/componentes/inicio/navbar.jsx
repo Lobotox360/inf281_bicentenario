@@ -37,7 +37,7 @@ export default function Navbar() {
         // Llamada a la API del usuario
         const res = await fetch(`https://inf281-production.up.railway.app/usuario/${id_usuario}`, {
           headers: {
-            'Authorization': `Bearer ${token}`, // Solo si tu backend requiere token
+            'Authorization': `Bearer ${token}`, 
           }
         });
   
@@ -112,9 +112,6 @@ export default function Navbar() {
         </div>
       </div>
 
-
-
-
       {/* Menú de usuario */}
       <div className="ml-auto flex items-center gap-4 text-white text-3xl relative">
         {/* Menú hamburguesa */}
@@ -123,7 +120,6 @@ export default function Navbar() {
             {menuOpen ? <FaTimes /> : <FaBars />}
           </button>
         </div>
-
 
         {/* Botón Buscador */}
         <button onClick={desplegarBarraBusqueda} aria-label="Buscar" className="cursor-pointer hover:text-yellow-400">
@@ -135,7 +131,7 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="cursor-pointer rounded-full object-cover border-2 border-yellow-400" />
+                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="cursor-pointer rounded-full border-2 border-yellow-400" />
               ) : (
                 <FaUser />
               )}

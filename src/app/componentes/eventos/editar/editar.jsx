@@ -8,7 +8,6 @@ const EditarEvento = ({ eventoId }) => {
   const [foto, setFoto] = useState();
   const [titulo, setTitulo] = useState();
 
-  // Usamos useEffect para hacer la llamada a la API cuando el componente se monte
   useEffect(() => {
     const fetchEditar = async () => {
       try {
@@ -23,9 +22,8 @@ const EditarEvento = ({ eventoId }) => {
       }
     };
 
-    // Llamar a la función fetchEditar solo cuando el componente esté montado
     fetchEditar();
-  }, [eventoId]);  // Solo se ejecutará cuando el eventoId cambie
+  }, [eventoId]);  
   
 
   return (
@@ -34,7 +32,7 @@ const EditarEvento = ({ eventoId }) => {
       <h3 className='text-white text-3xl font-semibold text-center p-4'>ELEGI LA(S) OPCION(ES) QUE QUIERES EDITAR DEL EVENTO</h3>
       <h3 className='text-white text-3xl font-semibold text-center p-4'>{titulo}</h3>
       <div className='flex justify-center'>
-        <img src={foto} alt="Vista previa de la imagen" className="max-w-[300px] max-h-[300px] w-full h-auto rounded-md" />
+        <img src={foto || '/assets/cargando.png'} alt="Vista previa de la imagen" className="max-w-[300px] max-h-[300px] w-full h-auto rounded-md" />
       </div>
       {/* Contenedores de bloques */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">

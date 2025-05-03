@@ -2,8 +2,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, LoadScriptNext } from '@react-google-maps/api';
 import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';  // Import Toastify
+import 'react-toastify/dist/ReactToastify.css';  // Import Toastify styles
 
-const EditarUbicacionEvento = ({eventoId}) => {
+const EditarUbicacionEvento = ({ eventoId }) => {
   const [coordenadas, setCoordenadas] = useState({
     lat: -16.5,
     lng: -68.15,
@@ -16,7 +18,6 @@ const EditarUbicacionEvento = ({eventoId}) => {
   const [ubicacionID, setUbicacionID] = useState(null);
   const router = useRouter();
 
-  // Si hay datos previos en eventoData, cargarlos en los estados
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
@@ -31,8 +32,8 @@ const EditarUbicacionEvento = ({eventoId}) => {
           setLongitud(data.ubicacion.longitud || -68.15);
 
           setCoordenadas({
-            lat: data.ubicacion.lat || -16.5, // Si no hay lat, usa valores predeterminados
-            lng: data.ubicacion.lng || -68.15, // Si no hay lng, usa valores predeterminados
+            lat: data.ubicacion.lat || -16.5,
+            lng: data.ubicacion.lng || -68.15,
           });
         } else {
           console.error('No se encontraron datos del evento');
@@ -41,10 +42,10 @@ const EditarUbicacionEvento = ({eventoId}) => {
         console.error('Error fetching event data:', error);
       }
     };
+
     fetchEventoData();
   }, [eventoId]);
 
-  // Mapa de coordenadas de los departamentos
   const departamentoCoordenadas = {
     'La Paz': { lat: -16.500000, lng: -68.119300 },
     'Oruro': { lat: -17.9833, lng: -67.1167 },
@@ -54,7 +55,7 @@ const EditarUbicacionEvento = ({eventoId}) => {
     'Tarija': { lat: -21.5310, lng: -64.7295 },
     'Pando': { lat: -11.0046, lng: -68.1122 },
     'Beni': { lat: -14.8333, lng: -64.9000 },
-    'Santa Cruz': { lat: -17.7775, lng: -63.1815 }
+    'Santa Cruz': { lat: -17.7775, lng: -63.1815 },
   };
 
   const handleMapClick = useCallback((event) => {
@@ -86,7 +87,6 @@ const EditarUbicacionEvento = ({eventoId}) => {
     });
   };
 
-  // Función para geolocalizar la ubicación ingresada
   const geolocalizarUbicacion = async (direccion) => {
     if (!direccion) return;
 
@@ -109,27 +109,22 @@ const EditarUbicacionEvento = ({eventoId}) => {
     });
   };
 
-  // Función para actualizar la ubicación en el mapa cuando se hace clic en "Buscar"
   const handleBuscarUbicacion = () => {
-    if (!ubicacion) return; // Evitar buscar si el campo está vacío
+    if (!ubicacion) return;
     geolocalizarUbicacion(ubicacion);
   };
 
-  // Manejar el cambio del select de departamento
   const handleDepartamentoChange = (e) => {
     const selectedDepartamento = e.target.value;
     setDepartamento(selectedDepartamento);
-    
-    // Actualizar las coordenadas del mapa según el departamento
+
     if (departamentoCoordenadas[selectedDepartamento]) {
       setCoordenadas(departamentoCoordenadas[selectedDepartamento]);
     }
   };
 
-  // Manejar el cambio de descripcion
   const handleDescripcionChange = (e) => {
-    const nuevaDescripcion = e.target.value;
-    setDescripcion(nuevaDescripcion);
+    setDescripcion(e.target.value);
   };
 
   const handleSubmit = async (e) => {
@@ -145,114 +140,107 @@ const EditarUbicacionEvento = ({eventoId}) => {
           departamento,
           descripcion,
           latitud,
-          longitud
+          longitud,
         }),
       });
 
       if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
+        toast.success('Evento actualizado exitosamente');
       } else {
-        alert('❌ Error al actualizar el evento');
+        toast.error('Error al actualizar el evento');
       }
     } catch (error) {
-      console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
+      console.error('Error al actualizar el evento:', error);
+      toast.error('Error al actualizar el evento');
     }
   };
 
   const handleBack = () => {
-    router.back(); // Regresa a la página anterior en el historial
+    router.back();
   };
 
   return (
-    <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
-      <div className="p-4">
-        <form className="bg-white p-5 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-center py-4">Editar Ubicación del evento</h3>
-          
-          {/* Campo departamento */}
-          <div className="mb-4">
-            <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>
-            <select
-              id="departamento"
-              value={departamento}
-              onChange={handleDepartamentoChange}
-              className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
-            >
-              <option value="" disabled>Seleccione un departamento</option>
-              <option value="La Paz">La Paz</option>
-              <option value="Oruro">Oruro</option>
-              <option value="Potosi">Potosi</option>
-              <option value="Cochabamba">Cochabamba</option>
-              <option value="Chuquisaca">Chuquisaca</option>
-              <option value="Tarija">Tarija</option>
-              <option value="Pando">Pando</option>
-              <option value="Beni">Beni</option>
-              <option value="Santa Cruz">Santa Cruz</option>
-            </select>
-          </div>
+    <>
+      <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
+        <div className="p-4 max-w-4xl mx-auto">
+          <form className="bg-white p-5 rounded-lg shadow-lg">
+            <h3 className="text-2xl font-semibold text-center py-4">Editar Ubicación del Evento</h3>
 
-          {/* Campo ubicación */}
-          <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700">Ubicación</label>
-          <div className="flex justify-between mb-4">
-            <input
-              type="text"
-              id="ubicacion"
-              value={ubicacion}
-              onChange={(e) => setUbicacion(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
-            <button
-              type="button"
-              onClick={handleBuscarUbicacion} // Buscar ubicación al hacer clic en el botón
-              className="cursor-pointer bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-400"
-            >
-              Buscar
-            </button>
-          </div>
+            <div className="mb-4">
+              <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>
+              <select
+                id="departamento"
+                value={departamento}
+                onChange={handleDepartamentoChange}
+                className="cursor-pointer w-full p-2 border border-gray-300 rounded-md"
+              >
+                <option value="" disabled>Seleccione un departamento</option>
+                {Object.keys(departamentoCoordenadas).map((dep) => (
+                  <option key={dep} value={dep}>{dep}</option>
+                ))}
+              </select>
+            </div>
 
-          {/* Mapa de Google */}
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '400px' }}
-            center={coordenadas}
-            zoom={12}
-            onClick={handleMapClick}
-          >
-            <Marker position={coordenadas} />
-          </GoogleMap>
+            <label htmlFor="ubicacion" className="block text-sm font-medium text-gray-700">Ubicación</label>
+            <div className="flex justify-between mb-4">
+              <input
+                type="text"
+                id="ubicacion"
+                value={ubicacion}
+                onChange={(e) => setUbicacion(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+              <button
+                type="button"
+                onClick={handleBuscarUbicacion}
+                className="cursor-pointer bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-400"
+              >
+                Buscar
+              </button>
+            </div>
 
-          {/* Campo descripción */}
-          <div className="mb-4">
-            <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción</label>
-            <input
-              type="text"
-              id="descripcion"
-              value={descripcion}
-              onChange={handleDescripcionChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
+            <GoogleMap
+              mapContainerStyle={{ width: '100%', height: '400px' }}
+              center={coordenadas}
+              zoom={12}
+              onClick={handleMapClick}
+            >
+              <Marker position={coordenadas} />
+            </GoogleMap>
 
-          {/* Botones */}
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <button
-              type="button"
-              onClick={handleBack}
-              className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
-            >
-              Salir sin guardar
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-            >
-              Guardar cambios y salir
-            </button>
-          </div>
-        </form>
-      </div>
-    </LoadScriptNext>
+            <div className="mb-4">
+              <label htmlFor="descripcion" className="block text-sm font-medium text-gray-700">Descripción</label>
+              <input
+                type="text"
+                id="descripcion"
+                value={descripcion}
+                onChange={handleDescripcionChange}
+                className="w-full p-2 border border-gray-300 rounded-md"
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
+              <button
+                type="button"
+                onClick={handleBack}
+                className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+              >
+                Salir sin guardar
+              </button>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+              >
+                Guardar cambios y salir
+              </button>
+            </div>
+          </form>
+        </div>
+      </LoadScriptNext>
+
+      <ToastContainer/>
+    </>
   );
 };
 

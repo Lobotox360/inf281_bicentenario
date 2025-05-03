@@ -1,20 +1,17 @@
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, LoadScriptNext } from '@react-google-maps/api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData }) => {
-  const [coordenadas, setCoordenadas] = useState({
-    lat: -16.5,
-    lng: -68.15,
-  });
+  const [coordenadas, setCoordenadas] = useState({lat: -16.5, lng: -68.15});
   const [ubicacion, setUbicacion] = useState('');
   const [departamento, setDepartamento] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [latitud, setLatitud] = useState('');
   const [longitud, setLongitud] = useState('');
-  const [error, setError] = useState(''); // Estado para manejar los errores
 
-  // Mapa de coordenadas de los departamentos
   const departamentoCoordenadas = {
     'La Paz': { lat: -16.500000, lng: -68.119300 },
     'Oruro': { lat: -17.9833, lng: -67.1167 },
@@ -27,7 +24,6 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     'Santa Cruz': { lat: -17.7775, lng: -63.1815 }
   };
 
-  // Si hay datos previos en eventoData, cargarlos en los estados
   useEffect(() => {
     if (eventoData && eventoData.ubicacion) {
       setUbicacion(eventoData.ubicacion.ubicacion || '');
@@ -38,17 +34,14 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     }
   }, [eventoData]);
 
-  // Manejar el cambio del select de departamento
   const handleDepartamentoChange = (e) => {
     const selectedDepartamento = e.target.value;
     setDepartamento(selectedDepartamento);
 
-    // Actualizar las coordenadas del mapa según el departamento seleccionado
     if (departamentoCoordenadas[selectedDepartamento]) {
       setCoordenadas(departamentoCoordenadas[selectedDepartamento]);
     }
 
-    // Guardar en el estado global sin incluir latLng
     handleUpdateData('ubicacion', {
       ubicacion,
       departamento: selectedDepartamento,
@@ -91,7 +84,6 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   const handleDescripcionChange = (e) => {
     const nuevaDescripcion = e.target.value;
     setDescripcion(nuevaDescripcion);
-    // Guardar en el estado global, sin incluir latLng
     handleUpdateData('ubicacion', { 
       ubicacion, 
       departamento,
@@ -103,7 +95,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
 
   // Función para actualizar la ubicación en el mapa cuando se hace clic en "Buscar"
   const handleBuscarUbicacion = () => {
-    if (!ubicacion) return; // Evitar buscar si el campo está vacío
+    if (!ubicacion) return; 
     geolocalizarUbicacion(ubicacion);
   };
 
@@ -119,37 +111,33 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
           lat: latLng.lat(),
           lng: latLng.lng(),
         };
-
         setCoordenadas(nuevaUbicacion);
-        setLatitud(nuevaUbicacion.lat);
-        setLongitud(nuevaUbicacion.lng);
+        setLatitud(nuevaUbicacion.lat.toFixed(6));
+        setLongitud(nuevaUbicacion.lng.toFixed(6));
         setUbicacion(results[0].formatted_address);
+        toast.success('Ubicación encontrada correctamente');
       } else {
-        console.error('No se pudo encontrar la ubicación: ' + status);
-      }
+        toast.error('No se pudo encontrar la ubicación');
+      }      
     });
   };
 
   // Validación antes de avanzar al siguiente paso
   const handleSiguientePaso = () => {
-    // Verificar que todos los campos necesarios estén llenos
     if (!departamento) {
-      setError('Debes seleccionar un departamento');
+      toast.error('Debes seleccionar un departamento');
       return;
     }
 
     if (!descripcion) {
-      setError('Debes ingresar una descripción para la ubicación');
+      toast.error('Debes ingresar una descripción para la ubicación');
       return;
     }
 
     if (!latitud || !longitud) {
-      setError('Debes seleccionar una ubicación en el mapa');
+      toast.error('Debes seleccionar una ubicación en el mapa');
       return;
     }
-
-    // Limpiar el mensaje de error si todo está correcto
-    setError('');
 
     // Guardar la ubicación y avanzar al siguiente paso
     handleUpdateData('ubicacion', { 
@@ -159,15 +147,14 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
       latitud,
       longitud
     });
-    siguientePaso(); // Avanzar al siguiente paso
+    siguientePaso(); 
   };
 
   return (
     <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
-      <div className="p-4">
+      <div className="p-4 max-w-4xl mx-auto">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
-          {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
           {/* Campo departamento */}
           <div className="mb-4">
             <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>
@@ -202,7 +189,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
             />
             <button
               type="button"
-              onClick={handleBuscarUbicacion} // Buscar ubicación al hacer clic en el botón
+              onClick={handleBuscarUbicacion}
               className="cursor-pointer bg-blue-500 text-white py-2 px-6 rounded-full hover:bg-blue-400"
             >
               Buscar
@@ -242,13 +229,14 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
             </button>
             <button
               type="button"
-              onClick={handleSiguientePaso} // Validar antes de avanzar
+              onClick={handleSiguientePaso}
               className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
             >
               Siguiente
             </button>
           </div>
         </form>
+        <ToastContainer/>
       </div>
     </LoadScriptNext>
   );

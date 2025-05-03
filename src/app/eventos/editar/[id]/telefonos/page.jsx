@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import EditarTelefonosEvento from '../../../../componentes/eventos/editar/editarTelefonosEvento';
 
-const EditarInformacionEventoPagina = () => {
+const EditarTelefonosEventoPagina = () => {
   const { id } = useParams(); 
 
   return (
@@ -14,4 +14,4 @@ const EditarInformacionEventoPagina = () => {
   );
 };
 
-export default EditarInformacionEventoPagina;
+export default EditarTelefonosEventoPagina;

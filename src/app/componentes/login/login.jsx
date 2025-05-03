@@ -24,43 +24,44 @@ const Login = ({ openModal }) => {
     }
 
     try {
-      const response = await fetch('https://inf281-production.up.railway.app/login', {
+      const res = await fetch('https://inf281-production.up.railway.app/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: data.email, contrasena: data.contrasenia }),
       });
 
-      const result = await response.json();
+      const resultado = await res.json();
 
-      if (response.ok) {
-        console.log('Login exitoso:', result);
+      if (res.ok) {
+        console.log('Login exitoso:', resultado);
 
-        if (result.access_token && result.id) {
-          localStorage.setItem('access_token', result.access_token);
-          localStorage.setItem('id_user', result.id);
-          localStorage.setItem('rol', result.rol);
+        if (resultado.access_token && resultado.id) {
+          localStorage.setItem('access_token', resultado.access_token);
+          localStorage.setItem('id_user', resultado.id);
+          localStorage.setItem('rol', resultado.rol);
         }
 
-        toast.success('✅ Inicio de sesión exitoso.');
+        toast.success('Inicio de sesión exitoso.');
         const idRol = localStorage.getItem('rol');
+        const redireccionar = (ruta) => setTimeout(() => router.push(ruta), 2000);
         switch (idRol) {
           case 'usuario_casual':
-            router.push('/');
+            redireccionar('/');
             break;
           case 'Administrador':
-            router.push('/dashboard');
+            redireccionar('/dashboard');
             break;
           case 'administrador_eventos':
-            router.push('/dashboard');
+            redireccionar('/dashboard');
             break;
           case 'administrador_contenido':
-            router.push('/dashboard');
+            redireccionar('/dashboard');
             break;
           default:
-            router.push('/');
+            redireccionar('/');
         }
       } else {
-        throw new Error(result.message || 'Credenciales incorrectas.');
+        throw new Error(resultado.message || 'Credenciales incorrectas.');
       }
     } catch (error) {
       console.error('Error en el inicio de sesión:', error);

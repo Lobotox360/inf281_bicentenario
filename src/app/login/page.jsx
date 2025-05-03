@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Login from '../componentes/login/login'
 import Modal from '../componentes/login/modal';
 
-export default function LoginPage() {
+export default function LoginPagina() {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (

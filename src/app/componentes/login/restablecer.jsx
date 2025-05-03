@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function RestablecerPassword() {
   const [contrasena, setContrsena] = useState('');
   const [repetirContra, setRepetirContra] = useState('');
-  const [mensaje, setMensaje] = useState('');
   const [cargando, setCargando] = useState(false);
   const [token, setToken] = useState(null); 
 
@@ -18,28 +17,27 @@ export default function RestablecerPassword() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const searchParams = useSearchParams();
-    const tokenFromParams = searchParams.get('token');
-    if (!tokenFromParams) {
-      setMensaje('❌ Token no válido o expirado.');
-      toast.error('❌ Token no válido o expirado.');
+    const parametros = useSearchParams();
+    const tokenParametro = parametros.get('token');
+    if (!tokenParametro) {
+      toast.error('Token no válido o expirado.');
     } else {
-      setToken(tokenFromParams);
+      setToken(tokenParametro);
     }
   }, []);
 
   const handleCambiarContrasena = (e) => {
-    const newPassword = e.target.value;
-    setContrsena(newPassword);
+    const nuevaContra = e.target.value;
+    setContrsena(nuevaContra);
 
     // Validación de la contraseña
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
-    if (!regex.test(newPassword)) {
+    const validarContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!validarContrasena.test(nuevaContra)) {
       setError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
       toast.error('La contraseña debe cumplir con los requisitos de seguridad.');
     } else {
       setError('');
-      toast.dismiss();  // Si la contraseña cumple, eliminamos el mensaje de error
+      toast.dismiss();  
     }
   };
 
@@ -49,19 +47,16 @@ export default function RestablecerPassword() {
     if (!token) return;
 
     if (contrasena !== repetirContra) {
-      setMensaje('❌ Las contraseñas no coinciden');
-      toast.error('❌ Las contraseñas no coinciden');
+      toast.error('Las contraseñas no coinciden');
       return;
     }
 
     if (error) {
-      setMensaje('❌ Por favor, corrige los errores en la contraseña.');
-      toast.error('❌ Por favor, corrige los errores en la contraseña.');
+      toast.error('Por favor, corrige los errores en la contraseña.');
       return;
     }
 
     setCargando(true);
-    setMensaje('');
 
     const res = await fetch('https://inf281-production.up.railway.app/login/cambiar-password', {
       method: 'POST',
@@ -77,12 +72,10 @@ export default function RestablecerPassword() {
     const data = await res.json();
 
     if (res.ok) {
-      setMensaje('✅ Contraseña actualizada correctamente');
-      toast.success('✅ Contraseña actualizada correctamente');
+      toast.success('Contraseña actualizada correctamente');
       setTimeout(() => router.push('/login'), 3000); // Redirige después de 3 segundos
     } else {
-      setMensaje('❌ Error: ' + (data.message || 'No se pudo cambiar la contraseña'));
-      toast.error('❌ Error: ' + (data.message || 'No se pudo cambiar la contraseña'));
+      toast.error('Error: ' + (data.message || 'No se pudo cambiar la contraseña'));
     }
 
     setCargando(false);
@@ -140,12 +133,6 @@ export default function RestablecerPassword() {
                 {cargando ? 'Cambiando...' : 'Cambiar contraseña'}
               </button>
             </form>
-          )}
-
-          {mensaje && (
-            <p className={`mt-4 font-semibold ${mensaje.startsWith('✅') ? 'text-green-600' : 'text-red-600'}`}>
-              {mensaje}
-            </p>
           )}
         </div>
       </div>

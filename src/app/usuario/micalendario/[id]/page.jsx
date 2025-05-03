@@ -5,7 +5,7 @@ import CalendarioUsuario from '../../../componentes/usuario/mi-agenda'
 import Navbar from '../../../componentes/inicio/navbar'
 import PiePagina from '@/app/componentes/inicio/footer'
 
-export default function MiCalendarioPage() {
+export default function UsuarioCalendarioPagina() {
   const [idUsuario, setIdUsuario] = useState(null)
 
   useEffect(() => {

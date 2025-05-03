@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';  // Import toast from react-toastify
+import 'react-toastify/dist/ReactToastify.css';  // Import the toast styles
 
 const EditarInformacionEvento = ({eventoId}) => {
   const [informacion, setInformacion] = useState({
@@ -15,7 +17,6 @@ const EditarInformacionEvento = ({eventoId}) => {
 
   const router = useRouter();
 
-  {/* VISUALIZAR DATOS ACTUALES*/} //parseFloat(nuevoCosto)
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
@@ -35,6 +36,7 @@ const EditarInformacionEvento = ({eventoId}) => {
         }
       } catch (error) {
         console.error('Error fetching event data:', error);
+        toast.error('Error al cargar los datos del evento');  // Show error toast
       }
     };
     if (eventoId) {
@@ -50,7 +52,6 @@ const EditarInformacionEvento = ({eventoId}) => {
     });
   };
   
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -75,24 +76,23 @@ const EditarInformacionEvento = ({eventoId}) => {
         headers: {
           'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(bodyData),  // Aquí pasas el objeto con los datos estructurados
+        body: JSON.stringify(bodyData), 
       });
   
       if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
+        toast.success('Evento actualizado exitosamente');  // Show success toast
       } else {
-        alert('❌ Error al actualizar el evento');
+        toast.error('Error al actualizar el evento');  // Show error toast
       }
     } catch (error) {
       console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
+      toast.error('Error al actualizar el evento');  // Show error toast
     }
   };
 
   const handleBack = () => {
-    router.back(); // Regresa a la página anterior en el historial
+    router.back(); 
   };
-
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -175,7 +175,6 @@ const EditarInformacionEvento = ({eventoId}) => {
           </div>
         </div>
 
-
         {/* Botón para guardar los cambios */}
         <div className="flex flex-col sm:flex-row justify-between gap-4">
           <button
@@ -194,6 +193,7 @@ const EditarInformacionEvento = ({eventoId}) => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

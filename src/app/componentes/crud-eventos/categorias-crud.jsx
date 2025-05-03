@@ -11,18 +11,14 @@ const CrudCategorias = () => {
     const [editandoCategoria, setEditandoCategoria] = useState(null);
     const [nombreCategoria, setNombreCategoria] = useState('');
     const [descripcionCategoria, setDescripcionCategoria] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const fetchCategorias = async () => {
-        setLoading(true);
         try {
             const res = await fetch('https://inf281-production.up.railway.app/evento/categoria');
             const datos = await res.json();
             setCategorias(datos);
-            setLoading(false);
         } catch (error) {
             console.error('Error al cargar las categorías:', error);
-            setLoading(false);
             toast.error('Error al cargar las categorías');
         }
     };

@@ -1,9 +1,9 @@
 
 
-export default function Torta({ porcentaje }) {
+export default function Torta({ porcentaje, titulo }) {
     return (
       <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center w-full">
-        <h2 className="text-xl font-semibold mb-4">Porcentaje</h2>
+        <h2 className="text-xl text-center font-semibold mb-4">{titulo}</h2>
         <div className="flex items-center justify-center w-24 h-24">
           {/* Contenedor del SVG para el círculo */}
           <svg className="w-full h-full transform rotate-90" viewBox="0 0 36 36">

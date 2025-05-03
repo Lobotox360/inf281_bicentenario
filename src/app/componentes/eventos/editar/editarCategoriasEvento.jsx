@@ -2,16 +2,18 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
+import { toast, ToastContainer } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 
-const EditarCategoriasEvento = ({ eventoId}) => {
-  const [categorias, setCategorias] = useState([]); // Estado para las categorías disponibles
-  const [selectedCategoria, setSelectedCategoria] = useState(''); // Estado para la categoría seleccionada
-  const [addedCategorias, setAddedCategorias] = useState([]); // Estado para las categorías añadidas
+const EditarCategoriasEvento = ({ eventoId }) => {
+  const [categorias, setCategorias] = useState([]);
+  const [selectedCategoria, setSelectedCategoria] = useState('');
+  const [addedCategorias, setAddedCategorias] = useState([]);
   const [informacion, setInformacion] = useState({
-      nombre: '',
-      descripcion: '',
-    });
-  const [showAddForm, setShowAddForm] = useState(false); // Controla si se debe mostrar el formulario de nueva categoría
+    nombre: '',
+    descripcion: '',
+  });
+  const [showAddForm, setShowAddForm] = useState(false);
   const [nuevaCategoria, setNuevaCategoria] = useState({
     nombre: '',
     descripcion: '',
@@ -19,7 +21,6 @@ const EditarCategoriasEvento = ({ eventoId}) => {
 
   const router = useRouter();
 
-  // Cargar categorías desde la API
   const fetchCategorias = async () => {
     try {
       const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
@@ -30,6 +31,7 @@ const EditarCategoriasEvento = ({ eventoId}) => {
         ...c
       })));
     } catch (error) {
+      toast.error('Error al obtener las categorías');  
       console.error("Error al obtener categorías:", error);
     }
   };
@@ -39,49 +41,52 @@ const EditarCategoriasEvento = ({ eventoId}) => {
     const fetchEventoData = async () => {
       try {
         const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`);
-        const data = await response.json(); //recibo todo
+        const data = await response.json();
         if (data) {
           setInformacion({
             nombre: data.nombre || '',
             descripcion: data.descripcion || '',
           });
-          setAddedCategorias(data); 
+          setAddedCategorias(data);
         } else {
-          console.error('No se encontraron datos del evento');
+          toast.error('No se encontraron datos del evento'); 
         }
       } catch (error) {
+        toast.error('Error al obtener los datos del evento'); 
         console.error('Error fetching event data:', error);
       }
     };
 
     if (eventoId) {
-      fetchEventoData(); // Llamada a la API si eventoId está disponible
+      fetchEventoData();
     }
   }, [eventoId]);
-  // Función para agregar una categoría seleccionada
-// Función para agregar una categoría seleccionada
+
   const handleAgregarCategoria = () => {
-    if (!selectedCategoria) return;
+    if (!selectedCategoria) {
+      toast.error('Por favor selecciona una categoría');  
+      return;
+    }
 
     const categoriaSeleccionada = categorias.find(
       (categoria) => categoria.id_categoria === selectedCategoria.value
     );
 
-    // Verificar si la categoría ya ha sido añadida
     if (categoriaSeleccionada && !addedCategorias.some(c => c.id_categoria === categoriaSeleccionada.id_categoria)) {
-      const nuevosCategorias = [...addedCategorias, categoriaSeleccionada];
-      setAddedCategorias(nuevosCategorias);
-      setSelectedCategoria(''); // Limpiar la selección
+      setAddedCategorias(prev => [...prev, categoriaSeleccionada]);
+      setSelectedCategoria('');
+      toast.success('Categoría agregada exitosamente');
+    } else {
+      toast.error('Esta categoría ya ha sido añadida'); 
     }
   };
 
-  // Función para eliminar una categoría de la lista
   const handleQuitarCategoria = (index) => {
     const nuevosCategorias = addedCategorias.filter((_, i) => i !== index);
     setAddedCategorias(nuevosCategorias);
+    toast.warning('Categoría eliminada'); 
   };
 
-  // Manejo de cambios en el formulario de nueva categoría
   const handleNuevaCategoriaChange = (e) => {
     const { name, value } = e.target;
     setNuevaCategoria({ ...nuevaCategoria, [name]: value });
@@ -89,174 +94,170 @@ const EditarCategoriasEvento = ({ eventoId}) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Construir el cuerpo con el formato esperado
+
     const categoriasParaEnviar = addedCategorias.map(categoria => ({
-      id_categoria: categoria.id_categoria 
+      id_categoria: categoria.id_categoria
     }));
-  
+
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoriasParaEnviar ), // Enviar el arreglo de categorías
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(categoriasParaEnviar),
       });
-  
+
       if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
+        toast.success('Evento actualizado exitosamente'); 
       } else {
-        alert('❌ Error al actualizar el evento');
+        toast.error('Error al actualizar el evento'); 
       }
     } catch (error) {
-      console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
+      toast.error('Error al actualizar el evento');  
+      console.error('Error:', error);
     }
   };
-  
+
   const handleAgregarNuevaCategoria = async () => {
     try {
       const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(nuevaCategoria),
       });
 
       if (!res.ok) throw new Error('Error al agregar la categoría');
 
       const nuevaCategoriaRespuesta = await res.json();
-      setNuevaCategoria({
-        nombre: '',
-        descripcion: '',
-      });
+      setNuevaCategoria({ nombre: '', descripcion: '' });
 
-      // Recargar la lista de categorías para reflejar la nueva
       fetchCategorias();
 
-      alert('✅ Categoría agregada exitosamente!');
-      setShowAddForm(false); // Cerrar formulario de nueva categoría
+      toast.success('Categoría agregada exitosamente!'); 
+      setShowAddForm(false);
     } catch (error) {
+      toast.error('Ocurrió un error al agregar la categoría.'); r
       console.error('Error al agregar categoría:', error);
-      alert('❌ Ocurrió un error al agregar la categoría.');
     }
   };
 
   const handleBack = () => {
-    router.back(); // Regresa a la página anterior en el historial
-  };  
+    router.back();  
+  };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <form className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-center py-4">Editar categorias</h3>
-        {/* Select de categorías existentes */}
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Selecciona una Categoría
-          </label>
-          <Select
-            options={categorias}
-            value={selectedCategoria}
-            onChange={setSelectedCategoria}
-            placeholder="Busca o selecciona una categoría"
-            isSearchable
-          />
-        </div>
+    <>
+      <div className="max-w-4xl mx-auto">
+        <form className="bg-white p-5 rounded-lg shadow-lg" onSubmit={handleSubmit}>
+          <h3 className="text-2xl font-semibold text-center py-4">Editar Categorías</h3>
 
-        {/* Botón para agregar categoría de la lista */}
-        <div className="flex flex-col sm:flex-row justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-8">
-          <button
-            type="button"
-            onClick={handleAgregarCategoria}
-            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-          >
-            Añadir Categoría
-          </button>
-
-          {/* Formulario para agregar nueva categoría */}
-          <button
-            type="button"
-            onClick={() => setShowAddForm(true)}
-            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-          >
-            Crear Nueva Categoría
-          </button>
-        </div>
-        {/* Mostrar formulario de nueva categoría */}
-        {showAddForm && (
+          {/* Select de categorías existentes */}
           <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-700">Nueva Categoría</h3>
-            <input
-              type="text"
-              name="nombre"
-              value={nuevaCategoria.nombre}
-              onChange={handleNuevaCategoriaChange}
-              placeholder="Nombre de la categoría"
-              className="w-full p-2 border border-gray-300 rounded-md mb-2"
+            <label className="block text-sm font-medium text-gray-700">
+              Selecciona una Categoría
+            </label>
+            <Select
+              options={categorias}
+              value={selectedCategoria}
+              onChange={setSelectedCategoria}
+              placeholder="Busca o selecciona una categoría"
+              isSearchable
             />
-            <input
-              type="text"
-              name="descripcion"
-              value={nuevaCategoria.descripcion}
-              onChange={handleNuevaCategoriaChange}
-              placeholder="Descripción"
-              className="w-full p-2 border border-gray-300 rounded-md mb-2"
-            />
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={handleAgregarNuevaCategoria}
-                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-              >
-                Guardar Nueva Categoría
-              </button>
-            </div>
           </div>
-        )}
 
-        {/* Mostrar categorías añadidas */}
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Categorías Añadidas</h3>
-          <ul>
-            {addedCategorias.map((categoria, index) => (
-              <li key={categoria.id_categoria} className="flex justify-between items-center mb-2">
-                <span>{categoria.nombre}</span>
-                <span>{categoria.descripcion}</span>
+          {/* Botón para agregar categoría de la lista */}
+          <div className="flex flex-col sm:flex-row justify-center mb-4 space-y-4 sm:space-y-0 sm:space-x-8">
+            <button
+              type="button"
+              onClick={handleAgregarCategoria}
+              className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            >
+              Añadir Categoría
+            </button>
+
+            {/* Formulario para agregar nueva categoría */}
+            <button
+              type="button"
+              onClick={() => setShowAddForm(true)}
+              className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+            >
+              Crear Nueva Categoría
+            </button>
+          </div>
+
+          {/* Mostrar formulario de nueva categoría */}
+          {showAddForm && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-700">Nueva Categoría</h3>
+              <input
+                type="text"
+                name="nombre"
+                value={nuevaCategoria.nombre}
+                onChange={handleNuevaCategoriaChange}
+                placeholder="Nombre de la categoría"
+                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+              />
+              <input
+                type="text"
+                name="descripcion"
+                value={nuevaCategoria.descripcion}
+                onChange={handleNuevaCategoriaChange}
+                placeholder="Descripción"
+                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+              />
+              <div className="flex justify-center">
                 <button
                   type="button"
-                  onClick={() => handleQuitarCategoria(index)}
-                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  onClick={handleAgregarNuevaCategoria}
+                  className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
                 >
-                  Eliminar
+                  Guardar Nueva Categoría
                 </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+              </div>
+            </div>
+          )}
 
-        {/* Botones de navegación */}
-        <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <button
-            type="button"
-            onClick={handleBack}
-            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
-          >
-            Salir sin guardar
-          </button>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-          >
-            Guardar cambios y salir
-          </button>
-        </div>
+          {/* Mostrar categorías añadidas */}
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-700">Categorías Añadidas</h3>
+            <ul>
+              {addedCategorias.map((categoria, index) => (
+                <li key={categoria.id_categoria} className="flex justify-between items-center mb-2">
+                  <span>{categoria.nombre}</span>
+                  <span>{categoria.descripcion}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleQuitarCategoria(index)}
+                    className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  >
+                    Eliminar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-      </form>
-    </div>
+          {/* Botones de navegación */}
+          <div className="flex flex-col sm:flex-row justify-between gap-4">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-400"
+            >
+              Salir sin guardar
+            </button>
+            <button
+              type="submit"
+              className="cursor-pointer bg-green-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            >
+              Guardar cambios y salir
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Toast container */}
+      <ToastContainer />
+    </>
   );
 };
 

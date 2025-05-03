@@ -77,10 +77,10 @@ const VerificarEmail = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setMensaje("✅ Usuario registrado con éxito.");
+        setMensaje("Usuario registrado con éxito.");
         setError("");
-        toast.success("✅ Usuario registrado con éxito.");
-        setTimeout(() => router.push("/login/subirfoto"), 2000);
+        toast.success("Usuario registrado con éxito.");
+        setTimeout(() => router.push("/login"), 3000);
       } else {
         throw new Error(result.message || "Código incorrecto. Inténtalo de nuevo.");
       }

@@ -12,7 +12,6 @@ export default function CalendarioUsuario({ id_usuario }) {
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
   const calendarioRef = useRef(null)
 
-  // Obtener eventos desde la API
   useEffect(() => {
     AOS.init({ duration: 1000 });
     const fetchEventos = async () => {
@@ -29,8 +28,8 @@ export default function CalendarioUsuario({ id_usuario }) {
             end: fechaFin.toISOString(),
             url: "#",
             backgroundColor: 'blue',
-            reunionIniciada: evento.Eventos.reunion_iniciada,  // Añadido: validación si la reunión ha comenzado
-            link_reunion: evento.Eventos.link_reunion, // Guardamos el enlace solo aquí
+            reunionIniciada: evento.Eventos.reunion_iniciada,  
+            link_reunion: evento.Eventos.link_reunion,
           }
         })
 
@@ -44,21 +43,19 @@ export default function CalendarioUsuario({ id_usuario }) {
   }, [id_usuario])
 
   // Cambiar vista al hacer clic en un día
-  const handleDateClick = (arg) => {
-    const calendarApi = calendarioRef.current?.getApi()
-    calendarApi?.changeView('timeGridDay', arg.date)
+  const handleVistaDiaria = (e) => {
+    const apiCalendario = calendarioRef.current?.getApi()
+    apiCalendario?.changeView('timeGridDay', e.date)
     setVistaActual('timeGridDay')
   }
 
-  // Función para volver a la vista mensual
   const volverAlMes = () => {
     const calendarApi = calendarioRef.current?.getApi()
     calendarApi?.changeView('dayGridMonth')
     setVistaActual('dayGridMonth')
   }
 
-  // Manejo de evento de clic (cuando se hace clic en un evento)
-  const handleEventClick = async (info) => {
+  const handleIngresarEvento = async (info) => {
     const eventoId = info.event.id
     const evento = info.event.extendedProps
 
@@ -67,11 +64,7 @@ export default function CalendarioUsuario({ id_usuario }) {
       toast.error('La reunión aún no ha comenzado o ya ha finalizado. Intenta más tarde.')
       return 
     }
-
-    // Si la reunión ha comenzado, abrir el enlace
     window.open(evento.link_reunion, '_blank')
-
-    // Registrar asistencia
     try {
       const response = await fetch('https://inf281-production.up.railway.app/agenda/asistencia', {
         method: 'POST',
@@ -120,7 +113,7 @@ export default function CalendarioUsuario({ id_usuario }) {
             week: 'Semana',
             day: 'Día',
           }}
-          dateClick={handleDateClick}
+          dateClick={handleVistaDiaria}
           eventColor="#10e685"
           dayMaxEvents={3}
           headerToolbar={{
@@ -129,7 +122,7 @@ export default function CalendarioUsuario({ id_usuario }) {
             center: 'title'
           }}
           headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
-          eventClick={handleEventClick} // Evento de clic para registrar la asistencia
+          eventClick={handleIngresarEvento} 
         />
         
       </div>

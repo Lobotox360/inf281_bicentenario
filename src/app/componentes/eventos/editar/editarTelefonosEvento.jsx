@@ -1,12 +1,14 @@
 'use client';
-import React, { useState , useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';  // Import toast from react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import the toast styles
 
 const EditarTelefonosEvento = ({ eventoId }) => {
-  const [telefonosAgregados, setTelefonosAgregados] = useState([]);  // Inicializa como arreglo vacío si no hay datos
+  const [telefonosAgregados, setTelefonosAgregados] = useState([]);
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
   const [nuevoTelefono, setNuevoTelefono] = useState({
-    telefono: ''  // Asegúrate de usar 'telefono' para coincidir con el objeto
+    telefono: ''
   });
 
   const router = useRouter();
@@ -20,6 +22,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
         }
       } catch (error) {
         console.error("❌ Error al cargar los teléfonos:", error);
+        toast.error('❌ Error al cargar los teléfonos');
       }
     };
 
@@ -28,30 +31,29 @@ const EditarTelefonosEvento = ({ eventoId }) => {
     }
   }, [eventoId]);
 
-  // Función para agregar teléfono
   const handleAgregarTelefono = () => {
     if (!nuevoTelefono.telefono) return;
     if (!telefonosAgregados.some(telofono => telofono.numero === nuevoTelefono.telefono)) {
       const nuevosTelefonos = [...telefonosAgregados, nuevoTelefono];
       setTelefonosAgregados(nuevosTelefonos);
       setNuevoTelefono({ telefono: '' });
+      toast.success('Teléfono añadido exitosamente');
+    } else {
+      toast.error('El teléfono ya está en la lista');
     }
   };
 
-
-  // Función para quitar un teléfono
   const handleQuitarTelefono = (index) => {
     const nuevosTelefonos = telefonosAgregados.filter((_, i) => i !== index);
     setTelefonosAgregados(nuevosTelefonos);
+    toast.warning('Teléfono eliminado');
   };
 
-  // Manejo de cambios en el campo de teléfono
   const handleNuevoTelefonoChange = (e) => {
     const { name, value } = e.target;
     setNuevoTelefono({ ...nuevoTelefono, [name]: value });
   };
 
-  // Formatear los teléfonos para enviarlos
   const telefonosFormateados = telefonosAgregados.map(telefono => ({
     telefono: telefono.numero || telefono.telefono
   }));
@@ -64,22 +66,22 @@ const EditarTelefonosEvento = ({ eventoId }) => {
         headers: {
           'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(telefonosFormateados), // Enviar los teléfonos formateados
+        body: JSON.stringify(telefonosFormateados),
       });
 
       if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
+        toast.success('Evento actualizado exitosamente');
       } else {
-        alert('❌ Error al actualizar el evento');
+        toast.error('Error al actualizar el evento');
       }
     } catch (error) {
-      console.error('❌ Error del data:', error);
-      alert('❌ Error al actualizar el evento');
+      console.error('Error al actualizar el evento:', error);
+      toast.error('Error al actualizar el evento');
     }
   };
 
   const handleBack = () => {
-    router.back(); // Regresa a la página anterior en el historial
+    router.back();
   };
 
   return (
@@ -159,6 +161,7 @@ const EditarTelefonosEvento = ({ eventoId }) => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

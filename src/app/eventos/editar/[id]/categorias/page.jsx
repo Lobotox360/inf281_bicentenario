@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import EditarCategoriasEvento from '../../../../componentes/eventos/editar/editarCategoriasEvento';
 
-const EditarInformacionEventoPagina = () => {
+const EditarCategoriasEventoPagina = () => {
   const { id } = useParams(); 
 
   return (
@@ -14,4 +14,4 @@ const EditarInformacionEventoPagina = () => {
   );
 };
 
-export default EditarInformacionEventoPagina;
+export default EditarCategoriasEventoPagina;

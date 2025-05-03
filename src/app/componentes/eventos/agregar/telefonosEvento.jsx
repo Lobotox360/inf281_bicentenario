@@ -1,137 +1,137 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, eventoData }) => {
-  const [telefonosAgregados, setTelefonosAgregados] = useState(eventoData.telefonos || []);  // Inicializa como arreglo vacío si no hay datos
+  const [telefonosAgregados, setTelefonosAgregados] = useState(eventoData.telefonos || []);
   const [mostrarAgregar, setMostrarAgregar] = useState(false);
-  const [nuevoTelefono, setNuevoTelefono] = useState({
-    telefono: ''  // Asegúrate de usar 'telefono' para coincidir con el objeto
-  });
-  const [error, setError] = useState(''); // Estado para el mensaje de error
+  const [nuevoTelefono, setNuevoTelefono] = useState({ telefono: '' });
 
-  const router = useRouter();
-
-  // Función para agregar teléfono
+  // Validar y agregar nuevo teléfono
   const handleAgregarTelefono = () => {
-    if (!nuevoTelefono.telefono) return; // Validar que el número de teléfono no esté vacío
-  
-    // Evitar agregar teléfonos repetidos
-    if (!telefonosAgregados.some(telofono => telofono.telefono === nuevoTelefono.telefono)) {
-      const nuevosTelefonos = [...telefonosAgregados, nuevoTelefono];
-      setTelefonosAgregados(nuevosTelefonos);
-      
-      // Llamar a handleUpdateData después de actualizar el estado
-      handleUpdateData('telefonos', nuevosTelefonos);
-      setNuevoTelefono({ telefono: '' }); // Limpiar el campo
+    const telefonoValido = nuevoTelefono.telefono.trim();
+
+    if (!telefonoValido) {
+      toast.warning('El número de teléfono no puede estar vacío');
+      return;
     }
+
+    if (!/^\d{6,15}$/.test(telefonoValido)) {
+      toast.error('El teléfono debe tener entre 6 y 15 dígitos');
+      return;
+    }
+
+    if (telefonosAgregados.some(t => t.telefono === telefonoValido)) {
+      toast.info('Ese teléfono ya fue agregado');
+      return;
+    }
+
+    const nuevosTelefonos = [...telefonosAgregados, { telefono: telefonoValido }];
+    setTelefonosAgregados(nuevosTelefonos);
+    handleUpdateData('telefonos', nuevosTelefonos);
+    setNuevoTelefono({ telefono: '' });
+    toast.success('Teléfono agregado');
   };
 
-  // Función para quitar un teléfono
+  // Quitar teléfono
   const handleQuitarTelefono = (index) => {
     const nuevosTelefonos = telefonosAgregados.filter((_, i) => i !== index);
     setTelefonosAgregados(nuevosTelefonos);
     handleUpdateData('telefonos', nuevosTelefonos);
   };
 
-  // Manejo de cambios en el campo de teléfono
   const handleNuevoTelefonoChange = (e) => {
     const { name, value } = e.target;
     setNuevoTelefono({ ...nuevoTelefono, [name]: value });
   };
 
-  // Validar que haya al menos un teléfono antes de avanzar al siguiente paso
   const handleSiguientePaso = () => {
     if (telefonosAgregados.length === 0) {
-      setError('Debes agregar al menos un teléfono para continuar');
-      return; // No permite avanzar si no hay teléfonos
+      toast.error('Debes agregar al menos un teléfono para continuar');
+      return;
     }
-
-    setError(''); // Limpiar mensaje de error si todo está bien
-    siguientePaso(); // Avanzar al siguiente paso
+    siguientePaso();
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <form className="bg-white p-5 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Agregar teléfonos de contacto</h3>
+    <>
+      <div className="max-w-4xl mx-auto">
+        <form className="bg-white p-5 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Agregar teléfonos de contacto</h3>
 
-        {error && <p className="text-red-500 text-center">{error}</p>} {/* Mostrar mensaje de error */}
-
-        {/* Formulario para agregar nuevo teléfono */}
-        <div className="mb-4 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setMostrarAgregar(true)}
-            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-          >
-            Crear Nuevo Teléfono
-          </button>
-        </div>
-
-        {/* Mostrar formulario de nuevo teléfono */}
-        {mostrarAgregar && (
-          <div className="mb-4">
-            <h3 className="text-sm font-medium text-gray-700">Nuevo Teléfono</h3>
-            <input
-              type="text"
-              name="telefono"
-              value={nuevoTelefono.telefono}
-              onChange={handleNuevoTelefonoChange}
-              placeholder="Teléfono"
-              className="w-full p-2 border border-gray-300 rounded-md mb-2"
-            />
-            <div className="flex justify-center">
-              <button
-                type="button"
-                onClick={handleAgregarTelefono}
-                className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
-              >
-                Guardar Teléfono
-              </button>
-            </div>
+          <div className="mb-4 flex justify-center">
+            <button
+              type="button"
+              onClick={() => setMostrarAgregar(true)}
+              className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-blue-400"
+            >
+              Crear Nuevo Teléfono
+            </button>
           </div>
-        )}
 
-        {/* Mostrar teléfonos añadidos */}
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700">Teléfonos Añadidos</h3>
-          <ul>
-            {telefonosAgregados.map((telefono, index) => (
-              <li key={index} className="flex justify-between items-center mb-2">
-                <span>{telefono.telefono}</span> {/* Usamos 'telefono' ya que así se definió el campo */}
+          {mostrarAgregar && (
+            <div className="mb-4">
+              <h3 className="text-sm font-medium text-gray-700">Nuevo Teléfono</h3>
+              <input
+                type="tel"
+                name="telefono"
+                value={nuevoTelefono.telefono}
+                onChange={handleNuevoTelefonoChange}
+                placeholder="Teléfono"
+                className="w-full p-2 border border-gray-300 rounded-md mb-2"
+              />
+              <div className="flex justify-center">
                 <button
                   type="button"
-                  onClick={() => handleQuitarTelefono(index)}
-                  className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  onClick={handleAgregarTelefono}
+                  className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-full hover:bg-green-400"
                 >
-                  Eliminar
+                  Guardar Teléfono
                 </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+              </div>
+            </div>
+          )}
 
-        {/* Botones de navegación */}
-        <div className="flex justify-between mt-4">
-          <button
-            type="button"
-            onClick={anteriorPaso}
-            className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
-          >
-            Volver
-          </button>
+          <div className="mb-4">
+            <h3 className="text-sm font-medium text-gray-700">Teléfonos Añadidos</h3>
+            <ul>
+              {telefonosAgregados.map((telefono, index) => (
+                <li key={index} className="flex justify-between items-center mb-2">
+                  <span>{telefono.telefono}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleQuitarTelefono(index)}
+                    className="cursor-pointer bg-red-500 text-white py-1 px-3 rounded-full hover:bg-red-400"
+                  >
+                    Eliminar
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <button
-            type="button"
-            onClick={handleSiguientePaso} // Validar antes de avanzar
-            className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
-          >
-            Siguiente
-          </button>
-        </div>
-      </form>
-    </div>
+          <div className="flex justify-between mt-4">
+            <button
+              type="button"
+              onClick={anteriorPaso}
+              className="cursor-pointer bg-red-500 text-white py-2 px-4 rounded-full hover:bg-orange-500"
+            >
+              Volver
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSiguientePaso}
+              className="cursor-pointer bg-orange-500 text-white py-2 px-4 rounded-full hover:bg-yellow-400"
+            >
+              Siguiente
+            </button>
+          </div>
+        </form>
+      </div>
+      <ToastContainer />
+    </>
   );
 };
 

@@ -13,13 +13,13 @@ const Recuperar = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await fetch("https://inf281-production.up.railway.app/login/recuperar", {
+      const res = await fetch("https://inf281-production.up.railway.app/login/recuperar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: data.email }),
       });
 
-      if (!response.ok) {
+      if (!res.ok) {
         throw new Error("No se pudo enviar el correo. Inténtalo de nuevo.");
       }
 

@@ -20,7 +20,6 @@ const Modal = ({ isOpen, onClose }) => {
   const router = useRouter();
   const contrasena = watch('contrasena');
 
-
   const onSubmit = async (data) => {
     try {
       localStorage.setItem('email', data.email);
@@ -113,7 +112,7 @@ const Modal = ({ isOpen, onClose }) => {
                 countryid={idPais}
                 onChange={(e) => {
                   setIdEstado(e.id);
-                  setValue("ciudad", e.name, { shouldValidate: true });
+                  setValue("ciudad", e.name.replace(' Department', ''), { shouldValidate: true });
                 }}
                 placeHolder="Seleccione una ciudad"
               />

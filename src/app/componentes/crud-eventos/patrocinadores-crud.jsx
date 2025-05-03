@@ -11,18 +11,14 @@ const CrudPatrocinadores = () => {
     const [editandoPatrocinador, setEditandoPatrocinador] = useState(null);
     const [razonSocial, setRazonSocial] = useState('');
     const [institucion, setInstitucion] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const fetchPatrocinadores = async () => {
-        setLoading(true);
         try {
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador');
             const datos = await res.json();
             setPatrocinadores(datos);
-            setLoading(false);
         } catch (error) {
             console.error('Error al cargar los patrocinadores:', error);
-            setLoading(false);
             toast.error('Error al cargar los patrocinadores');
         }
     };

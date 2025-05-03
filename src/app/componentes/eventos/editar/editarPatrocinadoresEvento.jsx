@@ -1,7 +1,10 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
+import { toast, ToastContainer } from 'react-toastify'; // Import toast from react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import the toast styles
 
 const EditarPatrocinadoresEvento = ({ eventoId }) => {
   const [patrocinadores, setPatrocinadores] = useState([]);
@@ -33,6 +36,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
       );
     } catch (error) {
       console.error('Error al obtener patrocinadores:', error);
+      toast.error('❌ Error al obtener patrocinadores');
     }
   };
 
@@ -40,7 +44,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
   useEffect(() => {
     fetchPatrocinadores();
     const fetchPatrocinadoresEvento = async () => {
-      if (!eventoId) return;  // Solo ejecutamos si `eventoId` existe
+      if (!eventoId) return;
       try {
         const respuesta = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/evento/${eventoId}`);
         const datos = await respuesta.json();
@@ -53,10 +57,11 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
         );
       } catch (error) {
         console.error('Error al obtener patrocinadores del evento:', error);
+        toast.error('❌ Error al obtener patrocinadores del evento');
       }
     };
     fetchPatrocinadoresEvento();
-  }, [eventoId]);  // Este useEffect se ejecuta cada vez que `eventoId` cambia
+  }, [eventoId]);
 
   // Agregar patrocinador seleccionado
   const handleAgregarPatrocinador = () => {
@@ -71,6 +76,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
       const nuevosPatrocinadores = [...addedPatrocinadores, patrocinadorSeleccionado];
       setAddedPatrocinadores(nuevosPatrocinadores);
       setSelectedPatrocinador(null); // Limpiar la selección
+      toast.success('✅ Patrocinador añadido');
     }
   };
 
@@ -78,6 +84,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
   const handleQuitarPatrocinador = (index) => {
     const nuevosPatrocinadores = addedPatrocinadores.filter((_, i) => i !== index);
     setAddedPatrocinadores(nuevosPatrocinadores);
+    toast.warning('⚠️ Patrocinador eliminado');
   };
 
   // Manejo de cambio de los campos de nuevo patrocinador
@@ -85,7 +92,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     const { name, value } = e.target;
     setNuevoPatrocinador({ ...nuevoPatrocinador, [name]: value });
   };
-  
+
   // Agregar nuevo patrocinador
   const handleAgregarNuevoPatrocinador = async () => {
     if (!nuevoPatrocinador.razon_social || !nuevoPatrocinador.institucion) {
@@ -112,7 +119,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
         label: `${nuevoPatrocinadorRespuesta.razon_social} - ${nuevoPatrocinadorRespuesta.institucion}`,
         ...nuevoPatrocinadorRespuesta,
       };
-      setPatrocinadores(prev => [...prev, patrocinadorNuevo]); // Actualiza la lista de patrocinadores
+      setPatrocinadores(prev => [...prev, patrocinadorNuevo]);
 
       // Limpiar el formulario y cerrar el modal
       setNuevoPatrocinador({
@@ -122,19 +129,19 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
       setShowAddForm(false);
 
       fetchPatrocinadores();
-      alert('✅ Patrocinador agregado exitosamente!');
+      toast.success('✅ Patrocinador agregado exitosamente!');
     } catch (error) {
       console.error('Error al agregar patrocinador:', error);
-      alert('❌ Ocurrió un error al agregar el patrocinador.');
+      toast.error('❌ Ocurrió un error al agregar el patrocinador.');
     }
   };
 
+  // Enviar los cambios de patrocinadores
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // Transformar addedPatrocinadores al formato esperado [{ id_patrocinador: x }]
     const patrocinadoresTransformados = addedPatrocinadores.map(patrocinador => ({
-      id_patrocinador: patrocinador.id_patrocinador,  // Obtener solo id_patrocinador
+      id_patrocinador: patrocinador.id_patrocinador,
     }));
     
     try {
@@ -143,19 +150,20 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
         headers: {
           'Content-Type': 'application/json', 
         },
-        body: JSON.stringify(patrocinadoresTransformados),  // Enviar los datos transformados
+        body: JSON.stringify(patrocinadoresTransformados), 
       });
   
       if (response.ok) {
-        alert('✅ Evento actualizado exitosamente');
+        toast.success('Evento actualizado exitosamente');
       } else {
-        alert('❌ Error al actualizar el evento');
+        toast.error('Error al actualizar el evento');
       }
     } catch (error) {
-      console.error('❌ Error al actualizar el evento:', error);
-      alert('❌ Error al actualizar el evento');
+      console.error('Error al actualizar el evento:', error);
+      toast.error('Error al actualizar el evento');
     }
   };
+
   // Volver a la página anterior
   const handleBack = () => {
     router.back();
@@ -267,6 +275,7 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
           </button>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

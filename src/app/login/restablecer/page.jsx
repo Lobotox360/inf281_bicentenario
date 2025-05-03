@@ -1,6 +1,6 @@
 'use client';
 import RestablecerPassword from "../../componentes/login/restablecer"; 
 
-export default function Restablecer() {
+export default function RestablecerPagina() {
   return <RestablecerPassword />;
 }

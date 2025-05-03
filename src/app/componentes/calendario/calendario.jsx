@@ -41,9 +41,9 @@ export default function Calendario() {
   }, [])
 
   // Cambiar vista al hacer clic en un día
-  const handleDateClick = (arg) => {
-    const calendarApi = calendarioRef.current?.getApi()
-    calendarApi?.changeView('timeGridDay', arg.date)
+  const handleVistaDiaria = (arg) => {
+    const apiCalendario = calendarioRef.current?.getApi()
+    apiCalendario?.changeView('timeGridDay', arg.date)
     setVistaActual('timeGridDay')
   }
 
@@ -87,7 +87,7 @@ export default function Calendario() {
           week: 'Semana',
           day: 'Día',
         }}
-        dateClick={handleDateClick}
+        dateClick={handleVistaDiaria}
         eventColor="#10e685"
         dayMaxEvents={3}
         headerToolbar={{

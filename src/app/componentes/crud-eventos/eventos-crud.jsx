@@ -102,7 +102,7 @@ const CrudEventos = () => {
                 <select
                     className="cursor-pointer px-4 py-2 border rounded-lg"
                     value={modalidadFiltro}
-                    onChange={(e) => setModalidadFiltro(e.target.value)} // Actualizar el estado con la modalidad seleccionada
+                    onChange={(e) => setModalidadFiltro(e.target.value)} 
                 >
                     <option value="">Seleccionar modalidad</option>
                     <option value="presencial">Presencial</option>
@@ -114,7 +114,7 @@ const CrudEventos = () => {
                 <select
                     className="cursor-pointer px-4 py-2 border rounded-lg"
                     value={estadoFiltro}
-                    onChange={(e) => setEstadoFiltro(e.target.value)} // Actualizar el estado con el estado seleccionado
+                    onChange={(e) => setEstadoFiltro(e.target.value)}
                 >
                     <option value="">Seleccionar estado</option>
                     <option value="Próximo">Próximo</option>
@@ -123,7 +123,7 @@ const CrudEventos = () => {
                 </select>
             </div>
 
-            <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full"> {/* Agrega max-height si quieres limitar el tamaño vertical */}
+            <div className="overflow-x-auto overflow-y-auto max-h-80 w-80 sm:w-full">
                 <table className=" border-collapse border border-gray-300">
                     <thead>
                     <tr>

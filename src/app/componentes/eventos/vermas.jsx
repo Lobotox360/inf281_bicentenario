@@ -32,7 +32,7 @@ export default function VerMasEvento() {
         setEvento(data);
       } catch (error) {
         console.error('Error al obtener evento:', error);
-        toast.error('❌ Error al obtener el evento.');
+        toast.error('Error al obtener el evento.');
       }
     };
 
@@ -48,13 +48,13 @@ export default function VerMasEvento() {
         const response = await fetch(`https://inf281-production.up.railway.app/agenda/${idUsuario}`);
         if (response.ok) {
           const data = await response.json();
-          setAgendado(data); // Guardamos la respuesta en el estado
+          setAgendado(data);
         } else {
           console.error('No hay datos en la agenda de este usuario');
         }
       } catch (error) {
         console.error('Error en la solicitud:', error);
-        toast.error('❌ Error al obtener tu agenda.');
+        toast.error('Error al obtener tu agenda.');
       } 
     };
 
@@ -84,7 +84,7 @@ export default function VerMasEvento() {
   const handleInscripcion = async (eventoId) => {
     const id_usuario = localStorage.getItem('id_user');
     if (!id_usuario) {
-      toast.error('❌ Debes iniciar sesión para poder agendar un evento.');
+      toast.error('Debes iniciar sesión para poder agendar un evento.');
       return;
     }
 
@@ -104,17 +104,17 @@ export default function VerMasEvento() {
 
       const data = await res.json();
       toast.success(data.mensaje);
-      window.location.reload();
+      setTimeout(() => {window.location.reload()}, 3000);
     } catch (error) {
       console.error(error);
-      toast.error('❌ Ocurrió un error al registrar la inscripción.');
+      toast.error('Ocurrió un error al registrar la inscripción.');
     }
   };
 
   const handleDesinscripcion = async (eventoId) => {
     const id_usuario = localStorage.getItem('id_user');
     if (!id_usuario) {
-      toast.error('❌ No se encontró el ID del usuario. Por favor inicia sesión.');
+      toast.error('No se encontró el ID del usuario. Por favor inicia sesión.');
       return;
     }
 
@@ -133,11 +133,11 @@ export default function VerMasEvento() {
       if (!res.ok) throw new Error('Error al desinscribir');
 
       const data = await res.json();
-      toast.success(data.mensaje);
-      window.location.reload();
+      toast.warning(data.mensaje);
+      setTimeout(() => {window.location.reload()}, 3000);
     } catch (error) {
       console.error(error);
-      toast.error('❌ Ocurrió un error al desinscribir.');
+      toast.error('Ocurrió un error al desinscribir.');
     }
   };
 

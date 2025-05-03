@@ -10,8 +10,8 @@ const Podio = () => {
     fetch('https://inf281-production.up.railway.app/puntuacion/top/10')
       .then(response => response.json())
       .then(data => {
-        setTopUsuarios(data.slice(0, 3)); // Los primeros 3
-        setUsuarios(data.slice(3)); // El resto de los usuarios
+        setTopUsuarios(data.slice(0, 3)); 
+        setUsuarios(data.slice(3)); // 
       })
       .catch(error => {
         console.error('Error fetching data:', error);

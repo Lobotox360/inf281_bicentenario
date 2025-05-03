@@ -1,6 +1,6 @@
 import EditarPerfil from "../../componentes/login/editar-perfil";
 
-export default function EditarPage() {
+export default function EditarPefilPagina() {
     return <EditarPerfil />;
   }
   

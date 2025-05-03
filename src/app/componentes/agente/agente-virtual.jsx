@@ -16,23 +16,23 @@ export default function AgenteVirtual() {
   useEffect(() => {
     AOS.init({ duration: 1000 });
     if (!("webkitSpeechRecognition" in window)) return;
-    const recognition = new webkitSpeechRecognition();
-    recognition.lang = "es-BO";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+    const reconocer = new webkitSpeechRecognition();
+    reconocer.lang = "es-BO";
+    reconocer.continuous = false;
+    reconocer.interimResults = false;
 
-    recognition.onresult = (event) => {
+    reconocer.onresult = (event) => {
       const texto = event.results[0][0].transcript;
       setPregunta(texto);
     };
 
     if (grabando) {
-      recognition.start();
+      reconocer.start();
     } else {
-      recognition.stop();
+      reconocer.stop();
     }
 
-    return () => recognition.stop();
+    return () => reconocer.stop();
   }, [grabando]);
 
   const enviarPregunta = async () => {
@@ -89,10 +89,9 @@ export default function AgenteVirtual() {
     }
   };
 
-  const renderImagen = (respuesta) => {
-    // Detecta si la respuesta contiene un enlace a Cloudinary o cualquier URL de imagen
-    const regex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|webp))/i;
-    const imagenURL = respuesta.match(regex);
+  const renderizaImagen = (respuesta) => {
+    const imagenFormato = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|webp))/i;
+    const imagenURL = respuesta.match(imagenFormato);
     if (imagenURL) {
       return <img src={imagenURL[0]} alt="Imagen de la respuesta" className="mt-4 rounded-lg mx-auto max-h-80" />;
     }
@@ -119,7 +118,7 @@ export default function AgenteVirtual() {
               <p className="text-white whitespace-pre-wrap break-words">{item.respuesta}</p>
 
               {/* Solo mostrar la imagen después de que la respuesta esté completamente cargada */}
-              {imagenCargada && renderImagen(item.respuesta)}
+              {imagenCargada && renderizaImagen(item.respuesta)}
             </div>
           ))}
         </div>
