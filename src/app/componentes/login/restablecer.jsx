@@ -15,14 +15,13 @@ export default function RestablecerPassword() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const parametros = useSearchParams();
-    const tokenParametro = parametros.get('token');
-    if (!tokenParametro) {
+    const { token } = router.query; 
+    if (!token) {
       toast.error('Token no válido o expirado.');
     } else {
-      setToken(tokenParametro);
+      setToken(token); 
     }
-  }, []);
+  }, [router.query])
 
   const handleCambiarContrasena = (e) => {
     const nuevaContra = e.target.value;
