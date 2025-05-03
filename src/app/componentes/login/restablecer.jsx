@@ -34,7 +34,6 @@ function ObtenerToken() {
     const validarContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!validarContrasena.test(nuevaContra)) {
       setError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
-      toast.error('La contraseña debe cumplir con los requisitos de seguridad.');
     } else {
       setError('');
       toast.dismiss();  
@@ -73,7 +72,7 @@ function ObtenerToken() {
 
     if (res.ok) {
       toast.success('Contraseña actualizada correctamente');
-      setTimeout(() => router.push('/login'), 3000); // Redirige después de 3 segundos
+      setTimeout(() => router.push('/login'), 3000);
     } else {
       toast.error('Error: ' + (data.message || 'No se pudo cambiar la contraseña'));
     }
@@ -141,7 +140,7 @@ function ObtenerToken() {
 
 export default function RestablecerPassword() {
   return(
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense>
       <ObtenerToken />
     </Suspense>
   );
