@@ -8,20 +8,22 @@ export default function RestablecerPassword() {
   const [contrasena, setContrsena] = useState('');
   const [repetirContra, setRepetirContra] = useState('');
   const [cargando, setCargando] = useState(false);
-  const [token, setToken] = useState(null); 
+  const [token, setToken] = useState('000'); 
 
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState('');
+  const parametros = useSearchParams();
+  const tokenParametro = parametros.get('token');
 
   useEffect(() => {
-    const { token } = router.query; 
-    if (!token) {
+    if (!tokenParametro) {
       toast.error('Token no válido o expirado.');
     } else {
-      setToken(token); 
+      setToken(tokenParametro);
     }
-  }, [router.query])
+  }, []);
+
 
   const handleCambiarContrasena = (e) => {
     const nuevaContra = e.target.value;
@@ -30,7 +32,6 @@ export default function RestablecerPassword() {
     const validarContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!validarContrasena.test(nuevaContra)) {
       setError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
-      toast.error('La contraseña debe cumplir con los requisitos de seguridad.');
     } else {
       setError('');
       toast.dismiss();  
