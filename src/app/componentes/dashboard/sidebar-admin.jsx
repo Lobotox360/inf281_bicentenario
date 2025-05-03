@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FaHome, FaFolder, FaBookOpen, FaAngleDoubleLeft, FaAngleDoubleRight, FaScroll, FaCalendarAlt, FaRobot, FaUserCircle } from 'react-icons/fa';
+import { FaHome, FaFolder, FaBookOpen, FaAngleDoubleLeft, FaAngleDoubleRight, FaScroll, FaCalendarAlt, FaRobot, FaUserCircle, FaDatabase } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 
 export default function Sidebar() {
@@ -93,6 +93,9 @@ export default function Sidebar() {
           <ul className="space-y-6 w-full px-4">
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaHome /> <Link href="/">Inicio</Link>
+            </li>
+            <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
+              <FaDatabase /> <Link href="/dashboard">Dashboard</Link>
             </li>
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaBookOpen /> <Link href="/eventos-admin">Administrar Eventos</Link>

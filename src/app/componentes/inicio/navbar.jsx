@@ -97,7 +97,8 @@ export default function Navbar() {
         <Link href="/" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">INICIO</Link>
         <Link href="/eventos" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">EVENTOS</Link>
         <Link href="/calendario" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENDA</Link>
-        <Link href="/agente" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENTE VIRTUAL</Link>
+        <Link href="/agente" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">AGENTE</Link>
+        <Link href="/puntuacion" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">PODIO</Link>
       </div>
 
       {/* Menú desplegable en móviles */}
@@ -108,7 +109,8 @@ export default function Navbar() {
           <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
           <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
           <Link href="/calendario" className="text-center hover:text-yellow-400">AGENDA</Link>
-          <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE VIRTUAL</Link>
+          <Link href="/agente" className="text-center hover:text-yellow-400">AGENTE</Link>
+          <Link href="/puntuacion" className="text-center hover:text-yellow-400">PODIO</Link>
         </div>
       </div>
 
