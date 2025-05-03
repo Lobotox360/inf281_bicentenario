@@ -16,7 +16,7 @@ export default function RestablecerPassword() {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState('');
 
-  // Extraer el token de la URL cuando el router esté listo
+  // Acceder al router solo en el cliente
   useEffect(() => {
     if (router.isReady) { // Verificar si el router está listo y los parámetros están disponibles
       console.log(router.query); // Mostrar los parámetros en la consola
