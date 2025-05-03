@@ -19,6 +19,7 @@ export default function RestablecerPassword() {
   useEffect(() => {
     const parametros = useSearchParams();
     const tokenParametro = parametros.get('token');
+    console.log(tokenParametro);
     if (!tokenParametro) {
       toast.error('Token no válido o expirado.');
     } else {
