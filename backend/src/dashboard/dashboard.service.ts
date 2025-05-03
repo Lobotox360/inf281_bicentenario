@@ -36,6 +36,86 @@ export class DashboardService {
         return {"General": general};
     }
 
+    async obtenerEstadisticasPorDepartamento(dep: string) {
+      const departamentos = [
+        'La Paz', 'Oruro', 'Cochabamba', 'Santa Cruz',
+        'Potosí', 'Chuquisaca', 'Tarija', 'Beni', 'Pando'
+      ];
+    
+      if (!departamentos.includes(dep)) {
+        throw new Error('Departamento no válido');
+      }
+    
+      const now = new Date().toISOString();
+    
+      // 1. Obtener todos los eventos del departamento con IDs directamente
+      const eventos = await this.prisma.eventos.findMany({
+        where: {
+          Ubicacion: { departamento: dep },
+        },
+        select: { id_evento: true, puntuacion: true, hora_fin: true }
+      });
+    
+      const ids = eventos.map(e => e.id_evento);
+      const nowDate = new Date(now);
+    
+      // Si no hay eventos, retornar datos mínimos sin consultar demás
+      if (ids.length === 0) {
+        const nro_admins_eventos = await this.prisma.usuarios.count({
+          where: { ciudad: dep, id_rol: 3 },
+        });
+    
+        return {
+          nro_personas_agendas: 0,
+          nro_admins_eventos,
+          puntuacion_promedio: 0,
+          nro_eventos_realizados: 0,
+          nro_comentarios: 0,
+        };
+      }
+    
+      // 2. Consultas concurrentes y reducidas
+      const [
+        nro_admins_eventos,
+        nro_personas_agendas,
+        nro_comentarios
+      ] = await Promise.all([
+        this.prisma.usuarios.count({
+          where: { ciudad: dep, id_rol: 3 },
+        }),
+        this.prisma.agenda.count({
+          where: { id_evento: { in: ids } },
+        }),
+        this.prisma.agenda.count({
+          where: {
+            id_evento: { in: ids },
+            comentario: { not: null },
+          },
+        }),
+      ]);
+    
+      // 3. Calcular puntuación promedio y eventos realizados manualmente
+      const puntuaciones = eventos
+        .map(e => e.puntuacion)
+        .filter(p => p !== null && p !== undefined);
+    
+      const puntuacion_promedio = puntuaciones.length
+        ? parseFloat((puntuaciones.reduce((a, b) => a + b, 0) / puntuaciones.length).toFixed(2))
+        : 0;
+    
+      const nro_eventos_realizados = eventos.filter(
+        e => new Date(e.hora_fin) < nowDate
+      ).length;
+    
+      return {
+        nro_personas_agendas,
+        nro_admins_eventos,
+        puntuacion_promedio,
+        nro_eventos_realizados,
+        nro_comentarios,
+      };
+    }
+    
     
     
 
