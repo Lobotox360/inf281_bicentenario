@@ -11,21 +11,21 @@ export default function RestablecerPassword() {
   const [repetirContra, setRepetirContra] = useState('');
   const [cargando, setCargando] = useState(false);
   const [token, setToken] = useState(null);
-  
+  const parametros = useSearchParams();
+  const tokenParametro = parametros.get('token'); 
 
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const parametros = useSearchParams();
-    const tokenParametro = parametros.get('token'); 
     if (!tokenParametro) {
       toast.error('Token no válido o expirado.');
     } else {
       setToken(tokenParametro);
     }
   }, []);
+  
 
   const handleCambiarContrasena = (e) => {
     const nuevaContra = e.target.value;
