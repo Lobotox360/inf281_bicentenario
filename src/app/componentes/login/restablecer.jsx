@@ -1,33 +1,37 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/router'; // Usar useRouter de Next.js
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
 import { ToastContainer, toast } from 'react-toastify'; 
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function RestablecerPassword() {
+  const router = useRouter();
   const [contrasena, setContrsena] = useState('');
   const [repetirContra, setRepetirContra] = useState('');
   const [cargando, setCargando] = useState(false);
   const [token, setToken] = useState(null);
   
-  const parametros = useSearchParams();
-  const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState('');
 
-  
+  // Extraer el token de la URL cuando el router esté listo
   useEffect(() => {
-    const tokenParametro = parametros.get('token'); 
-    if (!tokenParametro) {
-      toast.error('Token no válido o expirado.');
-    } else {
-      setToken(tokenParametro);
+    if (router.isReady) { // Verificar si el router está listo y los parámetros están disponibles
+      console.log(router.query); // Mostrar los parámetros en la consola
+      const tokenParametro = router.query.token; // Extraer el token de la URL
+      if (!tokenParametro) {
+        toast.error('Token no válido o expirado.');
+      } else {
+        setToken(tokenParametro); // Si el token está presente, actualizar el estado
+      }
     }
-  }, []);
+  }, [router.isReady, router.query]); // Dependencias: ejecutar cuando router esté listo o query cambia
   
+  console.log(token);
 
+  // Manejo de cambios en la contraseña
   const handleCambiarContrasena = (e) => {
     const nuevaContra = e.target.value;
     setContrsena(nuevaContra);
@@ -42,6 +46,7 @@ export default function RestablecerPassword() {
     }
   };
 
+  // Enviar formulario para cambiar la contraseña
   const handleSubmit = async (e) => {
     e.preventDefault();
 
