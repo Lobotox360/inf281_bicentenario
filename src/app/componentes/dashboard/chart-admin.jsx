@@ -1,11 +1,12 @@
-// /components/Chart.js
+'use client';
 
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { useEffect, useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);    
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function GraficoBarras() {
   const [datosDepartamentos, setDatosDepartamentos] = useState({});
@@ -29,7 +30,6 @@ export default function GraficoBarras() {
 
           const datos = await res.json();
           departamentosDatos[departamento] = datos;
-
         }
 
         setDatosDepartamentos(departamentosDatos);
@@ -40,9 +40,8 @@ export default function GraficoBarras() {
     };
 
     fetchDatosPorDepartamento();
-  }, []); 
+  }, []);
 
-  
   const datos = {
     labels: ['LP', 'OR', 'PT', 'CB', 'SC', 'BE', 'PA', 'TJ', 'CH'],
     datasets: [
@@ -90,12 +89,27 @@ export default function GraficoBarras() {
       },
     ],
   };
-  
+
+  // Configuración de opciones para hacer el gráfico responsivo
+  const opciones = {
+    responsive: true, 
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        beginAtZero: true,
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+  };
 
   return (
     <div className="mb-6 bg-white p-6 rounded-xl shadow-lg">
-      <h3 className="text-xl font-semibold mb-4">Estadisticas por departamento</h3>
-      <Bar data={datos} />
+      <h3 className="text-xl font-semibold mb-4">Estadísticas por departamento (Barras)</h3>
+      <div className="w-full" style={{ height: '400px' }}>
+        <Bar data={datos} options={opciones} />
+      </div>
       <ToastContainer />
     </div>
   );
