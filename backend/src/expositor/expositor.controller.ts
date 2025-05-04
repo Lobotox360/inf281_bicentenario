@@ -10,7 +10,7 @@ export class ExpositorController {
   constructor(private readonly expositorService: ExpositorService) {}
   
   // Edita todos los expositores de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateExpositores(
     @Param('id_evento') id_evento: string,
@@ -25,7 +25,7 @@ export class ExpositorController {
   }
 
   // Proporciona todos los expositores de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findAllByEvent(@Param('id') id: string) {
     return this.expositorService.findAllByEvent(+id);

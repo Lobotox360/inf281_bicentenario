@@ -10,7 +10,7 @@ export class PatrocinadorController {
   constructor(private readonly patrocinadorService: PatrocinadorService) {}
 
   // edita la relacion patrocinador_evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('evento/:id_evento')
   async updatePatrocinadoresEvento(
     @Param('id_evento') id_evento: string, 
@@ -29,7 +29,7 @@ export class PatrocinadorController {
   }
 
   // devuelve la relacion patrocinador_evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('evento/:id_evento')
   async getPatrocinadoresByEvento(@Param('id_evento') id_evento: string) {
     const eventoId = parseInt(id_evento, 10);
@@ -40,28 +40,28 @@ export class PatrocinadorController {
   }
 
   // Crea un patrocinador
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   create(@Body() data: CreatePatrocinadorDto) {
     return this.patrocinadorService.create(data);
   }
 
   // Obtiene todos los patrocinadores
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   findAll() {
     return this.patrocinadorService.findAll();
   }
 
   // Obtiene un patrocinador
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.patrocinadorService.findOne(+id);
   }
   
   // Edita un patrocinador
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id')
   update(
     @Param('id') id: string,
@@ -71,7 +71,7 @@ export class PatrocinadorController {
   }
 
   // Elimina  un patrocinador
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.patrocinadorService.remove(+id);

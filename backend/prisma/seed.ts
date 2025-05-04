@@ -78,6 +78,8 @@ async function main() {
     { id_rol: admin.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
     { id_rol: admin.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
 
+    { id_rol: admin.id_rol, objeto: 'puntuacion', accion: 'get', descripcion_permiso: 'Obtener la puntuacion' },
+
     // Permisos del usuario casual
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'get', descripcion_permiso: 'Ver su cuenta' },
     { id_rol: usuarioCasual.id_rol, objeto: 'usuario', accion: 'put', descripcion_permiso: 'Editar su cuenta' },
@@ -88,6 +90,9 @@ async function main() {
     { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
     { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
     { id_rol: usuarioCasual.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
+
+    { id_rol: usuarioCasual.id_rol, objeto: 'puntuacion', accion: 'get', descripcion_permiso: 'Obtener la puntuacion' },
+
     // Permisos del administrador de eventos
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'post', descripcion_permiso: 'Crear eventos' },
     { id_rol: adminEventos.id_rol, objeto: 'evento', accion: 'put', descripcion_permiso: 'Editar eventos' },
@@ -117,6 +122,11 @@ async function main() {
     { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'post', descripcion_permiso: 'Ver su agenda' },
     { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'get', descripcion_permiso: 'Editar su agenda' },
     { id_rol: adminEventos.id_rol, objeto: 'agenda', accion: 'delete', descripcion_permiso: 'Eliminar su agerda' },
+
+    { id_rol: adminEventos.id_rol, objeto: 'puntuacion', accion: 'get', descripcion_permiso: 'Obtener la puntuacion' },
+
+    { id_rol: adminEventos.id_rol, objeto: 'dashboard', accion: 'get', descripcion_permiso: 'Ver dashboard' },
+
     // Permisos del administrador de contenido
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'post', descripcion_permiso: 'Crear agente' },
     { id_rol: adminContenido.id_rol, objeto: 'agente', accion: 'put', descripcion_permiso: 'Editar agente' },

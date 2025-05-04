@@ -10,7 +10,7 @@ export class TelefonoController {
   constructor(private readonly telefonoService: TelefonoService) {}
 
   // Agrega telefonos y elimina eventos que ya no se tiene
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateTelefonosEvento(
     @Param('id_evento') id_evento: string,  // Recibimos el id_evento
@@ -29,7 +29,7 @@ export class TelefonoController {
   }
   
   // Obtiene todos los telefonos de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id_evento')
   async findAllByEvent(@Param('id_evento') id_evento: string) {
     return this.telefonoService.findAllByEvent(+id_evento); // Llamar con `id_evento`

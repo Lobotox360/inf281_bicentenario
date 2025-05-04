@@ -13,7 +13,7 @@ export class AgendaController {
 
 
   // Crea la asistencia al evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post('asistencia')
   async registrarAsistencia(@Body() dto: CreateAsistenciaDto) {
     return this.agendaService.registrarAsistencia(dto.id_usuario, dto.id_evento);
@@ -22,14 +22,14 @@ export class AgendaController {
   
 
   // Se agenda a un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   create(@Body() data: CreateAgendaDto) {
     return this.agendaService.create(data);
   }
 
   // Obtiene la agenda de un usuario
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id_usuario')
   findOne(
     @Param('id_usuario') id_usuario: string,
@@ -37,8 +37,8 @@ export class AgendaController {
     return this.agendaService.findByUsuario(id_usuario);
   }
 
-  //Elimina una agena
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  //Elimina una agenda
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id_usuario/:id_evento')
   remove(
     @Param('id_usuario') id_usuario: string,
@@ -48,21 +48,21 @@ export class AgendaController {
   }
 
   //Agrega un comentario
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post('comentario')
   async addComentario(@Body() createAgendaDto: CreateAgendaDto) {
     return this.agendaService.addComentario(createAgendaDto);
   }
 
   //Agrega una calificacion
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post('calificacion')
   async addCalificacion(@Body() createAgendaDto: CreateAgendaDto) {
     return this.agendaService.addCalificacion(createAgendaDto);
   }
 
   //Obtiene los comentarios de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('comentarios/:id_evento')
   async getComentarios(@Param('id_evento', ParseIntPipe) id_evento: number) {
     return this.agendaService.getComentariosDeEvento(id_evento);

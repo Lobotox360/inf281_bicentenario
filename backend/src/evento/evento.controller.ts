@@ -24,7 +24,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
-    
+  // se devuelve el link del evento
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('asistencia/evento/:id_evento')
   async getAsistenciaEvento(@Param('id_evento') id_evento: string) {
     const eventoId = parseInt(id_evento, 10);
@@ -38,14 +39,14 @@ export class EventoController {
   }
 
   // Inicia la reunion de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('iniciar-reunion/:id_evento')
   async iniciarReunion(@Param('id_evento') id_evento: string) {
     return this.eventoService.iniciarReunion(parseInt(id_evento, 10));
   }
   
   // Crea un nuevo evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   @UseInterceptors(FileInterceptor('foto_evento'))
   async crearEvento(
@@ -93,14 +94,14 @@ export class EventoController {
   
 
   // Obtiene todos los eventos
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   async obtenerEventos() {
     return await this.eventoService.obtenerEventos();
   }
 
   // obtienen un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   async obtenerEventoPorId(@Param('id') id: string) {
     const evento = await this.eventoService.obtenerEventoPorId(+id);
@@ -108,14 +109,14 @@ export class EventoController {
   }
 
   //Obtiene todos los eventos de un usuario
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('evento/usuario/:id')
   async obtenerEventosPorId(@Param('id') id: string) {
     return this.eventoService.obtenerEventosPorUsuario(id);
   }
 
   // Obtiene todos los eventos mas su ubicacion
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('calendario/evento')
   async obtenerTodosLosEventos() {
     return this.eventoService.obtenerTodosLosEventos();
@@ -123,7 +124,7 @@ export class EventoController {
   
   
   // Edita datos de un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put(':id_evento')
   async updateEvento(
     @Param('id_evento') id_evento: string, 
@@ -137,7 +138,7 @@ export class EventoController {
   }
   
   // Edita la foto del evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('foto/:id_evento')
   @UseInterceptors(FileInterceptor('foto_evento'))
   async actualizarFotoEvento(
@@ -153,7 +154,7 @@ export class EventoController {
   }
   
   // Elimina un evento
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Delete(':id')
   async eliminarEvento(@Param('id') id: number) {
     return await this.eventoService.eliminarEvento(+id);
@@ -161,7 +162,7 @@ export class EventoController {
 
 
   //Obtiene una ubicacion
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('ubicacion/:id_evento')
   async getUbicacionByEvento(@Param('id_evento') id_evento: string) {
     const eventoId = parseInt(id_evento, 10);
@@ -175,7 +176,7 @@ export class EventoController {
   }
 
   // Edita la Ubicacion
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Put('ubicacion/:id_ubicacion')
   async updateUbicacion(
     @Param('id_ubicacion') id_ubicacion: string,
@@ -196,6 +197,4 @@ export class EventoController {
   async getTop10Eventos() {
     return this.eventoService.getTop10Eventos();
   }
-
-
 }
