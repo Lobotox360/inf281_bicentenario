@@ -11,7 +11,6 @@ const CrudEventos = () => {
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [modalidadFiltro, setModalidadFiltro] = useState('');  // Nuevo estado para modalidad
     const [estadoFiltro, setEstadoFiltro] = useState('');  // Nuevo estado para estado
-    const token = localStorage.getItem("access_token");
 
     // Función para obtener los datos de los eventos
     const fetchEventos = async () => {
@@ -39,6 +38,7 @@ const CrudEventos = () => {
     };
 
     const handleEliminarEvento = async (id_evento) => {
+        const token = localStorage.getItem("access_token");
         const confirmarEliminar = window.confirm("¿Estás seguro de eliminar este evento?");
         if (confirmarEliminar) {
             try {
@@ -56,6 +56,8 @@ const CrudEventos = () => {
     };
 
     const handleIniciarTransmicion = async (id_evento) => {
+        const token = localStorage.getItem("access_token");
+
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch(`https://inf281-production.up.railway.app/eventos/iniciar-reunion/${id_evento}`, {
