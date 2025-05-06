@@ -11,9 +11,9 @@ const CrudCategorias = () => {
     const [editandoCategoria, setEditandoCategoria] = useState(null);
     const [nombreCategoria, setNombreCategoria] = useState('');
     const [descripcionCategoria, setDescripcionCategoria] = useState('');
-    const token = localStorage.getItem("access_token");
 
     const fetchCategorias = async () => {
+        const token = localStorage.getItem("access_token");
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch('https://inf281-production.up.railway.app/evento/categoria',{headers: {"Authorization": `Bearer ${token}`}});
@@ -34,6 +34,7 @@ const CrudCategorias = () => {
     );
 
     const handleCrearCategoria = async () => {
+        const token = localStorage.getItem("access_token");
         if (!nombreCategoria || !descripcionCategoria) {
             toast.error('Por favor, complete todos los campos');
             return;
@@ -66,6 +67,7 @@ const CrudCategorias = () => {
         }
 
         try {
+            const token = localStorage.getItem("access_token");
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch(`https://inf281-production.up.railway.app/evento/categoria/${editandoCategoria.id_categoria}`, {
                 method: 'PUT',
@@ -88,6 +90,7 @@ const CrudCategorias = () => {
     };
 
     const handleEliminarCategoria = async (id_categoria) => {
+        const token = localStorage.getItem("access_token");
         const confirmar = window.confirm('¿Estás seguro de eliminar esta categoría?');
         if (confirmar) {
             try {
