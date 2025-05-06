@@ -47,7 +47,6 @@ export class PatrocinadorController {
   }
 
   // Obtiene todos los patrocinadores
-  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   findAll() {
     return this.patrocinadorService.findAll();
