@@ -11,10 +11,10 @@ const CrudPatrocinadores = () => {
     const [editandoPatrocinador, setEditandoPatrocinador] = useState(null);
     const [razonSocial, setRazonSocial] = useState('');
     const [institucion, setInstitucion] = useState('');
-    const token = localStorage.getItem("access_token");
 
 
     const fetchPatrocinadores = async () => {
+        const token = localStorage.getItem("access_token");
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador',{headers: {"Authorization": `Bearer ${token}`}});
@@ -40,6 +40,7 @@ const CrudPatrocinadores = () => {
             return;
         }
         try {
+            const token = localStorage.getItem("access_token");
             if (!token) {throw new Error("Acceso denegado");}
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {
                 method: 'POST',
@@ -67,6 +68,7 @@ const CrudPatrocinadores = () => {
         }
 
         try {
+            const token = localStorage.getItem("access_token");
             if (!token) {throw new Error("Acceso denegado");}
             const res = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/${editandoPatrocinador.id_patrocinador}`, {
                 method: 'PUT',
@@ -89,6 +91,7 @@ const CrudPatrocinadores = () => {
     };
 
     const handleEliminarPatrocinador = async (id_patrocinador) => {
+        const token = localStorage.getItem("access_token");
         const confirmar = window.confirm('¿Estás seguro de eliminar este patrocinador?');
         if (confirmar) {
             try {
