@@ -21,9 +21,9 @@ export default function Torta({ porcentaje, titulo }) {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center w-full">
       <h2 className="text-xl text-center font-semibold mb-4">{titulo}</h2>
-      <div className="relative w-40 h-40">
+      <div className="relative w-35 h-35">
         <Pie data={data} />
-        <p className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-center">
+        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-center">
           {porcentaje}%
         </p>
       </div>

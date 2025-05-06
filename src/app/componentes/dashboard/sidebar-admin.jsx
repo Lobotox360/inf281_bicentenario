@@ -59,7 +59,7 @@ export default function Sidebar() {
   const cerrarSesion = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_user");
-    localStorage.removeIteme('rol')
+    localStorage.removeItem('rol');
     setEmailUsuario(null);
     setFotoUsuario(null);
     setNombreUsuario(null);
