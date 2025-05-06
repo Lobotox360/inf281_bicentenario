@@ -13,9 +13,9 @@ const AdministracionRoles = () => {
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [rolFiltro, setRolFiltro] = useState('');
     const [ciudadFiltro, setCiudadFiltro] = useState('');
-    const token = localStorage.getItem("access_token");
 
     const fetchUsuarios = async () => {
+        const token = localStorage.getItem("access_token");
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios',{headers: {"Authorization": `Bearer ${token}`}});
@@ -28,6 +28,7 @@ const AdministracionRoles = () => {
     };
 
     const fetchRoles = async () => {
+        const token = localStorage.getItem("access_token");
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles',{headers: {"Authorization": `Bearer ${token}`}});
@@ -64,6 +65,7 @@ const AdministracionRoles = () => {
 
     // Función para manejar la actualización del rol
     const handleSubmit = async () => {
+        const token = localStorage.getItem("access_token");
         if (rolSeleccionado && usuarioSeleccionado) {
             // Si el rol seleccionado es el mismo, no hacer nada
             if (rolSeleccionado === usuarioSeleccionado.Roles.nombre) {

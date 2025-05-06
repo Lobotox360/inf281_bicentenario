@@ -9,12 +9,12 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function CalendarioUsuario({ id_usuario }) {
   const [eventos, setEventos] = useState([])
-  const token = localStorage.getItem("access_token");
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
   const calendarioRef = useRef(null)
 
   useEffect(() => {
     AOS.init({ duration: 1000 });
+    const token = localStorage.getItem("access_token");
     const fetchEventos = async () => {
       try {
         if (!token) {throw new Error("Acceso denegado");}
@@ -68,6 +68,7 @@ export default function CalendarioUsuario({ id_usuario }) {
     }
     window.open(evento.link_reunion, '_blank')
     try {
+      const token = localStorage.getItem("access_token");
       if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch('https://inf281-production.up.railway.app/agenda/asistencia', {
         method: 'POST',
