@@ -94,7 +94,6 @@ export class EventoController {
   
 
   // Obtiene todos los eventos
-  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get()
   async obtenerEventos() {
     return await this.eventoService.obtenerEventos();
@@ -116,7 +115,6 @@ export class EventoController {
   }
 
   // Obtiene todos los eventos mas su ubicacion
-  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('calendario/evento')
   async obtenerTodosLosEventos() {
     return this.eventoService.obtenerTodosLosEventos();
