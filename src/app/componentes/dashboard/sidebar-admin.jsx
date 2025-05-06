@@ -9,7 +9,8 @@ export default function Sidebar() {
   const [fotoUsuario, setFotoUsuario] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("Bievenido");
   const [emailUsuario, setEmailUsuario] = useState("");
-  const router = useRouter(); // Usamos useRouter para redirigir al usuario
+  const [rol, setRol] = useState(null); 
+  const router = useRouter(); 
 
   const desplegarSidebar = () => {
     setAbrir(!abrir);
@@ -21,7 +22,7 @@ export default function Sidebar() {
       try {
         const token = localStorage.getItem("access_token");
         const id_usuario = localStorage.getItem("id_user");
-
+        setRol(localStorage.getItem('rol'));
         // Validar antes de llamar a la API
         if (!token || !id_usuario) return;
 
@@ -58,10 +59,11 @@ export default function Sidebar() {
   const cerrarSesion = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("id_user");
+    localStorage.removeIteme('rol')
     setEmailUsuario(null);
     setFotoUsuario(null);
     setNombreUsuario(null);
-
+    setRol(null);
     router.push("/login");
   };
 
@@ -100,7 +102,7 @@ export default function Sidebar() {
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaBookOpen /> <Link href="/eventos-admin">Administrar Eventos</Link>
             </li>
-            {(localStorage.getItem('rol') === 'Administrador') && (
+            {(rol === 'Administrador') && (
               <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
                 <FaScroll /> <Link href="/roles">Administrar Roles</Link>
               </li>
