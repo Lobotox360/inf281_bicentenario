@@ -57,7 +57,6 @@ const CrudEventos = () => {
 
     const handleIniciarTransmicion = async (id_evento) => {
         const token = localStorage.getItem("access_token");
-
         try {
             if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch(`https://inf281-production.up.railway.app/eventos/iniciar-reunion/${id_evento}`, {

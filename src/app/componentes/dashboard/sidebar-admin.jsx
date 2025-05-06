@@ -100,9 +100,11 @@ export default function Sidebar() {
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaBookOpen /> <Link href="/eventos-admin">Administrar Eventos</Link>
             </li>
-            <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
-              <FaScroll /> <Link href="/roles">Administrar Roles</Link>
-            </li>
+            {(localStorage.getItem('rol') === 'Administrador') && (
+              <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
+                <FaScroll /> <Link href="/roles">Administrar Roles</Link>
+              </li>
+            )}
             <li className="flex items-center gap-3 hover:text-yellow-500 transition-colors duration-300">
               <FaFolder /> <Link href="/eventos">Eventos</Link>
             </li>

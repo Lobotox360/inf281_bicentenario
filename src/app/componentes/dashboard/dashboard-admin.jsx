@@ -12,9 +12,11 @@ import { useEffect, useState } from 'react';
 export default function Dashboard() {
     const [datosGenerales, setDatosGenerales] = useState();
     const [eventos, setEventos] = useState(null);
+    const [rol, setRol] = useState(null);
     const [error, setError] = useState();
 
     useEffect(() => {
+        setRol(localStorage.getItem('rol'));
         const fetchDatos = async () => {
           try {
             const token = localStorage.getItem("access_token");
@@ -52,8 +54,10 @@ export default function Dashboard() {
                 <Sidebar />
                 <div className="flex-1 p-6">
                     <Navbar />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-                        <Card titulo="Usuarios registrados" valor={datosGenerales?.nro_usuarios_registrados || 0} />
+                      <div className={`grid grid-cols-1 sm:grid-cols-2 ${rol === 'Administrador' ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mb-6`}>
+                        {(rol === 'Administrador') && (
+                          <Card titulo="Usuarios registrados" valor={datosGenerales?.nro_usuarios_registrados || 0} />
+                        )}
                         <Card titulo="Cantidad de eventos" valor={datosGenerales?.nro_eventos || 0} />
                         <Card titulo="Eventos realizados" valor={datosGenerales?.nro_eventos_realizados || 0} />
                         <Card titulo="Eventos próximos" valor={eventos?.nro_eventos_proximos || 0} />
@@ -69,12 +73,14 @@ export default function Dashboard() {
 
                     {/* Grid para 5 o más gráficos de torta */}
                     <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                      {(rol === 'Administrador') && (<>
                         <Torta porcentaje={datosGenerales?.nro_usuarios_hombre > 0 ? (datosGenerales?.nro_usuarios_hombre / datosGenerales?.nro_usuarios_registrados) * 100 : 0} titulo="Porcentaje de Hombres" />
                         <Torta porcentaje={datosGenerales?.nro_usuarios_mujeres > 0 ? (datosGenerales?.nro_usuarios_mujeres / datosGenerales?.nro_usuarios_registrados) * 100 : 0} titulo="Porcentaje de Mujeres"/>
-                        <Torta porcentaje={datosGenerales?.nro_usuarios_otros > 0 ? (datosGenerales?.nro_usuarios_otros / datosGenerales?.nro_usuarios_registrados) * 100 : 0} titulo="Porcentaje de Otros"/>
-                        <Torta porcentaje={eventos?.nro_eventos_por_modalidad.virtual > 0 ? (eventos?.nro_eventos_por_modalidad.virtual / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Virtuales"/>
-                        <Torta porcentaje={eventos?.nro_eventos_por_modalidad.hibrida > 0 ? (eventos?.nro_eventos_por_modalidad.hibrida / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Hibridas"/>
-                        <Torta porcentaje={eventos?.nro_eventos_por_modalidad.presencial > 0 ? (eventos?.nro_eventos_por_modalidad.presencial / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Presenciales"/>
+                        <Torta porcentaje={datosGenerales?.nro_usuarios_otros > 0 ? (datosGenerales?.nro_usuarios_otros / datosGenerales?.nro_usuarios_registrados) * 100 : 0} titulo="Porcentaje de Otros"/></>
+                      )}
+                      <Torta porcentaje={eventos?.nro_eventos_por_modalidad.virtual > 0 ? (eventos?.nro_eventos_por_modalidad.virtual / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Virtuales"/>
+                      <Torta porcentaje={eventos?.nro_eventos_por_modalidad.hibrida > 0 ? (eventos?.nro_eventos_por_modalidad.hibrida / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Hibridas"/>
+                      <Torta porcentaje={eventos?.nro_eventos_por_modalidad.presencial > 0 ? (eventos?.nro_eventos_por_modalidad.presencial / datosGenerales?.nro_eventos) * 100 : 0} titulo="Porcentaje de Eventos Presenciales"/>
                     </div>
                 </div>
             </div>    
