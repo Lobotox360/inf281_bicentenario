@@ -100,7 +100,6 @@ export class EventoController {
   }
 
   // obtienen un evento
-  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get(':id')
   async obtenerEventoPorId(@Param('id') id: string) {
     const evento = await this.eventoService.obtenerEventoPorId(+id);

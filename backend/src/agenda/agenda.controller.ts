@@ -62,7 +62,7 @@ export class AgendaController {
   }
 
   //Obtiene los comentarios de un evento
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('comentarios/:id_evento')
   async getComentarios(@Param('id_evento', ParseIntPipe) id_evento: number) {
     return this.agendaService.getComentariosDeEvento(id_evento);
