@@ -10,12 +10,14 @@ const EditarTelefonosEvento = ({ eventoId }) => {
   const [nuevoTelefono, setNuevoTelefono] = useState({
     telefono: ''
   });
-
+  const token = localStorage.getItem("access_token");
   const router = useRouter();
+
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/telefono/${eventoId}`);
+        if (!token) {throw new Error("Acceso denegado");}
+        const response = await fetch(`https://inf281-production.up.railway.app/telefono/${eventoId}`, {headers: {"Authorization": `Bearer ${token}`}});
         const data = await response.json();
         if (data) {
           setTelefonosAgregados(data); 
@@ -61,10 +63,11 @@ const EditarTelefonosEvento = ({ eventoId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch(`https://inf281-production.up.railway.app/telefono/${eventoId}`, {
         method: 'PUT', 
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(telefonosFormateados),
       });

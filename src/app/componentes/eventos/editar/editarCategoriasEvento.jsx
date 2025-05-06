@@ -18,12 +18,13 @@ const EditarCategoriasEvento = ({ eventoId }) => {
     nombre: '',
     descripcion: '',
   });
-
+  const token = localStorage.getItem("access_token");
   const router = useRouter();
 
   const fetchCategorias = async () => {
     try {
-      const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
+      if (!token) {throw new Error("Acceso denegado");}
+      const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria', {headers: {"Authorization": `Bearer ${token}`}});
       const datos = await respuesta.json();
       setCategorias(datos.map(c => ({
         value: c.id_categoria,
@@ -40,7 +41,8 @@ const EditarCategoriasEvento = ({ eventoId }) => {
     fetchCategorias();
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`);
+        if (!token) {throw new Error("Acceso denegado");}
+        const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`,{headers: {"Authorization": `Bearer ${token}`}});
         const data = await response.json();
         if (data) {
           setInformacion({
@@ -100,9 +102,10 @@ const EditarCategoriasEvento = ({ eventoId }) => {
     }));
 
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch(`https://inf281-production.up.railway.app/evento/categoria/evento/${eventoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
         body: JSON.stringify(categoriasParaEnviar),
       });
 
@@ -119,9 +122,10 @@ const EditarCategoriasEvento = ({ eventoId }) => {
 
   const handleAgregarNuevaCategoria = async () => {
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
         body: JSON.stringify(nuevaCategoria),
       });
 

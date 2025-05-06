@@ -11,11 +11,13 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
   const [addedCategorias, setAddedCategorias] = useState(eventoData.categorias || []);
   const [showAddForm, setShowAddForm] = useState(false);
   const [nuevaCategoria, setNuevaCategoria] = useState({ nombre: '', descripcion: '' });
+  const [token, setToken] =useState(null);
   const [error, setError] = useState('');
 
   const router = useRouter();
 
   const fetchCategorias = async () => {
+    setToken(localStorage.getItem("access_token"));
     try {
       const respuesta = await fetch('https://inf281-production.up.railway.app/evento/categoria');
       const datos = await respuesta.json();
@@ -69,9 +71,10 @@ const CategoriasEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, event
 
   const handleAgregarNuevaCategoria = async () => {
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
         body: JSON.stringify(nuevaCategoria),
       });
 

@@ -11,10 +11,12 @@ const CrudCategorias = () => {
     const [editandoCategoria, setEditandoCategoria] = useState(null);
     const [nombreCategoria, setNombreCategoria] = useState('');
     const [descripcionCategoria, setDescripcionCategoria] = useState('');
+    const token = localStorage.getItem("access_token");
 
     const fetchCategorias = async () => {
         try {
-            const res = await fetch('https://inf281-production.up.railway.app/evento/categoria');
+            if (!token) {throw new Error("Acceso denegado");} 
+            const res = await fetch('https://inf281-production.up.railway.app/evento/categoria',{headers: {"Authorization": `Bearer ${token}`}});
             const datos = await res.json();
             setCategorias(datos);
         } catch (error) {
@@ -37,9 +39,10 @@ const CrudCategorias = () => {
             return;
         }
         try {
+            if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch('https://inf281-production.up.railway.app/evento/categoria', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
                 body: JSON.stringify({
                     nombre: nombreCategoria,
                     descripcion: descripcionCategoria
@@ -63,9 +66,10 @@ const CrudCategorias = () => {
         }
 
         try {
+            if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch(`https://inf281-production.up.railway.app/evento/categoria/${editandoCategoria.id_categoria}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' }, headers: {"Authorization": `Bearer ${token}`},
                 body: JSON.stringify({
                     nombre: nombreCategoria,
                     descripcion: descripcionCategoria,
@@ -87,8 +91,10 @@ const CrudCategorias = () => {
         const confirmar = window.confirm('¿Estás seguro de eliminar esta categoría?');
         if (confirmar) {
             try {
+                if (!token) {throw new Error("Acceso denegado");} 
                 const res = await fetch(`https://inf281-production.up.railway.app/evento/categoria/${id_categoria}`, {
                     method: 'DELETE',
+                    headers: {"Authorization": `Bearer ${token}`}
                 });
 
                 const datos = await res.json();

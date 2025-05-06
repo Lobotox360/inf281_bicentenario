@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast, ToastContainer } from 'react-toastify';  // Import toast from react-toastify
-import 'react-toastify/dist/ReactToastify.css';  // Import the toast styles
+import { toast, ToastContainer } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const EditarInformacionEvento = ({eventoId}) => {
   const [informacion, setInformacion] = useState({
@@ -14,10 +14,11 @@ const EditarInformacionEvento = ({eventoId}) => {
     hora_inicio: '',
     hora_fin: '',
   });
-
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    setToken(localStorage.getItem("access_token"));
     const fetchEventoData = async () => {
       try {
         const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
@@ -36,7 +37,7 @@ const EditarInformacionEvento = ({eventoId}) => {
         }
       } catch (error) {
         console.error('Error fetching event data:', error);
-        toast.error('Error al cargar los datos del evento');  // Show error toast
+        toast.error('Error al cargar los datos del evento');  
       }
     };
     if (eventoId) {
@@ -71,10 +72,11 @@ const EditarInformacionEvento = ({eventoId}) => {
     };
   
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(bodyData), 
       });

@@ -10,6 +10,7 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
   const [selectedPatrocinador, setSelectedPatrocinador] = useState();
   const [addedPatrocinadores, setAddedPatrocinadores] = useState(eventoData.patrocinadores || []);
   const [showAddForm, setShowAddForm] = useState(false);
+  const token = localStorage.getItem("access_token");
   const [nuevoPatrocinador, setNuevoPatrocinador] = useState({
     razon_social: '',
     institucion: '',
@@ -69,9 +70,10 @@ const PatrocinadoresEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, e
 
   const handleAgregarNuevoPatrocinador = async () => {
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
         body: JSON.stringify(nuevoPatrocinador),
       });
 

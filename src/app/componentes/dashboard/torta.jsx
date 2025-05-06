@@ -1,33 +1,32 @@
+import React from 'react';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 
+// Registramos los elementos de Chart.js
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Torta({ porcentaje, titulo }) {
-    return (
-      <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center w-full">
-        <h2 className="text-xl text-center font-semibold mb-4">{titulo}</h2>
-        <div className="flex items-center justify-center w-24 h-24">
-          {/* Contenedor del SVG para el círculo */}
-          <svg className="w-full h-full transform rotate-90" viewBox="0 0 36 36">
-            <path
-              className="text-gray-300"
-              fill="none"
-              strokeWidth="2"
-              stroke="currentColor"
-              strokeDasharray="100, 100"
-              d="M18 2 a16 16 0 1 1 0 32 a16 16 0 1 1 0 -32"
-            />
-            <path
-              className="text-blue-500"
-              fill="none"
-              strokeWidth="2"
-              stroke="currentColor"
-              strokeDasharray={`${porcentaje}, 100`}
-              d="M18 2 a16 16 0 1 1 0 32 a16 16 0 1 1 0 -32"
-            />
-          </svg>
+  // Datos del gráfico
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        data: [porcentaje, 100 - porcentaje],
+        backgroundColor: ['#3b82f6', '#e5e7eb', '#e5e7ed'],
+        borderWidth: 0,
+      },
+    ],
+  };
 
-          <p className="absolute text-2xl font-semibold text-center">{porcentaje}%</p>
-        </div>
+  return (
+    <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center w-full">
+      <h2 className="text-xl text-center font-semibold mb-4">{titulo}</h2>
+      <div className="relative w-40 h-40">
+        <Pie data={data} />
+        <p className="absolute top-2/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-center">
+          {porcentaje}%
+        </p>
       </div>
-    );
-  }
-  
+    </div>
+  );
+}

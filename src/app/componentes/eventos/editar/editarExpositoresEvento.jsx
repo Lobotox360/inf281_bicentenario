@@ -20,14 +20,15 @@ const EditarExpositoresEvento = ({ eventoId }) => {
     institucion: '',
     contacto: ''
   });
-
+  const token = localStorage.getItem("access_token");
   const router = useRouter();
 
   // Visualizar datos actuales
   useEffect(() => {
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/expositor/${eventoId}`);
+        if (!token) {throw new Error("Acceso denegado");}
+        const response = await fetch(`https://inf281-production.up.railway.app/expositor/${eventoId}`, {headers: {"Authorization": `Bearer ${token}`}});
         const data = await response.json();
 
         if (data) {
@@ -95,7 +96,7 @@ const EditarExpositoresEvento = ({ eventoId }) => {
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/expositor/${eventoId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
         body: JSON.stringify(bodyData)  
       });
 

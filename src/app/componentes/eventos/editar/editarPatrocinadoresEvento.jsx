@@ -19,13 +19,13 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     razon_social: '',
     institucion: '',
   });
-
+  const token = localStorage.getItem("access_token");
   const router = useRouter();
 
   // Obtener todos los patrocinadores disponibles
   const fetchPatrocinadores = async () => {
     try {
-      const respuesta = await fetch('https://inf281-production.up.railway.app/evento/patrocinador');
+      const respuesta = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {headers: {"Authorization": `Bearer ${token}`}});
       const datos = await respuesta.json();
       setPatrocinadores(
         datos.map((p) => ({
@@ -46,7 +46,8 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     const fetchPatrocinadoresEvento = async () => {
       if (!eventoId) return;
       try {
-        const respuesta = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/evento/${eventoId}`);
+        if (!token) {throw new Error("Acceso denegado");}
+        const respuesta = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/evento/${eventoId}`, {headers: {"Authorization": `Bearer ${token}`}});
         const datos = await respuesta.json();
         setAddedPatrocinadores(
           datos.map((p) => ({
@@ -101,10 +102,11 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     }
 
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(nuevoPatrocinador),
       });
@@ -145,10 +147,11 @@ const EditarPatrocinadoresEvento = ({ eventoId }) => {
     }));
     
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/evento/${eventoId}`, {
         method: 'PUT', 
         headers: {
-          'Content-Type': 'application/json', 
+          'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify(patrocinadoresTransformados), 
       });

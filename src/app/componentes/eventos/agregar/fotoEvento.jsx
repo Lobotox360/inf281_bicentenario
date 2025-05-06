@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const FotoEvento = ({ anteriorPaso, handleUpdateData, eventoData }) => {
   const [imagen, setImagen] = useState(eventoData.foto || null);
   const [imagenPreview, setImagenPreview] = useState(eventoData.foto || null);
+  const token = localStorage.getItem("access_token");
   const router = useRouter();
 
   const handleImageChange = (e) => {
@@ -46,8 +47,10 @@ const FotoEvento = ({ anteriorPaso, handleUpdateData, eventoData }) => {
     formData.append("ubicacion", JSON.stringify(eventoData.ubicacion));
 
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const res = await fetch('https://inf281-production.up.railway.app/eventos', {
         method: 'POST',
+        headers: {"Authorization": `Bearer ${token}`},
         body: formData,
       });
 

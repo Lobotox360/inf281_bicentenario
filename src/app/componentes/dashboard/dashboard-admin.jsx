@@ -17,10 +17,15 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchDatos = async () => {
           try {
-            // Realizar ambas solicitudes simultáneamente
+            const token = localStorage.getItem("access_token");
+            if (!token) {throw new Error("Acceso denegado");}
             const [resGenerales, resEventos] = await Promise.all([
-              fetch('https://inf281-production.up.railway.app/dashboard/general'),
-              fetch('https://inf281-production.up.railway.app/dashboard/eventos')
+              fetch('https://inf281-production.up.railway.app/dashboard/general', {
+                headers: {"Authorization": `Bearer ${token}`}
+            }),
+              fetch('https://inf281-production.up.railway.app/dashboard/eventos', {
+                headers: {"Authorization": `Bearer ${token}`}
+            })
             ]);
     
             if (!resGenerales.ok || !resEventos.ok) {
@@ -43,7 +48,6 @@ export default function Dashboard() {
 
     return (
         <div>
-            {console.log(eventos)}
             <div className="flex">
                 <Sidebar />
                 <div className="flex-1 p-6">

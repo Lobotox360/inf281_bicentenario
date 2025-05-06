@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
@@ -7,20 +7,27 @@ import Navbar from '@/app/componentes/inicio/navbar';
 import Link from 'next/link';
 import MapaEvento from './vistas/mapa';
 import ModuloComentarios from './vistas/comentarios-carrusel';
-import { toast, ToastContainer } from 'react-toastify';  // Importar toastify
-import 'react-toastify/dist/ReactToastify.css';  // Importar los estilos de toastify
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function VerMasEvento() {
-  const { id: eventoId } = useParams();  
-  const [evento, setEvento] = useState(null); 
+  const { id: eventoId } = useParams();
+  const [evento, setEvento] = useState(null);
   const [agendado, setAgendado] = useState([]);
   const [yaAgendado, setYaAgendado] = useState(false);
   const [idUsuario, setIdUsuario] = useState(null);
+  const [token, setToken] = useState(null); // Use state to handle token
 
   useEffect(() => {
-    const id = localStorage.getItem('id_user');
-    if (id) {
-      setIdUsuario(id); 
+    // Check if we are in the client side before accessing localStorage
+    if (typeof window !== 'undefined') {
+      const storedToken = localStorage.getItem('access_token');
+      setToken(storedToken);
+
+      const storedId = localStorage.getItem('id_user');
+      if (storedId) {
+        setIdUsuario(storedId);
+      }
     }
   }, []);
 
@@ -42,33 +49,32 @@ export default function VerMasEvento() {
   }, [eventoId]);
 
   useEffect(() => {
-    const idUsuario = localStorage.getItem('id_user')
-    const fetchAgenda = async () => {
-      try {
-        const response = await fetch(`https://inf281-production.up.railway.app/agenda/${idUsuario}`);
-        if (response.ok) {
-          const data = await response.json();
-          setAgendado(data);
-        } else {
-          console.error('No hay datos en la agenda de este usuario');
+    if (idUsuario && token) {
+      const fetchAgenda = async () => {
+        try {
+          const response = await fetch(`https://inf281-production.up.railway.app/agenda/${idUsuario}`, {
+            headers: { "Authorization": `Bearer ${token}` },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setAgendado(data);
+          } else {
+            console.error('No hay datos en la agenda de este usuario');
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error);
+          toast.error('Error al obtener tu agenda.');
         }
-      } catch (error) {
-        console.error('Error en la solicitud:', error);
-        toast.error('Error al obtener tu agenda.');
-      } 
-    };
+      };
 
-    fetchAgenda();
-  }, [idUsuario]); 
+      fetchAgenda();
+    }
+  }, [idUsuario, token]);
 
   useEffect(() => {
-    if (eventoId) {
+    if (eventoId && agendado.length > 0) {
       const eventoActual = agendado.find(evento => String(evento.id_evento) === String(eventoId));
-      if (eventoActual) {
-        setYaAgendado(true);
-      } else {
-        setYaAgendado(false);
-      }
+      setYaAgendado(Boolean(eventoActual));
     }
   }, [eventoId, agendado]);
 
@@ -82,20 +88,21 @@ export default function VerMasEvento() {
   const estrellas = Array.from({ length: 5 }, (_, index) => {return index < evento.puntuacion ? '⭐' : '☆';}).join(' ');
 
   const handleInscripcion = async (eventoId) => {
-    const id_usuario = localStorage.getItem('id_user');
-    if (!id_usuario) {
+    if (!idUsuario) {
       toast.error('Debes iniciar sesión para poder agendar un evento.');
       return;
     }
 
     try {
+      if (!token) {
+        throw new Error("Acceso denegado");
+      }
+
       const res = await fetch('https://inf281-production.up.railway.app/agenda', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-          id_usuario,
+          id_usuario: idUsuario,
           id_evento: parseInt(eventoId),
         }),
       });
@@ -104,7 +111,7 @@ export default function VerMasEvento() {
 
       const data = await res.json();
       toast.success(data.mensaje);
-      setTimeout(() => {window.location.reload()}, 3000);
+      setTimeout(() => { window.location.reload() }, 3000);
     } catch (error) {
       console.error(error);
       toast.error('Ocurrió un error al registrar la inscripción.');
@@ -112,20 +119,21 @@ export default function VerMasEvento() {
   };
 
   const handleDesinscripcion = async (eventoId) => {
-    const id_usuario = localStorage.getItem('id_user');
-    if (!id_usuario) {
+    if (!idUsuario) {
       toast.error('No se encontró el ID del usuario. Por favor inicia sesión.');
       return;
     }
 
     try {
-      const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}/${eventoId}`, {
+      if (!token) {
+        throw new Error("Acceso denegado");
+      }
+
+      const res = await fetch(`https://inf281-production.up.railway.app/agenda/${idUsuario}/${eventoId}`, {
         method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
         body: JSON.stringify({
-          id_usuario,
+          id_usuario: idUsuario,
           id_evento: eventoId,
         }),
       });
@@ -134,7 +142,7 @@ export default function VerMasEvento() {
 
       const data = await res.json();
       toast.warning(data.mensaje);
-      setTimeout(() => {window.location.reload()}, 3000);
+      setTimeout(() => { window.location.reload() }, 3000);
     } catch (error) {
       console.error(error);
       toast.error('Ocurrió un error al desinscribir.');

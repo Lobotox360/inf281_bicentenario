@@ -1,18 +1,21 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { toast, ToastContainer } from 'react-toastify';  // Importing Toastify
-import 'react-toastify/dist/ReactToastify.css';  // Import Toastify styles
+import { toast, ToastContainer } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';  
+import { set } from 'react-hook-form';
 
 const EditarFotoEvento = ({ eventoId }) => {
-  const [imagen, setImagen] = useState(null);  // Mantener la imagen desde los datos previos
-  const [imagenPreview, setImagenPreview] = useState(null); // Para la vista previa
+  const [imagen, setImagen] = useState(null);  
+  const [imagenPreview, setImagenPreview] = useState(null); 
+  const [token, setToken] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
+    setToken(localStorage.getItem("access_token"));
     const fetchEventoData = async () => {
       try {
-        const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`);
+        const response = await fetch(`https://inf281-production.up.railway.app/eventos/${eventoId}`, {headers: {"Authorization": `Bearer ${token}`}});
         const data = await response.json();
         if (data && data.foto_evento) {
           setImagen(data.foto_evento || null);
@@ -30,15 +33,15 @@ const EditarFotoEvento = ({ eventoId }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.type.startsWith('image/')) {  // Verificar si es una imagen
+      if (file.type.startsWith('image/')) {  
         setImagen(file);
         setImagenPreview(URL.createObjectURL(file));
       } else {
-        toast.error('❌ Por favor selecciona un archivo de imagen válido.');  // Using Toastify error
+        toast.error('❌ Por favor selecciona un archivo de imagen válido.'); 
       }
     } else {
       setImagen(null);
-      setImagenPreview(null); // Limpiar vista previa si no hay imagen
+      setImagenPreview(null); 
     }
   };
 
@@ -46,33 +49,34 @@ const EditarFotoEvento = ({ eventoId }) => {
     e.preventDefault();
 
     if (!imagen) {
-      toast.error('❌ Por favor selecciona una imagen');  // Toastify error if no image is selected
+      toast.error('❌ Por favor selecciona una imagen');  
       return;
     }
 
     const formData = new FormData();
-    formData.append('foto_evento', imagen);  // Cambiar 'imagen' a 'foto_evento' si es necesario
+    formData.append('foto_evento', imagen);  
 
     try {
       const response = await fetch(`https://inf281-production.up.railway.app/eventos/foto/${eventoId}`, {
         method: 'PUT',
+        headers: {"Authorization": `Bearer ${token}`},
         body: formData,
       });
 
       if (response.ok) {
-        toast.success('Evento actualizado exitosamente');  // Using Toastify success
-        router.push('/eventos');  // Redirige a la página de eventos
+        toast.success('Evento actualizado exitosamente');  
+        router.back();
       } else {
-        toast.error('Error al actualizar el evento');  // Toastify error for failed request
+        toast.error('Error al actualizar el evento');  
       }
     } catch (error) {
       console.error('Error del data:', error);
-      toast.error('Error al actualizar el evento');  // Toastify error
+      toast.error('Error al actualizar el evento');  
     }
   };
 
   const handleBack = () => {
-    router.back(); // Regresa a la página anterior en el historial
+    router.back();
   };
 
   return (

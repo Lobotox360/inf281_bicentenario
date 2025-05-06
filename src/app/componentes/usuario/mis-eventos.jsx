@@ -7,8 +7,11 @@ const MisEventos = () => {
   const [usuario, setUsuario] = useState(null);
   const [eventos, setEventos] = useState([]);
   const [carga, setCarga] = useState(true);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    setToken(token);
     const idUser = localStorage.getItem('id_user');
     if (idUser) {
       setUsuario(idUser);
@@ -20,7 +23,8 @@ const MisEventos = () => {
     if (!usuario) return;
     const fetchEventos = async () => {
       try {
-        const respuesta = await fetch(`https://inf281-production.up.railway.app/eventos/evento/usuario/${usuario}`);
+        if (!token) {throw new Error("Acceso denegado");}
+        const respuesta = await fetch(`https://inf281-production.up.railway.app/eventos/evento/usuario/${usuario}`, {headers: {"Authorization": `Bearer ${token}`}});
         const datos = await respuesta.json();
         setEventos(datos);
       } catch (error) {

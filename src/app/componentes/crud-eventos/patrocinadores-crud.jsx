@@ -11,10 +11,13 @@ const CrudPatrocinadores = () => {
     const [editandoPatrocinador, setEditandoPatrocinador] = useState(null);
     const [razonSocial, setRazonSocial] = useState('');
     const [institucion, setInstitucion] = useState('');
+    const token = localStorage.getItem("access_token");
+
 
     const fetchPatrocinadores = async () => {
         try {
-            const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador');
+            if (!token) {throw new Error("Acceso denegado");} 
+            const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador',{headers: {"Authorization": `Bearer ${token}`}});
             const datos = await res.json();
             setPatrocinadores(datos);
         } catch (error) {
@@ -37,9 +40,10 @@ const CrudPatrocinadores = () => {
             return;
         }
         try {
+            if (!token) {throw new Error("Acceso denegado");}
             const res = await fetch('https://inf281-production.up.railway.app/evento/patrocinador', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}`},
                 body: JSON.stringify({
                     razon_social: razonSocial,
                     institucion: institucion
@@ -63,9 +67,10 @@ const CrudPatrocinadores = () => {
         }
 
         try {
+            if (!token) {throw new Error("Acceso denegado");}
             const res = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/${editandoPatrocinador.id_patrocinador}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' }, headers: {"Authorization": `Bearer ${token}`}, 
                 body: JSON.stringify({
                     razon_social: razonSocial,
                     institucion: institucion
@@ -87,8 +92,9 @@ const CrudPatrocinadores = () => {
         const confirmar = window.confirm('¿Estás seguro de eliminar este patrocinador?');
         if (confirmar) {
             try {
+                if (!token) {throw new Error("Acceso denegado");}
                 const res = await fetch(`https://inf281-production.up.railway.app/evento/patrocinador/${id_patrocinador}`, {
-                    method: 'DELETE',
+                    method: 'DELETE', headers: {"Authorization": `Bearer ${token}`},
                 });
 
                 const datos = await res.json();

@@ -9,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function CalendarioUsuario({ id_usuario }) {
   const [eventos, setEventos] = useState([])
+  const token = localStorage.getItem("access_token");
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
   const calendarioRef = useRef(null)
 
@@ -16,7 +17,8 @@ export default function CalendarioUsuario({ id_usuario }) {
     AOS.init({ duration: 1000 });
     const fetchEventos = async () => {
       try {
-        const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}`)
+        if (!token) {throw new Error("Acceso denegado");}
+        const res = await fetch(`https://inf281-production.up.railway.app/agenda/${id_usuario}`, {headers: {"Authorization": `Bearer ${token}`}})
         const data = await res.json()
         const eventosFormateados = data.map(evento => {
           const fechaInicio = new Date(evento.Eventos.hora_inicio)
@@ -66,10 +68,11 @@ export default function CalendarioUsuario({ id_usuario }) {
     }
     window.open(evento.link_reunion, '_blank')
     try {
+      if (!token) {throw new Error("Acceso denegado");}
       const response = await fetch('https://inf281-production.up.railway.app/agenda/asistencia', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
           id_usuario: id_usuario, 

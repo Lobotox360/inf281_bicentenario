@@ -13,10 +13,12 @@ const AdministracionRoles = () => {
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [rolFiltro, setRolFiltro] = useState('');
     const [ciudadFiltro, setCiudadFiltro] = useState('');
+    const token = localStorage.getItem("access_token");
 
     const fetchUsuarios = async () => {
         try {
-            const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios');
+            if (!token) {throw new Error("Acceso denegado");} 
+            const res = await fetch('https://inf281-production.up.railway.app/rol/usuarios',{headers: {"Authorization": `Bearer ${token}`}});
             const datos = await res.json();
             setUsuarios(datos);
         } catch (error) {
@@ -27,7 +29,8 @@ const AdministracionRoles = () => {
 
     const fetchRoles = async () => {
         try {
-            const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles');
+            if (!token) {throw new Error("Acceso denegado");} 
+            const respuesta = await fetch('https://inf281-production.up.railway.app/rol/roles',{headers: {"Authorization": `Bearer ${token}`}});
             const datos = await respuesta.json();
             setRoles(datos);
         } catch (error) {
@@ -71,10 +74,11 @@ const AdministracionRoles = () => {
             rolSeleccionado === "administrador_eventos" ? 3 : rolSeleccionado === "administrador_contenido" ? 4 : 0;
          try {
                 // Enviar solicitud PUT para cambiar el rol
+                if (!token) {throw new Error("Acceso denegado");}
                 const response = await fetch('https://inf281-production.up.railway.app/rol/cambiar-rol', {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json', "Authorization": `Bearer ${token}`
                     },
                     body: JSON.stringify({
                         email: usuarioSeleccionado.email,

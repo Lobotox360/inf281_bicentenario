@@ -11,11 +11,14 @@ const CrudEventos = () => {
     const [barraBusqueda, setBarraBusqueda] = useState('');
     const [modalidadFiltro, setModalidadFiltro] = useState('');  // Nuevo estado para modalidad
     const [estadoFiltro, setEstadoFiltro] = useState('');  // Nuevo estado para estado
+    const token = localStorage.getItem("access_token");
 
     // Función para obtener los datos de los eventos
     const fetchEventos = async () => {
         try {
-            const res = await fetch('https://inf281-production.up.railway.app/eventos');
+            const token = localStorage.getItem("access_token");
+            if (!token) {throw new Error("Acceso denegado");} 
+            const res = await fetch('https://inf281-production.up.railway.app/eventos',{headers: {"Authorization": `Bearer ${token}`}});
             const datos = await res.json();
             setEventos(datos);
         } catch (error) {
@@ -39,8 +42,9 @@ const CrudEventos = () => {
         const confirmarEliminar = window.confirm("¿Estás seguro de eliminar este evento?");
         if (confirmarEliminar) {
             try {
+                if (!token) {throw new Error("Acceso denegado");} 
                 const res = await fetch(`https://inf281-production.up.railway.app/eventos/${id_evento}`, {
-                    method: 'DELETE',
+                    method: 'DELETE', headers: {"Authorization": `Bearer ${token}`}
                 });
                 const datos = await res.json();
                 toast.success(datos.mensaje);
@@ -53,8 +57,9 @@ const CrudEventos = () => {
 
     const handleIniciarTransmicion = async (id_evento) => {
         try {
+            if (!token) {throw new Error("Acceso denegado");} 
             const res = await fetch(`https://inf281-production.up.railway.app/eventos/iniciar-reunion/${id_evento}`, {
-                method: 'PUT', 
+                method: 'PUT', headers: {"Authorization": `Bearer ${token}`}
             });
             if (!res.ok) {
                 throw new Error(`Error: ${res.status} - ${res.statusText}`);

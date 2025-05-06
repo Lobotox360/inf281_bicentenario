@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';  // Estilos de Toastify
 const ModuloComentarios = ({eventoId}) => {
   // Estados para almacenar el comentario y la calificación
   const [idUsuario, setIdUsuario] = useState(null);
+  const token = localStorage.getItem("access_token");
   const [comentarioUsuario, setComentarioUsuario] = useState(""); 
   const [puntuacionUsuario, setPuntuacionUsuario] = useState("");
   const [comentarios, setComentarios] = useState([]);
@@ -30,7 +31,7 @@ const ModuloComentarios = ({eventoId}) => {
     if (eventoId) {
       fetchComentarios();
     }
-  }, [eventoId]);  // Agregar eventoId como dependencia
+  }, [eventoId]);
   
   useEffect(() => {
     const id = localStorage.getItem('id_user');
@@ -51,7 +52,7 @@ const ModuloComentarios = ({eventoId}) => {
     event.preventDefault(); 
 
     if (!puntuacionUsuario || !comentarioUsuario) {
-      toast.error("Por favor, selecciona una calificación y agrega un comentario.");  // Notificación de error
+      toast.error("Por favor, selecciona una calificación y agrega un comentario."); 
       return;
     }
 
@@ -63,12 +64,10 @@ const ModuloComentarios = ({eventoId}) => {
     };
 
     try {
-      // Enviar el comentario
+      if (!token) {throw new Error("Acceso denegado");}
       const comentarioRes = await fetch('https://inf281-production.up.railway.app/agenda/comentario', {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: {"Content-Type": "application/json","Authorization": `Bearer ${token}`},
         body: JSON.stringify({
           id_usuario: datos.id_usuario,
           id_evento: datos.id_evento,
@@ -79,12 +78,9 @@ const ModuloComentarios = ({eventoId}) => {
       if (!comentarioRes.ok) {
         throw new Error("Error al agregar el comentario.");
       }
-
       const calificacionRes = await fetch('https://inf281-production.up.railway.app/agenda/calificacion', {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`},
         body: JSON.stringify({
           id_usuario: datos.id_usuario,
           id_evento: datos.id_evento,

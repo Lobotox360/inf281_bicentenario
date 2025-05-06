@@ -18,10 +18,13 @@ export default function GraficoBarras() {
   useEffect(() => {
     const fetchDatosPorDepartamento = async () => {
       try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {throw new Error("Acceso denegado");}
         const departamentosDatos = {};
         for (const departamento of departamentos) {
           const res = await fetch(`https://inf281-production.up.railway.app/dashboard/departamento/${departamento}`, {
             method: 'GET',
+            headers: {"Authorization": `Bearer ${token}`}
           });
 
           if (!res.ok) {
@@ -35,6 +38,7 @@ export default function GraficoBarras() {
         setDatosDepartamentos(departamentosDatos);
 
       } catch (error) {
+        toast.dismiss(); 
         toast.error('Error del servidor');
       }
     };
