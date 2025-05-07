@@ -20,7 +20,7 @@ const Podio = () => {
 
   return (
     <><Navbar /><div className="mt-20 bg-gradient-to-b from-red-500 via-yellow-500 to-green-500 min-h-screen flex flex-col items-center p-6">
-          <h1 className="text-4xl font-extrabold text-white mb-6">Podio de los Mejores</h1>
+          <h1 className="text-4xl font-extrabold text-white mb-6 text-center">Podio de los Mejores</h1>
 
           {/* Podio de los 3 primeros */}
           <div className="w-full max-w-6xl mb-10">
@@ -46,7 +46,7 @@ const Podio = () => {
                   <thead>
                       <tr className="bg-indigo-500 text-white">
                           <th className="py-3 px-6">Nombre</th>
-                          <th className="py-3 px-6">Foto</th>
+                          <th className="py-3 px-6 hidden sm:table-cell">Foto</th>
                           <th className="py-3 px-6">Puntaje</th>
                       </tr>
                   </thead>

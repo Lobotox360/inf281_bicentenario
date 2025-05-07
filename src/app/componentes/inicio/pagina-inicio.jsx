@@ -86,7 +86,7 @@ export default function Inicio() {
             <NoticiasSlider  />
 
             {/* Sección multimedia */}
-            <section className="p-10 text-center" data-aos="fade-up">
+            <section className="p-4 text-center" data-aos="fade-up">
                 <h2 className="text-3xl font-bold">Contenido Multimedia</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
                     {[

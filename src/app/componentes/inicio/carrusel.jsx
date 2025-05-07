@@ -40,8 +40,8 @@ export default function NoticiasSlider() {
   }, []);
 
   return (
-    <section className="p-10" data-aos="fade-up">
-      <h2 className="text-3xl font-bold text-center mb-6" data-aos="fade-up">
+    <section className="p-2" data-aos="fade-up">
+      <h2 className="text-3xl font-bold text-center p-4" data-aos="fade-up">
         Eventos más virales del Bicentenario
       </h2>
       <div className="relative">
@@ -80,7 +80,9 @@ export default function NoticiasSlider() {
                 </SwiperSlide>
               ))
             ) : (
-              <><SwiperSlide>
+              <>
+              {[...Array(4)].map((_, index) => (
+                <SwiperSlide key={index}>
                   <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
                     <Skeleton height={30} width={150} className="mb-4" />
                     <Skeleton height={200} className="mb-4" />
@@ -88,30 +90,8 @@ export default function NoticiasSlider() {
                     <Skeleton height={20} width={80} />
                   </div>
                 </SwiperSlide>
-                <SwiperSlide>
-                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
-                    <Skeleton height={30} width={150} className="mb-4" />
-                    <Skeleton height={200} className="mb-4" />
-                    <Skeleton height={20} width={100} className="mb-2" />
-                    <Skeleton height={20} width={80} />
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
-                    <Skeleton height={30} width={150} className="mb-4" />
-                    <Skeleton height={200} className="mb-4" />
-                    <Skeleton height={20} width={100} className="mb-2" />
-                    <Skeleton height={20} width={80} />
-                  </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                  <div className="p-4 bg-green-500 rounded-lg shadow-md text-center">
-                    <Skeleton height={30} width={150} className="mb-4" />
-                    <Skeleton height={200} className="mb-4" />
-                    <Skeleton height={20} width={100} className="mb-2" />
-                    <Skeleton height={20} width={80} />
-                  </div>
-                </SwiperSlide></>
+              ))}
+              </>
             )}
           </Swiper>
         )}

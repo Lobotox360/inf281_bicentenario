@@ -71,38 +71,57 @@ const VistaDepartamentoEventos = ({ departamento, modalidad, estado, montoMinimo
   }
 
   return (
-    <div className="space-y-10">
-      <h2 className="text-white text-2xl font-semibold text-center p-4" data-aos="fade-up">
+    <div>
+      <h2 className="text-white text-3xl font-semibold text-center p-4" data-aos="fade-up">
         EVENTOS EN {departamento.toUpperCase()}
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {eventos.map((ev) => (
-          <div key={ev.id_evento} className="bg-white p-2 rounded shadow" data-aos="fade-up">
-            <h4 className="font-semibold text-center p-4">{ev.titulo}</h4>
-            <Image
+          <div key={ev.id_evento} className="flex flex-col justify-between bg-gradient-to-r from-red-500 to-purple-800 p-4 rounded-lg shadow-md h-full" data-aos="fade-up">
+            <h4 className="text-gray-300 font-semibold text-center p-4">{ev.titulo}</h4>
+            <img
               src={ev.foto_evento}
               alt={ev.titulo}
               width={400}
               height={250}
               className="rounded mx-auto"
             />
-            <p className="text-sm text-gray-700 p-4">{ev.descripcion}</p>
-
-            <p className="text-sm text-gray-700 p-2">
+            <p className="text-sm text-gray-300 p-2">{ev.descripcion}</p>
+            <p className="text-sm text-gray-300 p-2">
               <strong>Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
             </p>
-            <p className="text-sm text-gray-700 p-2">
+            <p className="text-sm text-gray-300 p-2">
               <strong>Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
             </p>
-            <p className="text-sm text-gray-700 p-2">
+            <p className="text-sm text-gray-300 p-2">
               <strong>Modalidad: </strong>{ev.modalidad}
             </p>
 
-            <div className="flex justify-center space-x-4 py-2">
-              {/* Enlace ver más */}
+            {/* Mostrar los Expositores */}
+            <div className="text-sm text-gray-300 p-2">
+              <strong>Expositores:</strong>
+              {ev.Expositores.map((expositor) => (
+                <div key={expositor.id_expositor}>
+                  <span class="pl-8">*{expositor.nombre} - {expositor.especialidad}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Mostrar los Patrocinadores */}
+            <div className="text-sm text-gray-300 p-2">
+              <strong>Patrocinadores:</strong>
+              {ev.Eventos_Patrocinadores.map((patrocinador) => (
+                <div key={patrocinador.id_patrocina}>
+                  <span class="pl-8">*{patrocinador.Patrocinadores.razon_social}</span>
+                </div>
+              ))}
+            </div>
+
+          {/* Botones de acción */}
+            <div className="flex justify-center space-x-4">
               <Link
                 href={`/eventos/vermas/${ev.id_evento}/`}
-                className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400"
+                className="bg-orange-500 text-white py-2 px-6 rounded-full hover:bg-yellow-400 mt-auto"
               >
                 VER MÁS
               </Link>

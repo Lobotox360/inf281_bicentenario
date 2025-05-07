@@ -150,7 +150,7 @@ export default function VerMasEvento() {
   };
 
   return (
-    <div className="py-35">
+    <div className="mt-35">
       <Navbar />
       <div className="p-4 max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold mb-4 text-blue-700 text-center">{evento.titulo}</h1>
@@ -237,10 +237,13 @@ export default function VerMasEvento() {
           <p className='text-center'>{estrellas}</p>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto mt-4">
-        <MapaEvento latitud={evento.Ubicacion.latitud} longitud={evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion}/>
-      </div>
-      <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4">
+      {evento.modalidad !== 'virtual' && (
+        <div className="max-w-4xl mx-auto mt-4">
+          <MapaEvento latitud={evento.Ubicacion.latitud} longitud={evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion} />
+        </div>
+      )}
+
+      <div className="max-w-4xl mx-auto bg-white m-4 rounded-lg shadow-lg p-4">
         <ModuloComentarios eventoId={eventoId}/>
       </div>
       <ToastContainer />

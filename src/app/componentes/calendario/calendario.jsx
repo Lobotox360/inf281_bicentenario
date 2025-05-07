@@ -57,7 +57,7 @@ export default function Calendario() {
 
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mx-auto" data-aos="fade-up">
+    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mb-4 mx-auto" data-aos="fade-up">
       <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
         Calendario general
       </h2>

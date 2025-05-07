@@ -119,13 +119,14 @@ const CarruselEventos = ({ departamento, modalidad, estado, montoMinimo, montoMa
         </Swiper>
 
         {/* Mapa */}
-        <div className="flex justify-center mt-8" data-aos="fade-up">
-          <MapaEvento direccion={eventos[indexActual]?.Ubicacion?.ubicacion} latitud={eventos[indexActual]?.Ubicacion?.latitud} longitud={eventos[indexActual]?.Ubicacion?.longitud} />
-        </div>
-
+        {eventos[indexActual].modalidad !== 'virtual' && (
+          <div className="flex justify-center mt-8" data-aos="fade-up">
+            <MapaEvento direccion={eventos[indexActual]?.Ubicacion?.ubicacion} latitud={eventos[indexActual]?.Ubicacion?.latitud} longitud={eventos[indexActual]?.Ubicacion?.longitud} />
+          </div>
+        )}
         {/* Comentarios */}
-        <h2 className="px-4 text-2xl font-semibold mb-4 text-white text-center" data-aos="fade-up">COMENTARIOS</h2>
-        <div className="max-w-4xl mx-auto bg-white p-5 m-4 rounded-lg shadow-lg p-4 mb-4" data-aos="fade-up">
+        <h2 className="p-4 text-2xl font-semibold text-white text-center" data-aos="fade-up">COMENTARIOS</h2>
+        <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-2 mb-4" data-aos="fade-up">
           <ModuloComentarios eventoId = {eventos[indexActual].id_evento}/>
         </div>
       </div>
