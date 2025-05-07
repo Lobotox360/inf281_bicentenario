@@ -71,18 +71,18 @@ const VistaPatrocinadorEventos = ({patrocinador, modalidad, estado, montoMinimo,
             />
             <p className="text-sm text-gray-600 p-2">{ev.descripcion}</p>
             <p className="text-sm text-gray-700 p-2">
-              <strong>Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
+              <strong>📅Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
             </p>
             <p className="text-sm text-gray-700 p-2">
-              <strong>Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
+              <strong>⏰Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
             </p>
             <p className="text-sm text-gray-700 p-2">
-              <strong>Modalidad: </strong>{ev.modalidad}
+              <strong>🖥️Modalidad: </strong>{ev.modalidad}
             </p>
 
             {/* Mostrar los Expositores */}
             <div className="text-sm text-gray-600 p-2">
-              <strong>Expositores:</strong>
+              <strong>🎤Expositores:</strong>
               {ev.Expositores.map((expositor) => (
                 <div key={expositor.id_expositor}>
                   <span class="pl-8">*{expositor.nombre} - {expositor.especialidad}</span>
@@ -92,7 +92,7 @@ const VistaPatrocinadorEventos = ({patrocinador, modalidad, estado, montoMinimo,
 
             {/* Mostrar los Patrocinadores */}
             <div className="text-sm text-gray-700 p-2">
-              <strong>Patrocinadores:</strong>
+              <strong>🤝Patrocinadores:</strong>
               {ev.Eventos_Patrocinadores.map((patrocinador) => (
                 <div key={patrocinador.id_patrocina}>
                   <span class="pl-8">*{patrocinador.Patrocinadores.razon_social}</span>

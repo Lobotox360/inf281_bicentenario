@@ -74,7 +74,7 @@ const Login = ({ openModal }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-10">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-red-600 mb-6">Iniciar Sesión con</h2>
 

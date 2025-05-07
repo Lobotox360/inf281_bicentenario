@@ -65,13 +65,13 @@ const MisEventos = () => {
             />
             <p className="text-center text-gray-600 p-2">{ev.descripcion}</p>
             <p className="text-center text-sm text-gray-700 p-2">
-              <strong>Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
+              <strong>📅Fecha: </strong>{new Date(ev.hora_inicio).toLocaleDateString()}
             </p>
             <p className="text-center text-sm text-gray-700 p-2">
-              <strong>Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
+              <strong>⏰Hora: </strong>{new Date(ev.hora_inicio).toLocaleTimeString()} - {new Date(ev.hora_fin).toLocaleTimeString()}
             </p>
             <p className="text-center text-sm text-gray-700 p-2">
-              <strong>Modalidad: </strong>{ev.modalidad}
+              <strong>🖥️Modalidad: </strong>{ev.modalidad}
             </p>
 
             {/* Botones de acción */}

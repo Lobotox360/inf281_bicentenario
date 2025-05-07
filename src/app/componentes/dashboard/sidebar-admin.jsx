@@ -57,9 +57,12 @@ export default function Sidebar() {
   }, []); 
 
   const cerrarSesion = () => {
-    localStorage.removeItem("access_token");
     localStorage.removeItem("id_user");
-    localStorage.removeItem('rol');
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("email");
+    localStorage.removeItem("inscripciones");
+    localStorage.removeItem("_grecaptcha");
     setEmailUsuario(null);
     setFotoUsuario(null);
     setNombreUsuario(null);

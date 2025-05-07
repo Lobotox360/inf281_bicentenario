@@ -65,7 +65,7 @@ const MenuFiltrar = () => {
 
   return (
       <div className="relative p-4 mt-24">
-        <div className="flex sm:flex-row justify-between flex-col mb-4 space-x-4 space-y-4 "> 
+        <div className="flex sm:flex-row justify-center flex-col mb-4 space-x-4 space-y-4 "> 
               {/* Ítem: filtrar */}
               <div className="w-full sm:w-auto cursor-pointer border bg-opacity-50 text-white p-2 px-5 rounded-md">
                 <div

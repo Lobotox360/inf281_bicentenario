@@ -36,8 +36,6 @@ export default function CalendarioUsuario({ id_usuario }) {
             title: evento.actividades,
             start: fechaInicio.toISOString(),
             end: fechaFin.toISOString(),
-            url: '#',
-            backgroundColor: 'blue',
             reunionIniciada: evento.Eventos.reunion_iniciada,
             link_reunion: evento.Eventos.link_reunion,
           };

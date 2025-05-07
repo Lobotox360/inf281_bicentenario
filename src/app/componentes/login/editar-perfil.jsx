@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from 'react-toastify';  // Importar Toastify
-import 'react-toastify/dist/ReactToastify.css'; // Estilos de Toastify
+import { ToastContainer, toast } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';
 
 const EditarPerfil = () => {
     const [usuario, setUsuario] = useState(null);

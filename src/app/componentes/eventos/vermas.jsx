@@ -165,12 +165,12 @@ export default function VerMasEvento() {
           />
           
           <div className="text-gray-700 text-lg">
-            <p className="mb-4"><strong>Descripción:</strong> {evento.descripcion}</p>
-            <p className="mb-4"><strong>Fecha:</strong> {fecha} a la(s) {hora_inicio} a {hora_fin}</p>
-            <p className="mb-4"><strong>Costo:</strong> {evento.costo} Bs. <strong>Modalidad:</strong> {evento.modalidad} </p>
-            <p className="mb-4 text-center"><strong>Estado:</strong> {evento.estado}</p> 
+            <p className="mb-4"><strong>🌍Descripción:</strong> {evento.descripcion}</p>
+            <p className="mb-4"><strong>📅Fecha:</strong> {fecha} a la(s) {hora_inicio} a {hora_fin}</p>
+            <p className="mb-4 text-center"><strong>💸Costo:</strong> {evento.costo === 0 ? 'Gratuito' : `${evento.costo} Bs`} <strong>🖥️Modalidad:</strong> {evento.modalidad} </p>
+            <p className="mb-4 text-center"><strong>✅Estado:</strong> {evento.estado}</p> 
             <div>
-              <h3 className="text-xl font-semibold">Categorías:</h3>
+              <h3 className="text-xl font-semibold">🏷️Categorías:</h3>
               <ul>
                 {evento.CategoriasEvento.map((categoria) => (
                   <li key={categoria.id_evento_categoria} className="mb-2 text-lg">
@@ -181,18 +181,18 @@ export default function VerMasEvento() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold">Patrocinadores:</h3>
+              <h3 className="text-xl font-semibold">🎤Patrocinadores:</h3>
               <ul>
                 {evento.Eventos_Patrocinadores.map((patrocinador) => (
                     <li key={patrocinador.Patrocinadores.id_patrocinador} className="mb-2 text-lg">
-                        <span className="text-orange-500 font-bold">*</span> 
+                        <span className="ml-10 text-orange-500 font-bold">*</span>  
                         <span className="ml-2">{patrocinador.Patrocinadores.institucion} - {patrocinador.Patrocinadores.razon_social}</span> 
                     </li>
                 ))}
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold">Expositores:</h3>
+              <h3 className="text-xl font-semibold">🤝Expositores:</h3>
               <ul>
                 {evento.Expositores.map((expositor) => (
                     <li key={expositor.id_expositor} className="mb-2 text-lg">
@@ -203,7 +203,7 @@ export default function VerMasEvento() {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl font-semibold">Telefonos de contacto:</h3>
+              <h3 className="text-xl font-semibold">📞Telefonos de contacto:</h3>
               <ul>
                 {evento.Telefonos.map((telefono) => (
                     <li key={telefono.id_telefono} className="mb-2 text-lg">
@@ -238,7 +238,7 @@ export default function VerMasEvento() {
         </div>
       </div>
       {evento.modalidad !== 'virtual' && (
-        <div className="max-w-4xl mx-auto mt-4">
+        <div className="flex justify-center max-w-4xl mx-auto mt-8 bg-white p-4 rounded-md shadow-lg">
           <MapaEvento latitud={evento.Ubicacion.latitud} longitud={evento.Ubicacion.longitud} direccion={evento.Ubicacion.Ubicacion} />
         </div>
       )}

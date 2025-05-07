@@ -93,7 +93,11 @@ export default function Inicio() {
                         "https://www.youtube.com/embed/KG0VZR4pfKk",
                         "https://www.youtube.com/embed/raNV1-ySpc4",
                         "https://www.youtube.com/embed/4nKoR25rxeY",
-                        "https://www.youtube.com/embed/vtwMmpn63XE"
+                        "https://www.youtube.com/embed/vtwMmpn63XE",
+                        "https://www.youtube.com/embed/lbUkx2hyn2o",
+                        "https://www.youtube.com/embed/vWcAdaxwy3Y",
+                        "https://www.youtube.com/embed/qXUpCrqsrns",
+                        "https://www.youtube.com/embed/wwKDyxR1MrY",
                     ].map((videoUrl, idx) => (
                         <iframe
                             key={idx}

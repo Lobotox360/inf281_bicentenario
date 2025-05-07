@@ -19,7 +19,7 @@ const Podio = () => {
   }, []);
 
   return (
-    <><Navbar /><div className="mt-20 bg-gradient-to-b from-red-500 via-yellow-500 to-green-500 min-h-screen flex flex-col items-center p-6">
+    <div className="mt-20 bg-gradient-to-b from-red-500 via-yellow-500 to-green-500 min-h-screen flex flex-col items-center p-6">
           <h1 className="text-4xl font-extrabold text-white mb-6 text-center">Podio de los Mejores</h1>
 
           {/* Podio de los 3 primeros */}
@@ -54,7 +54,7 @@ const Podio = () => {
                       {usuarios.map(usuario => (
                           <tr key={usuario.id_usuario} className="border-b hover:bg-gray-100">
                               <td className="py-3 px-6 text-center">{usuario.nombre} {usuario.apellidopaterno}</td>
-                              <td className="py-3 px-6 text-center">
+                              <td className="py-3 px-6 text-center hidden sm:table-cell">
                                   <img src={usuario.foto} alt={`${usuario.nombre} ${usuario.apellidopaterno}`} className="w-16 h-16 rounded-full mx-auto" />
                               </td>
                               <td className="py-3 px-6 text-center">{usuario.puntaje}</td>
@@ -63,7 +63,7 @@ const Podio = () => {
                   </tbody>
               </table>
           </div>
-      </div></>
+      </div>
   );
 };
 

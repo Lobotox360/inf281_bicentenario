@@ -61,6 +61,9 @@ export default function Navbar() {
     localStorage.removeItem("id_user");
     localStorage.removeItem("access_token");
     localStorage.removeItem("rol");
+    localStorage.removeItem("email");
+    localStorage.removeItem("inscripciones");
+    localStorage.removeItem("_grecaptcha");
     setIdUsuario(null);
     setToken(null);
     setRol(null);
@@ -91,7 +94,6 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full p-3 shadow-lg z-50 flex items-center justify-between bg-gradient-to-b from-black to-transparent">
       <Image src="/assets/logo1.png" width={80} height={32} alt="Bicentenario de Bolivia" />
-      
       {/* Menú de navegación para pantallas grandes */}
       <div className="hidden md:flex absolute left-1/2 transform -translate-x-1/2 space-x-6 text-white text-lg md:text-xl">
         <Link href="/" className="bg-yellow-500 block px-4 py-2 text-white transition delay-100 duration-200 ease-in-out hover:-translate-x-1 rounded-full hover:bg-red-500">INICIO</Link>
@@ -102,9 +104,7 @@ export default function Navbar() {
       </div>
 
       {/* Menú desplegable en móviles */}
-      <div 
-        className={`absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[-100%] pointer-events-none'}`}
-      >
+      <div className={`absolute top-16 left-1/2 transform -translate-x-1/2 w-full bg-opacity-75 p-4 md:hidden bg-gradient-to-b from-transparent to-black transition-all duration-300 ease-in-out ${menuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[-100%] pointer-events-none'}`}>
         <div className="flex flex-col space-y-4 text-white text-lg">
           <Link href="/" className="text-center mt-4 hover:text-yellow-400">INICIO</Link>
           <Link href="/eventos" className="text-center hover:text-yellow-400">EVENTOS</Link>
@@ -133,7 +133,7 @@ export default function Navbar() {
           <div className="relative">
             <button onClick={() => setMenuUsuario(!menuUsuario)} aria-label="Abrir menú de usuario" className="hover:text-yellow-400">
               {fotoUsuario ? (
-                <Image src={fotoUsuario} alt="Foto de perfil" width={60} height={60} className="cursor-pointer rounded-full border-2 border-yellow-400" />
+                <img src={fotoUsuario} alt="Foto de perfil" className="cursor-pointer w-15 h-15 rounded-full border-2 border-yellow-400" />
               ) : (
                 <FaUser />
               )}
@@ -159,7 +159,7 @@ export default function Navbar() {
       </div>
 
       {/* Barra desplegable del buscador */}
-      <div className={`absolute top-full left-0 w-full py-2 px-4 shadow-lg transform transition-all duration-300 ease-in-out ${barraBusqueda ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
+      <div className={`absolute top-full left-0 w-full py-2 px-4 shadow-lg bg-gradient-to-b from-transparent to-black transform transition-all duration-300 ease-in-out ${barraBusqueda ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
         <form onSubmit={handleSearch} className="flex justify-center">
           <input
             type="text"

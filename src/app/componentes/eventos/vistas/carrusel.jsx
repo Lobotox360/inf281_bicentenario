@@ -75,17 +75,17 @@ const CarruselEventos = ({ departamento, modalidad, estado, montoMinimo, montoMa
           {eventos.map((evento) => (
             <SwiperSlide key={evento.id_evento}>
               <div className="relative bg-gray-200 rounded-lg overflow-hidden shadow-lg animate-fadeIn" data-aos="fade-up">
-                <h2 className="text-xl font-semibold text-center">{evento.titulo}</h2>
+                <h2 className="text-black text-xl font-semibold text-center">{evento.titulo}</h2>
                 <div className="flex flex-col md:flex-row justify-between items-center bg-white">
                   <div className="relative order-1 md:order-2">
                     <Image src={evento.foto_evento} alt="Evento" width={500} height={320} className="rounded-lg"/>
                   </div>
                   <div className="w-full px-6 order-2 md:order-1">
-                    <p className="text-gray-600 mt-2 mx-10 text-center">{evento.descripcion}</p>
-                    <p className="text-gray-600 mt-2 mx-10 text-left"><strong>HORARIO: </strong> {new Date(evento.hora_inicio).toLocaleTimeString()} a {new Date(evento.hora_fin).toLocaleTimeString()}</p>
-                    <p className="text-gray-600 mt-2 mx-10 text-left"><strong>FECHA: </strong>{new Date(evento.hora_inicio).toLocaleDateString()}</p>
-                    <p className="text-gray-600 mt-2 mx-10 text-left"><strong>ESTADO: </strong>{evento.estado} <strong>MODALIDAD: </strong>{evento.modalidad}</p>
-                    <p className="text-gray-600 mt-2 mx-10 text-left"><strong>COSTO: </strong>{evento.costo} Bs.</p>
+                    <p className="text-gray-800 mt-2 mx-10 text-center">{evento.descripcion}</p>
+                    <p className="text-gray-800 mt-2 mx-10 text-left"><strong>⏰HORARIO: </strong> {new Date(evento.hora_inicio).toLocaleTimeString()} a {new Date(evento.hora_fin).toLocaleTimeString()}</p>
+                    <p className="text-gray-800 mt-2 mx-10 text-left"><strong>📅FECHA: </strong>{new Date(evento.hora_inicio).toLocaleDateString()}</p>
+                    <p className="text-gray-800 mt-2 mx-10 text-left"><strong>✅ESTADO: </strong>{evento.estado} <strong>🖥️MODALIDAD: </strong>{evento.modalidad}</p>
+                    <p className="text-gray-800 mt-2 mx-10 text-left"><strong>💸COSTO: </strong>{evento.costo === 0 ? 'Gratuito' : `${evento.costo} Bs`}</p>
                   </div>
                 </div>
                 {/* Botones de navegación personalizados */}
@@ -120,7 +120,7 @@ const CarruselEventos = ({ departamento, modalidad, estado, montoMinimo, montoMa
 
         {/* Mapa */}
         {eventos[indexActual].modalidad !== 'virtual' && (
-          <div className="flex justify-center mt-8" data-aos="fade-up">
+          <div className="flex justify-center mt-8 bg-white p-4 rounded-md shadow-lg" data-aos="fade-up">
             <MapaEvento direccion={eventos[indexActual]?.Ubicacion?.ubicacion} latitud={eventos[indexActual]?.Ubicacion?.latitud} longitud={eventos[indexActual]?.Ubicacion?.longitud} />
           </div>
         )}
