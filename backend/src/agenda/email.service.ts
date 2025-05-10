@@ -84,7 +84,7 @@ async sendInscripcionEventoEmail(email: string, datos: any) {
       </div>
     ` : '';
 
-  } else if (datos.modalidad.toLowerCase() === 'híbrido') {
+  } else if (datos.modalidad.toLowerCase() === 'hibrida') {
     modalidadBadge = `<span style="background-color: #9b59b6; color: white; padding: 5px 10px; border-radius: 15px; font-size: 14px; margin-top: 8px; display: inline-block;">🔄 HÍBRIDO</span>`;
     contenidoHtml = `
       <div style="margin: 25px 0;">

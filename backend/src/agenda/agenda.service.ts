@@ -103,7 +103,7 @@ async create(data: CreateAgendaDto) {
 
   let token = "ninguno";
   let qrUrl = "ninguno";
-  if (evento.modalidad.toLowerCase() === 'híbrido' || evento.modalidad.toLowerCase() === 'presencial') {
+  if (evento.modalidad.toLowerCase() === 'hibrida' || evento.modalidad.toLowerCase() === 'presencial') {
     token = uuid.v4();
     // Generar el QR y subirlo a Cloudinary
     qrUrl = await this.emailService.generateQRCodeAndUpload(token);
