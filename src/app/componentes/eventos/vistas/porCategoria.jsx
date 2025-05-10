@@ -61,12 +61,10 @@ const VistaCategoriaEventos = ({Auxcategoria, modalidad, estado, montoMinimo, mo
     }
   }, [inscripciones]);
 
-  // Si está cargando los eventos
   if (carga) {
     return <p className='text-center text-white text-xl font-semibold'>Cargando eventos...</p>;
   }
 
-  // Si no hay eventos en esa categoría
   if (eventos.length === 0) {
     return <p className='text-center text-white text-xl font-semibold'>No hay eventos disponibles para la categoría {Auxcategoria}.</p>;
   }

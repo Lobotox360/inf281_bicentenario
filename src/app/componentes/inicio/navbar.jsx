@@ -15,8 +15,27 @@ export default function Navbar() {
   const [idUsuario, setIdUsuario] = useState(null);
   const [token, setToken] = useState(null);
   const [rol, setRol] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);  // Estado para el menú hamburguesa
+  const [menuOpen, setMenuOpen] = useState(false); 
   const router = useRouter();
+
+  const [eventos, setEventos] = useState([]);
+  const [eventosFiltrados, setEventosFiltrados] = useState([]);
+
+  useEffect(() => {
+    const cargarEventos = async () => {
+      try {
+        const res = await fetch('https://inf281-production.up.railway.app/eventos'); 
+        const eventosData = await res.json();
+        setEventos(eventosData);
+        setEventosFiltrados(eventosData);
+      } catch (error) {
+        console.error("❌ Error al cargar los eventos:", error);
+      }
+    };
+
+    cargarEventos();
+  }, []);
+
 
   useEffect(() => {
     const cargarDatosUsuario = async () => {
@@ -81,10 +100,25 @@ export default function Navbar() {
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    alert(`Buscando: ${buscarConsulta}`);
-    // Aquí agregas tu lógica de búsqueda real
+    const query = e.target.value;
+    setBuscarConsulta(query); 
+
+    if (!query.trim()) {
+      setEventosFiltrados([]);  
+      return;
+    }
+    const resultados = eventos.filter(evento =>
+      evento.titulo.toLowerCase().includes(buscarConsulta.toLowerCase()) ||
+      evento.descripcion.toLowerCase().includes(buscarConsulta.toLowerCase()) ||
+      evento.CategoriasEvento.some(categoria =>
+        categoria.categoria.nombre.toLowerCase().includes(buscarConsulta.toLowerCase())
+      )
+    );
+  
+    setEventosFiltrados(resultados);
   };
+  
+  
 
   // Función para manejar el toggle del menú hamburguesa
   const toggleMenu = () => {
@@ -160,19 +194,39 @@ export default function Navbar() {
 
       {/* Barra desplegable del buscador */}
       <div className={`absolute top-full left-0 w-full py-2 px-4 shadow-lg bg-gradient-to-b from-transparent to-black transform transition-all duration-300 ease-in-out ${barraBusqueda ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'}`}>
-        <form onSubmit={handleSearch} className="flex justify-center">
+        <form onSubmit={(e) => e.preventDefault()} className="flex justify-center">
           <input
             type="text"
             placeholder="Buscar..."
             value={buscarConsulta}
-            onChange={(e) => setBuscarConsulta(e.target.value)}
+            onChange={handleSearch}
             className="border border-white rounded-md px-4 py-1 w-full max-w-md focus:outline-none focus:ring-2 focus:ring-red-500 text-white"
           />
-          <button type="submit" className="ml-2 bg-red-600 text-white px-4 py-1 rounded-md hover:bg-red-700">
-            Buscar
-          </button>
         </form>
+
+        {/* Lista de resultados filtrados */}
+        {buscarConsulta && eventosFiltrados.length > 0 && (
+          <div className="mt-2 max-h-60 overflow-y-auto text-center rounded-md">
+            <ul>
+              {eventosFiltrados.map((evento) => (
+                <Link key={evento.id_evento} href={`/eventos/vermas/${evento.id_evento}`} passHref>
+                  <li className="px-4 py-2 hover:bg-yellow-400 cursor-pointer">
+                    {evento.titulo}
+                  </li>
+                </Link>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Si no hay resultados, mostrar un mensaje */}
+        {buscarConsulta && eventosFiltrados.length === 0 && (
+          <div className="mt-2 max-h-60 overflow-y-auto bg-white text-black rounded-md">
+            <p className="px-4 py-2">No se encontraron eventos</p>
+          </div>
+        )}
       </div>
+
     </nav>
   );
 }

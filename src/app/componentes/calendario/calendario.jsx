@@ -8,6 +8,8 @@ import { useState, useEffect, useRef } from 'react'
 export default function Calendario() {
   const [eventos, setEventos] = useState([])
   const [vistaActual, setVistaActual] = useState('dayGridMonth')
+  const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
+  const [mostrarModal, setMostrarModal] = useState(false);
   const calendarioRef = useRef(null)
 
   // Obtener eventos desde la API
@@ -25,7 +27,6 @@ export default function Calendario() {
             title: evento.titulo,
             start: fechaInicio.toISOString(),
             end: fechaFin.toISOString(),
-            url: `/eventos/vermas/${evento.id_evento}`,
             backgroundColor: '#009472',
             borderColor: '#009472',
           }
@@ -54,49 +55,82 @@ export default function Calendario() {
     setVistaActual('dayGridMonth')
   }
 
+  const handleIngresarEvento = (info) => {
+    const eventoId = info.event.id;
+    const evento = info.event;
+    setEventoSeleccionado(evento);
+    console.log(evento);
+    setMostrarModal(true); 
+  };
 
+  const cerrarModal = () => {
+    setMostrarModal(false); 
+  };
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mb-4 mx-auto" data-aos="fade-up">
-      <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
-        Calendario general
-      </h2>
+    <div>
+      <div className="p-4 bg-white rounded-xl shadow-lg w-full max-w-[1100px] mb-4 mx-auto" data-aos="fade-up">
+        <h2 className="text-2xl font-bold mb-4 text-center text-purple-500">
+          Calendario general
+        </h2>
 
-      {vistaActual === 'timeGridDay' && (
-        <div className="flex justify-end mb-2">
-          <button 
-            onClick={volverAlMes} 
-            className="bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
-          >
-            Volver al mes
-          </button>
-        </div>
-      )}
+        {vistaActual === 'timeGridDay' && (
+          <div className="flex justify-end mb-2">
+            <button 
+              onClick={volverAlMes} 
+              className="bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
+            >
+              Volver al mes
+            </button>
+          </div>
+        )}
 
-      <FullCalendar
+        <FullCalendar
+          
+          ref={calendarioRef}
+          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={eventos}
+          locale="es"
+          height="auto"
+          buttonText={{
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+          }}
+          dateClick={handleVistaDiaria}
+          eventColor="#10e685"
+          dayMaxEvents={3}
+          headerToolbar={{
+            right: 'today',
+            left: 'prev,next',
+            center: 'title'
+          }}
+          headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
+          eventClick={handleIngresarEvento}
+        />
         
-        ref={calendarioRef}
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={eventos}
-        locale="es"
-        height="auto"
-        buttonText={{
-          today: 'Hoy',
-          month: 'Mes',
-          week: 'Semana',
-          day: 'Día',
-        }}
-        dateClick={handleVistaDiaria}
-        eventColor="#10e685"
-        dayMaxEvents={3}
-        headerToolbar={{
-          right: 'today',
-          left: 'prev,next',
-          center: 'title'
-        }}
-        headerClassNames="flex flex-col sm:flex-row sm:justify-between items-center sm:items-center gap-2 sm:gap-4"
-      />
+      </div>
+      {/* Modal */}
+      {mostrarModal && eventoSeleccionado && (
+          <div className="fixed flex bg-black/70 inset-0 justify-center items-center z-50" data-aos="fade">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-11/12 sm:w-96">
+              <h3 className="text-center text-md font-bold mb-4">{eventoSeleccionado.title}</h3>
+              <p><strong>Hora de Inicio:</strong> {new Date(eventoSeleccionado.start).toLocaleString()}</p>
+              <p><strong>Hora de Fin:</strong> {new Date(eventoSeleccionado.end).toLocaleString()}</p>
+              <p><strong>Ver mas:</strong> <a href={`/eventos/vermas/${eventoSeleccionado.id}`} rel="noopener noreferrer" target="_blank" className="cursor-pointer text-blue-500 hover:text-purple-500">Ir al evento</a></p>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={cerrarModal}
+                  className="cursor-pointer bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   )
 }

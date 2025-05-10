@@ -5,28 +5,25 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 // Registramos los elementos de Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-export default function Torta({ porcentaje, titulo }) {
+export default function Torta({ var1, var2, var3, titulo, tag1, tag2, tag3 }) {
   // Datos del gráfico
   const data = {
-    labels: [],
+    labels: [tag1, tag2, tag3],
     datasets: [
       {
-        data: [porcentaje, 100 - porcentaje],
-        backgroundColor: ['#3b82f6', '#e5e7eb', '#e5e7ed'],
+        data: [var1, var2, var3],
+        backgroundColor: ['#3b82f6', '#FFC107','#4CAF50'], 
         borderWidth: 0,
       },
     ],
   };
 
+  
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col items-center justify-center w-full">
+    <div className="bg-white p-4 rounded-xl shadow-lg flex flex-col items-center justify-center">
       <h2 className="text-xl text-center font-semibold mb-4">{titulo}</h2>
-      <div className="relative w-35 h-35">
         <Pie data={data} />
-        <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-semibold text-center">
-          {porcentaje}%
-        </p>
-      </div>
     </div>
   );
 }
