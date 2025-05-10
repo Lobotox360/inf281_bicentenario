@@ -286,72 +286,66 @@ const { fecha: fechaFin, hora: horaFin } = formatDateTime(evento.hora_fin);
   }
   
  async remove(id_usuario: string, id_evento: number) {
-  // Obtener el puntaje y la cantidad de inscripciones del usuario directamente
+  // Verificar que el usuario existe y obtener puntaje y cantidad de inscripciones
   const usuario = await this.prisma.usuarios.findUnique({
     where: {
       id_usuario,
     },
     select: {
       puntaje: true,
-    },
-  });
-
-  if (!usuario) {
-    throw new Error('Usuario no encontrado');
-  }
-
-  // Contar directamente las inscripciones del usuario sin cargar todas las filas
-  const cantidadInscripciones = await this.prisma.agenda.count({
-    where: {
-      id_usuario: id_usuario,
-    },
-  });
-
-  let puntosExtra = 0;
-
-  // Verificar si tiene alguno de los logros y calcular los puntos extra
-  if (cantidadInscripciones === 1) {
-    puntosExtra = 5;
-  } else if (cantidadInscripciones === 5) {
-    puntosExtra = 10;
-  } else if (cantidadInscripciones === 10) {
-    puntosExtra = 15;
-  } else if (cantidadInscripciones === 25) {
-    puntosExtra = 20;
-  } else if (cantidadInscripciones === 50) {
-    puntosExtra = 25;
-  } else if (cantidadInscripciones === 100) {
-    puntosExtra = 30;
-  }
-
-  // Eliminar la agenda
-  await this.prisma.agenda.delete({
-    where: {
-      id_usuario_id_evento: {
-        id_usuario,
-        id_evento,
+      Agenda: {
+        select: {
+          id_evento: true,
+        },
       },
     },
   });
 
-  // Restar puntos del usuario (10 base + puntos extra si aplica)
-  const puntosARestar = 10 + puntosExtra;
-  const nuevoPuntaje = Math.max(usuario.puntaje - puntosARestar, 0); // Evitar que el puntaje sea negativo
+  if (!usuario) {
+    throw new Error('❌ Usuario no encontrado');
+  }
 
-  // Actualizar el puntaje del usuario
-  await this.prisma.usuarios.update({
-    where: {
-      id_usuario,
-    },
-    data: {
-      puntaje: nuevoPuntaje,
-    },
-  });
+  const cantidadInscripciones = usuario.Agenda.length;
+  const puntosExtra = this.calcularPuntosExtra(cantidadInscripciones);
+
+  // Eliminar la agenda y actualizar el puntaje del usuario en una transacción
+  await this.prisma.$transaction([
+    this.prisma.agenda.delete({
+      where: {
+        id_usuario_id_evento: {
+          id_usuario,
+          id_evento,
+        },
+      },
+    }),
+    this.prisma.usuarios.update({
+      where: {
+        id_usuario,
+      },
+      data: {
+        puntaje: Math.max(usuario.puntaje - (10 + puntosExtra), 0), // Asegurar que no sea negativo
+      },
+    }),
+  ]);
 
   return {
-    mensaje: `🗑️ Registro de agenda eliminado correctamente. Se restaron ${puntosARestar} puntos.`,
+    mensaje: `🗑️ Registro de agenda eliminado correctamente. Se restaron ${10 + puntosExtra} puntos.`,
   };
 }
+
+// Método auxiliar para calcular puntos extra basado en la cantidad de inscripciones
+private calcularPuntosExtra(cantidadInscripciones: number): number {
+  const logros = {
+    1: 5,  // Bronce
+    5: 10, // Plata
+    10: 15, // Oro
+    25: 20, // Platino
+    50: 25, // Diamante
+    100: 30, // Maestro
+  };
+  return logros[cantidadInscripciones] || 0;
+}
+
 
   
   

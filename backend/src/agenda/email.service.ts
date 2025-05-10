@@ -14,29 +14,23 @@ export class EmailService {
   }
 
   // Método para generar QR y subirlo a Cloudinary (se usa en AgendaService)
-  async generateQRCodeAndUpload(token: string): Promise<string> {
-    try {
-      const qrBuffer = await QRCode.toBuffer(token, { width: 200 });
+async generateQRCodeAndUpload(token: string): Promise<string> {
+  try {
+    // Generar el código QR directamente como buffer
+    const qrBuffer = await QRCode.toBuffer(token, { width: 200 });
 
-      const fakeFile = {
-        fieldname: 'qr_code',
-        originalname: 'qr_code.png',
-        mimetype: 'image/png',
-        buffer: qrBuffer,
-        encoding: '7bit',
-        size: qrBuffer.length,
-        destination: '',
-        filename: 'qr_code.png',
-        path: '',
-        stream: Readable.from([]),
-      };
+    // Subir directamente el buffer a Cloudinary sin crear un objeto fake
+    const result = await this.cloudinaryService.uploadImageBuffer(qrBuffer, 'qr_asistencia');
 
-      const result = await this.cloudinaryService.uploadImage(fakeFile, 'qr_asistencia');
-      return result.secure_url;
-    } catch (err) {
-      throw new Error('Error generando y subiendo el QR: ' + err.message);
-    }
+    // Liberar el buffer para optimizar la memoria
+    qrBuffer.fill(0);
+
+    return result.secure_url;
+  } catch (err) {
+    throw new Error('Error generando y subiendo el QR: ' + err.message);
   }
+}
+
 async sendInscripcionEventoEmail(email: string, datos: any) {
   const senderEmail = process.env.EMAIL_FROM;
   if (!senderEmail) throw new Error('EMAIL_FROM no está definido en .env');
