@@ -24,6 +24,18 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  @Post('asistencia')
+  async registrarAsistenciaEvento(@Body('token') token: string) {
+    if (!token || typeof token !== 'string') {
+      throw new HttpException(
+        'El token es requerido y debe ser una cadena de texto válida',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return this.eventoService.registrarAsistenciaEvento(token);
+  }
+
   // se devuelve el link del evento
   @UseGuards(JwtAuthGuard, CasbinGuard)
   @Get('asistencia/evento/:id_evento')

@@ -2,6 +2,7 @@ import { Injectable, NotFoundException,ConflictException} from '@nestjs/common';
 import { CreateAgendaDto } from './dto/create-agenda.dto';
 import { UpdateAgendaDto } from './dto/update-agenda.dto';
 import { PrismaService } from 'src/prisma.service';
+import * as uuid from 'uuid'; 
 import { EmailService } from './email.service';
 
 @Injectable()
@@ -65,92 +66,119 @@ export class AgendaService {
   
 
   
-  async create(data: CreateAgendaDto) {
-
-    const evento = await this.prisma.eventos.findUnique({
-      where: { id_evento: data.id_evento },
-      include: {
-        Ubicacion: true,
-        Telefonos: true,
-        Eventos_Patrocinadores: {
-          include: {
-            Patrocinadores: true,
-          },
+async create(data: CreateAgendaDto) {
+  const evento = await this.prisma.eventos.findUnique({
+    where: { id_evento: data.id_evento },
+    include: {
+      Ubicacion: true,
+      Telefonos: true,
+      Eventos_Patrocinadores: {
+        include: {
+          Patrocinadores: true,
         },
       },
-    });
-  
+    },
+  });
 
-    const usuario = await this.prisma.usuarios.findUnique({
-      where: { id_usuario: data.id_usuario },
-    });
-  
+  const usuario = await this.prisma.usuarios.findUnique({
+    where: { id_usuario: data.id_usuario },
+  });
 
-    if (!usuario || !evento) {
-      throw new NotFoundException('❌ Los datos del ID de evento o del participante son incorrectos.');
-    }
-  
-    const yaInscrito = await this.prisma.agenda.findUnique({
-      where: {
-        id_usuario_id_evento: {
-          id_usuario: data.id_usuario,
-          id_evento: data.id_evento,
-        },
-      },
-    });
-  
-    if (yaInscrito) {
-      throw new ConflictException('⚠️ Ya estás inscrito en este evento.');
-    }
-
-    const actividad = `Evento: ${evento.titulo}`;
-    const fechaCreacion = new Date();
-  
-    await this.prisma.agenda.create({
-      data: {
-        id_evento: data.id_evento,
-        id_usuario: data.id_usuario,
-        actividades: actividad,
-        fecha: fechaCreacion,
-      },
-    });
-  
-
-    function formatTime(dateString: string): string {
-      const date = new Date(dateString);
-      const hours = String(date.getHours()).padStart(2, '0'); // Asegura que siempre tenga dos dígitos
-      const minutes = String(date.getMinutes()).padStart(2, '0'); // Asegura que siempre tenga dos dígitos
-      return `${hours}:${minutes}`;
-    }
-
-    await this.emailService.sendInscripcionEventoEmail(usuario.email, {
-      nombre_usuario: usuario.nombre,
-      titulo: evento.titulo,
-      descripcion: evento.descripcion,
-      fecha: evento.fecha.toISOString().split('T')[0],
-      hora_inicio: formatTime(evento.hora_inicio),
-      hora_fin: formatTime(evento.hora_fin),
-      modalidad: evento.modalidad,
-      costo: `${evento.costo} Bs.`,
-      ubicacion: evento.Ubicacion?.ubicacion || 'Ubicación no especificada',
-      telefonos: evento.Telefonos?.map(t => ({
-        nombre: t.nombre,
-        numero: t.numero,
-      })) || [],
-      imagen_url: evento.foto_evento || 'https://res.cloudinary.com/djxsfzosx/image/upload/v1744514657/eventos/dlmsljwa7clnbrsobxdp.png',
-    });
-  
-
-
-    const resultadoLogro = await this.revisarLogro(data.id_usuario);
-
-    return {
-      mensaje: `✅ Felicidades, ${usuario.nombre}, te has registrado correctamente en el evento "${evento.titulo}".`,
-      logro: resultadoLogro.logro,
-      puntosExtra: resultadoLogro.puntosExtra,
-      puntajeTotal: resultadoLogro.puntajeTotal,
-    };
+  if (!usuario || !evento) {
+    throw new NotFoundException('❌ Los datos del ID de evento o del participante son incorrectos.');
   }
+
+  const yaInscrito = await this.prisma.agenda.findUnique({
+    where: {
+      id_usuario_id_evento: {
+        id_usuario: data.id_usuario,
+        id_evento: data.id_evento,
+      },
+    },
+  });
+
+  if (yaInscrito) {
+    throw new ConflictException('⚠️ Ya estás inscrito en este evento.');
+  }
+
+  let token = "ninguno";
+  let qrUrl = "ninguno";
+  if (evento.modalidad.toLowerCase() === 'híbrido' || evento.modalidad.toLowerCase() === 'presencial') {
+    token = uuid.v4();
+    // Generar el QR y subirlo a Cloudinary
+    qrUrl = await this.emailService.generateQRCodeAndUpload(token);
+    console.log("URL del QR generado:", qrUrl);
+  }
+
+  const actividad = `Evento: ${evento.titulo}`;
+  const fechaCreacion = new Date();
+  
+  // Crear la agenda en la base de datos
+  const nuevaAgenda = await this.prisma.agenda.create({
+    data: {
+      id_evento: data.id_evento,
+      id_usuario: data.id_usuario,
+      actividades: actividad,
+      fecha: fechaCreacion,
+      token: token,  // Guardar el token en la agenda
+      qr_url: qrUrl, // Guardar la URL del QR en la agenda
+    },
+  });
+
+function formatDateTime(dateString: string): { fecha: string; hora: string } {
+  const date = new Date(dateString);
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+  const year = date.getFullYear();
+  
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return {
+    fecha: `${day}/${month}/${year}`,
+    hora: `${hours}:${minutes}`,
+  };
+}
+
+
+  console.log("Este es el token: " + token);
+// Utilizando la nueva función formatDateTime
+const { fecha: fechaInicio, hora: horaInicio } = formatDateTime(evento.hora_inicio);
+const { fecha: fechaFin, hora: horaFin } = formatDateTime(evento.hora_fin);
+
+  await this.emailService.sendInscripcionEventoEmail(usuario.email, {
+    nombre_usuario: usuario.nombre,
+    titulo: evento.titulo,
+    descripcion: evento.descripcion,
+    fecha_inicio: fechaInicio, // La fecha de inicio
+    hora_inicio: horaInicio,   // La hora de inicio
+    fecha_fin: fechaFin,       // La fecha de fin
+    hora_fin: horaFin,         // La hora de fin
+    modalidad: evento.modalidad,
+    costo: `${evento.costo} Bs.`,
+    ubicacion: evento.Ubicacion?.ubicacion || 'Ubicación no especificada',
+    telefonos: evento.Telefonos?.map(t => ({
+      nombre: t.nombre,
+      numero: t.numero,
+    })) || [],
+    imagen_url: evento.foto_evento || 'https://res.cloudinary.com/djxsfzosx/image/upload/v1744514657/eventos/dlmsljwa7clnbrsobxdp.png',
+    token: token,
+    qr_url: qrUrl, // Enviar la URL del QR al correo
+  });
+
+  const resultadoLogro = await this.revisarLogro(data.id_usuario);
+
+  return {
+    mensaje: `✅ Felicidades, ${usuario.nombre}, te has registrado correctamente en el evento "${evento.titulo}".`,
+    logro: resultadoLogro.logro,
+    puntosExtra: resultadoLogro.puntosExtra,
+    puntajeTotal: resultadoLogro.puntajeTotal,
+    qr_url: qrUrl, // Retornar la URL del QR para verificar
+  };
+}
+
+
   
 
   private async revisarLogro(id_usuario: string) {
@@ -257,34 +285,74 @@ export class AgendaService {
     return agenda;
   }
   
-  async remove(id_usuario: string, id_evento: number) {
-    // Eliminar la agenda
-    await this.prisma.agenda.delete({
-      where: {
-        id_usuario_id_evento: {
-          id_usuario,
-          id_evento,
-        },
-      },
-    });
-  
-    // Restar 10 puntos del usuario
-    await this.prisma.usuarios.update({
-      where: {
-        id_usuario,
-      },
-      data: {
-        puntaje: {
-          decrement: 10,
-        },
-      },
-    });
-    
-  
-    return {
-      mensaje: '🗑️ Registro de agenda eliminado correctamente. Puntos restados.',
-    };
+ async remove(id_usuario: string, id_evento: number) {
+  // Obtener el puntaje y la cantidad de inscripciones del usuario directamente
+  const usuario = await this.prisma.usuarios.findUnique({
+    where: {
+      id_usuario,
+    },
+    select: {
+      puntaje: true,
+    },
+  });
+
+  if (!usuario) {
+    throw new Error('Usuario no encontrado');
   }
+
+  // Contar directamente las inscripciones del usuario sin cargar todas las filas
+  const cantidadInscripciones = await this.prisma.agenda.count({
+    where: {
+      id_usuario: id_usuario,
+    },
+  });
+
+  let puntosExtra = 0;
+
+  // Verificar si tiene alguno de los logros y calcular los puntos extra
+  if (cantidadInscripciones === 1) {
+    puntosExtra = 5;
+  } else if (cantidadInscripciones === 5) {
+    puntosExtra = 10;
+  } else if (cantidadInscripciones === 10) {
+    puntosExtra = 15;
+  } else if (cantidadInscripciones === 25) {
+    puntosExtra = 20;
+  } else if (cantidadInscripciones === 50) {
+    puntosExtra = 25;
+  } else if (cantidadInscripciones === 100) {
+    puntosExtra = 30;
+  }
+
+  // Eliminar la agenda
+  await this.prisma.agenda.delete({
+    where: {
+      id_usuario_id_evento: {
+        id_usuario,
+        id_evento,
+      },
+    },
+  });
+
+  // Restar puntos del usuario (10 base + puntos extra si aplica)
+  const puntosARestar = 10 + puntosExtra;
+  const nuevoPuntaje = Math.max(usuario.puntaje - puntosARestar, 0); // Evitar que el puntaje sea negativo
+
+  // Actualizar el puntaje del usuario
+  await this.prisma.usuarios.update({
+    where: {
+      id_usuario,
+    },
+    data: {
+      puntaje: nuevoPuntaje,
+    },
+  });
+
+  return {
+    mensaje: `🗑️ Registro de agenda eliminado correctamente. Se restaron ${puntosARestar} puntos.`,
+  };
+}
+
   
   
   async addComentario(createAgendaDto: CreateAgendaDto) {

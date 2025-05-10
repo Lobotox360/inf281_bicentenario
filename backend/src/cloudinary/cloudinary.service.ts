@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { v2 as cloudinary, DeleteApiResponse, UploadApiResponse } from 'cloudinary';
 import { Readable } from 'stream';
 import '../cloudinary/cloudinary.config';
 
@@ -26,4 +26,31 @@ export class CloudinaryService {
       bufferStream.pipe(uploadStream);
     });
   }
+
+ async eliminarImagen(url: string): Promise<DeleteApiResponse> {
+  return new Promise<DeleteApiResponse>((resolve, reject) => {
+    // Extraer el ID público de la URL de Cloudinary
+    const publicId = this.extraerPublicIdDeUrl(url);
+
+    if (!publicId) {
+      return reject(new Error('URL no válida o no contiene un ID público'));
+    }
+
+    cloudinary.uploader.destroy(publicId, { invalidate: true }, (error, result) => {
+      if (error) return reject(error);
+      resolve(result);
+    });
+  });
+}
+
+private extraerPublicIdDeUrl(url: string): string | null {
+  try {
+    // ✅ Mejoramos la expresión para incluir carpetas y cualquier extensión
+    const matches = url.match(/\/([^/]+\/[^/]+)\.(jpg|jpeg|png|gif|webp)/);
+    return matches ? matches[1] : null;
+  } catch {
+    return null;
+  }
+}
+
 }

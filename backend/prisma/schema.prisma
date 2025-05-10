@@ -113,6 +113,9 @@ model Agenda {
   asistio       Boolean  @default(false)
   hora_ingreso  DateTime?
   
+  token         String?
+  qr_url       String?
+  
   Eventos     Eventos  @relation(fields: [id_evento], references: [id_evento], onDelete: Cascade)
   Usuarios    Usuarios @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
 

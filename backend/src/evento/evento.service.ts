@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, BadRequestException, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateEventoDto } from './dto/create-evento.dto';
 import { UpdateEventoDto } from './dto/update-evento.dto';
 import { PrismaService } from 'src/prisma.service';
@@ -14,7 +14,55 @@ export class EventoService {
     private emailService: EmailService,
   ) {}
 
+  async registrarAsistenciaEvento(token: string) {
+    // Verificar que el token sea válido
+    if (!token || typeof token !== 'string') {
+      throw new HttpException(
+        'El token es requerido y debe ser una cadena de texto válida',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
+    // Buscar en la base de datos la agenda que tiene el token
+    const agenda = await this.prisma.agenda.findFirst({
+      where: {
+        token: token,
+      },
+    });
+
+    // Verificar si la agenda existe
+    if (!agenda) {
+      throw new HttpException(
+        'El token es inválido o ya fue utilizado.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Si la agenda tiene un QR, se debe eliminar de Cloudinary
+    if (agenda.qr_url) {
+      await this.cloudinaryService.eliminarImagen(agenda.qr_url);
+    }
+
+    // Actualizar la asistencia en la agenda
+    const asistenciaActualizada = await this.prisma.agenda.update({
+      where: {
+        id_usuario_id_evento: {
+          id_usuario: agenda.id_usuario,
+          id_evento: agenda.id_evento,
+        },
+      },
+      data: {
+        token: null, // Eliminar el token
+        asistio: true, // Marcar como asistió
+        hora_ingreso: new Date(), // Registrar la hora de ingreso
+        qr_url: null, // Eliminar el URL del QR
+      },
+    });
+
+    return {
+      message: 'Asistencia registrada correctamente'
+    };
+  }
     
   async getAsistenciaEvento(id_evento: number) {
     // 1. Verificamos que el evento exista

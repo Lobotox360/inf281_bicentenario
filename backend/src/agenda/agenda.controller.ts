@@ -22,7 +22,7 @@ export class AgendaController {
   
 
   // Se agenda a un evento
-  @UseGuards(JwtAuthGuard, CasbinGuard)
+  //@UseGuards(JwtAuthGuard, CasbinGuard)
   @Post()
   create(@Body() data: CreateAgendaDto) {
     return this.agendaService.create(data);
