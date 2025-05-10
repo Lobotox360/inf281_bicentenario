@@ -24,7 +24,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 export class EventoController {
   constructor(private readonly eventoService: EventoService) {}
 
-  //@UseGuards(JwtAuthGuard, CasbinGuard)
+  // se registra la asistencia por QR
+  @UseGuards(JwtAuthGuard, CasbinGuard)
   @Post('asistencia')
   async registrarAsistenciaEvento(@Body('token') token: string) {
     if (!token || typeof token !== 'string') {

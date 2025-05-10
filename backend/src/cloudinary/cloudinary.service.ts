@@ -29,7 +29,6 @@ export class CloudinaryService {
 
  async eliminarImagen(url: string): Promise<DeleteApiResponse> {
   return new Promise<DeleteApiResponse>((resolve, reject) => {
-    // Extraer el ID público de la URL de Cloudinary
     const publicId = this.extraerPublicIdDeUrl(url);
 
     if (!publicId) {
@@ -45,7 +44,6 @@ export class CloudinaryService {
 
 private extraerPublicIdDeUrl(url: string): string | null {
   try {
-    // ✅ Mejoramos la expresión para incluir carpetas y cualquier extensión
     const matches = url.match(/\/([^/]+\/[^/]+)\.(jpg|jpeg|png|gif|webp)/);
     return matches ? matches[1] : null;
   } catch {
