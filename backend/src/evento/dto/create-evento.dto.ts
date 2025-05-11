@@ -48,10 +48,10 @@ class UbicacionDto {
   @IsString()
   descripcion: string;
 
-  @IsNumber() 
+  @IsString()
   latitud: number;
 
-  @IsNumber() 
+  @IsString()
   longitud: number;
 }
 

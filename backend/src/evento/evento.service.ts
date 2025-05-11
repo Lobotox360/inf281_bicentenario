@@ -352,14 +352,19 @@ export class EventoService {
       });
     }
 
-    if (ubicacion) {
-      await this.prisma.ubicacion.create({
-        data: {
-          id_evento,
-          ...ubicacion,
-        },
-      });
-    }   
+if (ubicacion) {
+  // Convertir latitud y longitud a número antes de guardar en la base de datos
+  await this.prisma.ubicacion.create({
+    data: {
+      id_evento,
+      descripcion: ubicacion.descripcion,
+      departamento: ubicacion.departamento,
+      ubicacion: ubicacion.ubicacion,
+      latitud: parseFloat(ubicacion.latitud),   // Convertir a número
+      longitud: parseFloat(ubicacion.longitud), // Convertir a número
+    },
+  });
+}
 
   for (const cat of categoria) {
     await this.prisma.eventos_Categorias.create({
