@@ -132,14 +132,12 @@ export default function Sidebar() {
       )}
 
       {/* Botón para activar el escáner QR */}
-      {esMovil (
         <button 
           onClick={handleRegistrarQR} 
           className="fixed cursor-pointer bottom-6 right-6 bg-blue-500 text-white py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition duration-300"
         >
           Registrar QR
         </button>
-      )}
 
       {escaneando && (
         <div id="qr-reader" className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
