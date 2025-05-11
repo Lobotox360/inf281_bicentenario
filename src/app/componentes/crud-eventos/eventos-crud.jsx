@@ -48,7 +48,7 @@ const CrudEventos = () => {
                 });
                 const datos = await res.json();
                 toast.success(datos.mensaje);
-                window.location.reload();
+                setTimeout(() => {window.location.reload()}, 3000);
             } catch (error) {
                 toast.error('Error al eliminar el evento:', error);
             }
