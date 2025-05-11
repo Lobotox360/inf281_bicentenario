@@ -78,7 +78,7 @@ export default function Calendario() {
           <div className="flex justify-end mb-2">
             <button 
               onClick={volverAlMes} 
-              className="bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
+              className="cursor-pointer bg-orange-500 hover:bg-yellow-400 text-white px-4 py-2 rounded w-full sm:w-auto md:w-auto lg:w-auto"
             >
               Volver al mes
             </button>
