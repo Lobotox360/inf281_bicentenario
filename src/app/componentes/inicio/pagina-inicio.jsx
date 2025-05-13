@@ -112,14 +112,14 @@ export default function Inicio() {
 
             {/* Botón de instalación PWA */}
             {showInstallButton && (
-                <section className="text-center mt-6">
+                <div className="text-center mt-6">
                     <button
                         onClick={handleInstall}
                         className="cursor-pointer p-2 bg-green-600 text-white rounded-md hover:bg-green-400"
                     >
                         Instalar Aplicación
                     </button>
-                </section>
+                </div>
             )}
 
             <NoticiasSlider />

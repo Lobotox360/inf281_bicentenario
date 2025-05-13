@@ -16,10 +16,9 @@ export default function VerMasEvento() {
   const [agendado, setAgendado] = useState([]);
   const [yaAgendado, setYaAgendado] = useState(false);
   const [idUsuario, setIdUsuario] = useState(null);
-  const [token, setToken] = useState(null); // Use state to handle token
+  const [token, setToken] = useState(null); 
 
   useEffect(() => {
-    // Check if we are in the client side before accessing localStorage
     if (typeof window !== 'undefined') {
       const storedToken = localStorage.getItem('access_token');
       setToken(storedToken);
