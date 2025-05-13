@@ -6,16 +6,16 @@ import jsQR from 'jsqr';
 
 export default function Scanner() {
   const [error, setError] = useState(null);
-  const [isScanning, setIsScanning] = useState(true);
+  const [escaneando, setEscaneando] = useState(true);
   const [scannedCode, setScannedCode] = useState("");
   const [mensaje, setMensaje] = useState(""); 
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para manejar el modal
+  const [abrirModal, setAbrirModal] = useState(false); // Estado para manejar el modal
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null); 
 
   useEffect(() => {
-    if (isScanning && !isModalOpen) {
+    if (escaneando && !abrirModal) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
       const context = canvas.getContext('2d');
@@ -45,9 +45,9 @@ export default function Scanner() {
             handleRegistrarQR(code.data); 
           }
         }
-        if (isScanning && !isModalOpen) {
+        if (escaneando && !abrirModal) {
           requestAnimationFrame(scanQRCode);  
-        } else if (isModalOpen) {
+        } else if (abrirModal) {
           video.pause();  
         }
       }
@@ -61,7 +61,7 @@ export default function Scanner() {
         tracks.forEach(track => track.stop());
       }
     };
-  }, [isScanning, isModalOpen]);
+  }, [escaneando, abrirModal]);
 
   const handleRegistrarQR = async (tokenQR) => {
     try {
@@ -84,18 +84,18 @@ export default function Scanner() {
 
       const data = await res.json();
       setMensaje(data.message);
-      setIsModalOpen(true); 
+      setAbrirModal(true); 
 
     } catch (error) {
       console.error("❌ Error:", error);      
       setMensaje("Error al registrar la asistencia");
-      setIsModalOpen(true);
+      setAbrirModal(true);
     }
   };
 
   const closeModal = () => {
-    setIsModalOpen(false);  
-    setIsScanning(true);    
+    setAbrirModal(false);  
+    setEscaneando(true);    
     const video = videoRef.current;
     video.play(); 
   };
@@ -106,7 +106,7 @@ export default function Scanner() {
       <canvas ref={canvasRef} style={{ display: 'none' }} />
       
       {/* Modal */}
-      {isModalOpen && (
+      {abrirModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="flex flex-col justify-center bg-white p-6 rounded-lg">
             <h2 className="text-lg font-semibold">{mensaje}</h2>

@@ -1,4 +1,7 @@
 import type { NextConfig } from 'next';
+const withPWA = require('next-pwa')({
+  dest: 'public',
+});
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
@@ -7,15 +10,15 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
-        pathname: '/**', // You can adjust this if you need to limit the path
+        pathname: '/**', 
       },
       {
         protocol: 'https',
         hostname: 'static.vecteezy.com',
-        pathname: '/**', // You can adjust this if you need to limit the path
+        pathname: '/**', 
       },
     ],
   },
 };
 
-export default nextConfig;
+module.exports = withPWA(nextConfig);

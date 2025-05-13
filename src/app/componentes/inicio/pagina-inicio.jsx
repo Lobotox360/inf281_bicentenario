@@ -1,8 +1,7 @@
 'use client';
-//Set-ExecutionPolicy Unrestricted -Scope Process
 import { useState, useEffect } from "react";
-import { FaFacebook, FaYoutube, FaTiktok, FaTwitter  } from "react-icons/fa";
-import AOS from 'aos';import 'aos/dist/aos.css';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import NoticiasSlider from '../inicio/carrusel';
 import PiePagina from './footer';
 import Navbar from "./navbar";
@@ -14,6 +13,9 @@ export default function Inicio() {
         minutos: 0,
         segundos: 0
     });
+
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [showInstallButton, setShowInstallButton] = useState(false);
 
     useEffect(() => {
         AOS.init({ duracion: 1000 });
@@ -34,11 +36,38 @@ export default function Inicio() {
             setTiempoRestante({ dias: dias, horas: horas, minutos: minutos, segundos: segundos });
         }, 1000);
 
-        return () => clearInterval(intervalo);
+        // Detectar si la PWA puede ser instalada
+        const handleBeforeInstallPrompt = (e) => {
+            e.preventDefault();
+            setDeferredPrompt(e); // Guardamos el evento para usarlo después
+            setShowInstallButton(true); // Hacer visible el botón de instalación
+        };
+
+        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+        // Limpiar evento cuando el componente se desmonte
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        };
     }, []);
+
+    const handleInstall = () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt(); // Mostrar el prompt de instalación
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('El usuario ha aceptado instalar la PWA');
+                } else {
+                    console.log('El usuario ha rechazado la instalación de la PWA');
+                }
+                setDeferredPrompt(null); // Limpiar el evento
+                setShowInstallButton(false); // Ocultar el botón después de la interacción
+            });
+        }
+    };
+
     return (
         <div className="text-white">
-            {/* Navbar */}
             <Navbar />
 
             {/* FRASE  */}
@@ -48,44 +77,53 @@ export default function Inicio() {
 
             {/* Contador */}
             <section className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 text-center max-w-4xl mx-auto rounded-md p-8" data-aos="fade-up">
-            <h2 className="text-4xl font-bold mb-8">CUENTA REGRESIVA</h2>
-            <div className="flex justify-center gap-6 flex-wrap">
-                {/* Días */}
-                <div className="flex flex-col items-center">
-                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {tiempoRestante.dias}
+                <h2 className="text-4xl font-bold mb-8">CUENTA REGRESIVA</h2>
+                <div className="flex justify-center gap-6 flex-wrap">
+                    {/* Días */}
+                    <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                        {tiempoRestante.dias}
+                    </div>
+                    <span className="mt-2 font-semibold text-lg">Días</span>
+                    </div>
+                    {/* Horas */}
+                    <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                        {tiempoRestante.horas}
+                    </div>
+                    <span className="mt-2 font-semibold text-lg">Horas</span>
+                    </div>
+                    {/* Minutos */}
+                    <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                        {tiempoRestante.minutos}
+                    </div>
+                    <span className="mt-2 font-semibold text-lg">Minutos</span>
+                    </div>
+                    {/* Segundos */}
+                    <div className="flex flex-col items-center">
+                    <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
+                        {tiempoRestante.segundos}
+                    </div>
+                    <span className="mt-2 font-semibold text-lg">Segundos</span>
+                    </div>
                 </div>
-                <span className="mt-2 font-semibold text-lg">Días</span>
-                </div>
-                {/* Horas */}
-                <div className="flex flex-col items-center">
-                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {tiempoRestante.horas}
-                </div>
-                <span className="mt-2 font-semibold text-lg">Horas</span>
-                </div>
-                {/* Minutos */}
-                <div className="flex flex-col items-center">
-                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {tiempoRestante.minutos}
-                </div>
-                <span className="mt-2 font-semibold text-lg">Minutos</span>
-                </div>
-                {/* Segundos */}
-                <div className="flex flex-col items-center">
-                <div className="w-24 h-24 flex items-center justify-center rounded-full bg-white text-black text-3xl font-bold shadow-lg">
-                    {tiempoRestante.segundos}
-                </div>
-                <span className="mt-2 font-semibold text-lg">Segundos</span>
-                </div>
-            </div>
             </section>
 
-            
-            {/* Sección de noticias */}
-            <NoticiasSlider  />
+            {/* Botón de instalación PWA */}
+            {showInstallButton && (
+                <section className="text-center mt-6">
+                    <button
+                        onClick={handleInstall}
+                        className="cursor-pointer p-2 bg-green-600 text-white rounded-md hover:bg-green-400"
+                    >
+                        Instalar Aplicación
+                    </button>
+                </section>
+            )}
 
-            {/* Sección multimedia */}
+            <NoticiasSlider />
+
             <section className="p-4 text-center" data-aos="fade-up">
                 <h2 className="text-3xl font-bold">Contenido Multimedia</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
@@ -109,8 +147,7 @@ export default function Inicio() {
                 </div>
             </section>
 
-        <PiePagina/>
-            
+            <PiePagina />
         </div>
     );
 }
