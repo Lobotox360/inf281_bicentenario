@@ -14,8 +14,8 @@ export default function Inicio() {
         segundos: 0
     });
 
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-    const [showInstallButton, setShowInstallButton] = useState(false);
+    const [estadoApp, setEstadoApp] = useState(null);
+    const [mostrarInstalador, setMostrarInstalador] = useState(false);
 
     useEffect(() => {
         AOS.init({ duracion: 1000 });
@@ -37,31 +37,30 @@ export default function Inicio() {
         }, 1000);
 
         // Detectar si la PWA puede ser instalada
-        const handleBeforeInstallPrompt = (e) => {
+        const handleVistaInstalador = (e) => {
             e.preventDefault();
-            setDeferredPrompt(e); // Guardamos el evento para usarlo después
-            setShowInstallButton(true); // Hacer visible el botón de instalación
+            setEstadoApp(e);
+            setMostrarInstalador(true); 
         };
 
-        window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+        window.addEventListener('vistaInstalador', handleVistaInstalador);
 
-        // Limpiar evento cuando el componente se desmonte
         return () => {
-            window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+            window.removeEventListener('vistaInstalador', handleVistaInstalador);
         };
     }, []);
 
-    const handleInstall = () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt(); // Mostrar el prompt de instalación
-            deferredPrompt.userChoice.then((choiceResult) => {
+    const handleInstalar = () => {
+        if (estadoApp) {
+            estadoApp.prompt(); 
+            estadoApp.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('El usuario ha aceptado instalar la PWA');
+                    console.log('El usuario ha aceptado instalar la APP');
                 } else {
-                    console.log('El usuario ha rechazado la instalación de la PWA');
+                    console.log('El usuario ha rechazado la instalación de la APP');
                 }
-                setDeferredPrompt(null); // Limpiar el evento
-                setShowInstallButton(false); // Ocultar el botón después de la interacción
+                setEstadoApp(null); 
+                setMostrarInstalador(false);
             });
         }
     };
@@ -111,10 +110,10 @@ export default function Inicio() {
             </section>
 
             {/* Botón de instalación PWA */}
-            {showInstallButton && (
+            {mostrarInstalador && (
                 <div className="text-center mt-6">
                     <button
-                        onClick={handleInstall}
+                        onClick={handleInstalar}
                         className="cursor-pointer p-2 bg-green-600 text-white rounded-md hover:bg-green-400"
                     >
                         Instalar Aplicación

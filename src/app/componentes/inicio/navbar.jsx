@@ -221,8 +221,8 @@ export default function Navbar() {
 
         {/* Si no hay resultados, mostrar un mensaje */}
         {buscarConsulta && eventosFiltrados.length === 0 && (
-          <div className="mt-2 max-h-60 overflow-y-auto bg-white text-black rounded-md">
-            <p className="px-4 py-2">No se encontraron eventos</p>
+          <div className="mt-2 max-h-60 overflow-y-auto text-white text-center rounded-md">
+            <p className="px-4 py-2">No se encontraron eventos con el nombre - {buscarConsulta}</p>
           </div>
         )}
       </div>

@@ -42,7 +42,8 @@
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1",
-    "swiper": "^11.2.6"
+    "swiper": "^11.2.6",
+    "turbopack": "^0.0.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -9,7 +9,7 @@ export default function Scanner() {
   const [escaneando, setEscaneando] = useState(true);
   const [scannedCode, setScannedCode] = useState("");
   const [mensaje, setMensaje] = useState(""); 
-  const [abrirModal, setAbrirModal] = useState(false); // Estado para manejar el modal
+  const [abrirModal, setAbrirModal] = useState(false); 
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null); 
@@ -93,7 +93,7 @@ export default function Scanner() {
     }
   };
 
-  const closeModal = () => {
+  const cerrarModal = () => {
     setAbrirModal(false);  
     setEscaneando(true);    
     const video = videoRef.current;
@@ -111,7 +111,7 @@ export default function Scanner() {
           <div className="flex flex-col justify-center bg-white p-6 rounded-lg">
             <h2 className="text-lg font-semibold">{mensaje}</h2>
             <button
-              onClick={closeModal}
+              onClick={cerrarModal}
               className="mt-4 cursor-pointer bg-green-500 text-white px-4 py-2 rounded hover:bg-green-400"
             >
               Aceptar

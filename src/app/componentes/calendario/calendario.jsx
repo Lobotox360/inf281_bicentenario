@@ -119,7 +119,7 @@ export default function Calendario() {
               <h3 className="text-center text-md font-bold mb-4">{eventoSeleccionado.title}</h3>
               <p><strong>Hora de Inicio:</strong> {new Date(eventoSeleccionado.start).toLocaleString()}</p>
               <p><strong>Hora de Fin:</strong> {new Date(eventoSeleccionado.end).toLocaleString()}</p>
-              <p><strong>Ver mas:</strong> <a href={`/eventos/vermas/${eventoSeleccionado.id}`} rel="noopener noreferrer" target="_blank" className="cursor-pointer text-blue-500 hover:text-purple-500">Ir al evento</a></p>
+              <p><strong>Ver mas:</strong> <a href={`/eventos/vermas/${eventoSeleccionado.id}`} className="cursor-pointer text-blue-500 hover:text-purple-500">Ir al evento</a></p>
               <div className="flex justify-center mt-4">
                 <button
                   onClick={cerrarModal}
