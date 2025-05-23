@@ -124,7 +124,7 @@ const Login = ({ openModal }) => {
           {errors.contrasenia && <p className="text-red-500 text-sm">{errors.contrasenia.message}</p>}
 
           <div className="flex justify-center">
-            <ReCAPTCHA sitekey="6LeatewqAAAAADCca47eNlhaCay-xYm91cPgMSNr" onChange={handleCaptcha} />
+            <ReCAPTCHA sitekey="6Lf_ckYrAAAAAFOowujiMVOVTgn4cEwSsWTtnAjg" onChange={handleCaptcha} />
           </div>
 
           <div className="text-center text-sm text-gray-600">
