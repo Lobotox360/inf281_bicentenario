@@ -11,7 +11,7 @@ const MapaEvento = ({ latitud, longitud, direccion }) => {
   }, [latitud, longitud]);
 
   return (
-    <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
+    <LoadScriptNext googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}>
       {carga ? (
         <div>Cargando el mapa...</div>
       ) : (

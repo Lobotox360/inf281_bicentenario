@@ -151,7 +151,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
   };
 
   return (
-    <LoadScriptNext googleMapsApiKey='AIzaSyAe7R4Unx1CgViEuc1jDEvdEIDsO5mGMAk'>
+    <LoadScriptNext googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}>
       <div className="p-4 max-w-4xl mx-auto">
         <form className="bg-white p-5 rounded-lg shadow-lg">
           <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
