@@ -41,16 +41,14 @@ export default function Scanner() {
           const code = jsQR(imageData.data, canvas.width, canvas.height);
 
           if (code) {
-            // Detener el escaneo temporalmente para evitar múltiples registros
             setEscaneando(false);
             setScannedCode(code.data); 
             handleRegistrarQR(code.data);
 
-            // Añadir un cooldown (ej. 5 segundos) antes de volver a escanear
             setTimeout(() => {
               setEscaneando(true);
-            }, 5000); // 5000 milisegundos = 5 segundos
-            return; // detener frame loop temporalmente
+            }, 5000); 
+            return; 
           }
         }
 
