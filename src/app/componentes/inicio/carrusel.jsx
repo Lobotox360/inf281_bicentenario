@@ -21,7 +21,6 @@ export default function NoticiasSlider() {
     fetch('https://inf281-production.up.railway.app/eventos')
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const eventosOrdenados = data.sort((a, b) => b.puntuacion - a.puntuacion);
         setEventos(eventosOrdenados);
       })

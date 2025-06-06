@@ -57,12 +57,7 @@ export default function Sidebar() {
   }, []); 
 
   const cerrarSesion = () => {
-    localStorage.removeItem("id_user");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("rol");
-    localStorage.removeItem("email");
-    localStorage.removeItem("inscripciones");
-    localStorage.removeItem("_grecaptcha");
+    localStorage.clear();
     setEmailUsuario(null);
     setFotoUsuario(null);
     setNombreUsuario(null);
@@ -123,7 +118,7 @@ export default function Sidebar() {
         </div>
       )}
       <Link href="/scanner">
-        <button className="fixed bottom-6 cursor-pointer right-6 bg-blue-500 text-white py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition duration-300">
+        <button className="fixed bottom-6 right-6 bg-blue-500 text-white py-3 px-6 rounded-full shadow-lg hover:bg-blue-600 transition duration-300 md:hidden">
           Registrar QR
         </button>
       </Link>

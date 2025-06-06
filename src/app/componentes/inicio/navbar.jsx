@@ -77,12 +77,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("id_user");
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("rol");
-    localStorage.removeItem("email");
-    localStorage.removeItem("inscripciones");
-    localStorage.removeItem("_grecaptcha");
+    localStorage.clear();
     setIdUsuario(null);
     setToken(null);
     setRol(null);
