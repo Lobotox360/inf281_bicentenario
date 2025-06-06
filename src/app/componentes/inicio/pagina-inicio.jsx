@@ -18,7 +18,7 @@ export default function Inicio() {
     const [mostrarInstalador, setMostrarInstalador] = useState(false);
 
     useEffect(() => {
-        AOS.init({ duracion: 1000 });
+        AOS.init({ duration: 1000 });
         const fechaObjetivo = new Date("2025-08-06T00:00:00");
         const intervalo = setInterval(() => {
             const fechaActual = new Date();
@@ -43,7 +43,7 @@ export default function Inicio() {
             setMostrarInstalador(true); 
         };
 
-        window.addEventListener('vistaInstalador', handleVistaInstalador);
+        window.addEventListener('beforeinstallprompt', handleVistaInstalador);
 
         return () => {
             window.removeEventListener('vistaInstalador', handleVistaInstalador);
@@ -109,7 +109,8 @@ export default function Inicio() {
                 </div>
             </section>
 
-            
+            {/* Botón de instalación PWA */}
+            {mostrarInstalador && (
                 <div className="text-center mt-6">
                     <button
                         onClick={handleInstalar}
@@ -119,7 +120,7 @@ export default function Inicio() {
                         Instalar Aplicación
                     </button>
                 </div>
-            
+            )}
 
             <NoticiasSlider />
 
