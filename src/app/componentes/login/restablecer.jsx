@@ -13,12 +13,12 @@ function ObtenerToken() {
   const [token, setToken] = useState(null); 
   const parametros = useSearchParams();
   const router = useRouter();
-  const [visible, setVisible] = useState(false);
+  const [visibleNueva, setVisibleNueva] = useState(false);
+  const [visibleRepetir, setVisibleRepetir] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const tokenParametro = parametros.get('token');
-    console.log(tokenParametro);
     if (!tokenParametro) {
       toast.error('Token no válido o expirado.');
     } else {
@@ -30,7 +30,6 @@ function ObtenerToken() {
     const nuevaContra = e.target.value;
     setContrsena(nuevaContra);
 
-    // Validación de la contraseña
     const validarContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]).{8,}$/;
     if (!validarContrasena.test(nuevaContra)) {
       setError('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.');
@@ -92,35 +91,44 @@ function ObtenerToken() {
             <form onSubmit={handleSubmit}>
               <div className="text-left mb-4 relative">
                 <label className="block text-sm font-semibold mb-1">Nueva contraseña:</label>
-                <div className="flex items-center w-full">
+                <div className="relative">
                   <input
-                    type={visible ? 'text' : 'password'}
+                    type={visibleNueva ? 'text' : 'password'}
                     value={contrasena}
                     onChange={handleCambiarContrasena}
                     required
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full px-3 py-2 border rounded pr-10"
                     placeholder="********"
                   />
                   <button
                     type="button"
-                    onClick={() => setVisible(!visible)}
-                    className="absolute right-3"
+                    onClick={() => setVisibleNueva(!visibleNueva)}
+                    className="absolute right-3 top-2.5 text-xl text-gray-600"
                   >
-                    {visible ? <AiFillEye /> : <AiFillEyeInvisible />}
+                    {visibleNueva ? <AiFillEye /> : <AiFillEyeInvisible />}
                   </button>
                 </div>
               </div>
 
-              <div className="text-left mb-4">
+              <div className="text-left mb-4 relative">
                 <label className="block text-sm font-semibold mb-1">Repetir contraseña:</label>
-                <input
-                  type={visible ? 'text' : 'password'}
-                  value={repetirContra}
-                  onChange={(e) => setRepetirContra(e.target.value)}
-                  required
-                  className="w-full px-3 py-2 border rounded"
-                  placeholder="********"
-                />
+                <div className="relative">
+                  <input
+                    type={visibleRepetir ? 'text' : 'password'}
+                    value={repetirContra}
+                    onChange={(e) => setRepetirContra(e.target.value)}
+                    required
+                    className="w-full px-3 py-2 border rounded pr-10"
+                    placeholder="********"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVisibleRepetir(!visibleRepetir)}
+                    className="absolute right-3 top-2.5 text-xl text-gray-600"
+                  >
+                    {visibleRepetir ? <AiFillEye /> : <AiFillEyeInvisible />}
+                  </button>
+                </div>
               </div>
 
               <button
@@ -139,9 +147,9 @@ function ObtenerToken() {
 }
 
 export default function RestablecerPassword() {
-  return(
+  return (
     <Suspense>
       <ObtenerToken />
     </Suspense>
   );
-};
+}

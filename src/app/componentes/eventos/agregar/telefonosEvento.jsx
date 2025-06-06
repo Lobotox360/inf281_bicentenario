@@ -58,7 +58,7 @@ const TelefonosEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     <>
       <div className="max-w-4xl mx-auto">
         <form className="bg-white p-5 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Agregar teléfonos de contacto</h3>
+          <h3 className="text-2xl font-semibold text-center py-4">Paso 5: Agregar teléfonos de contacto</h3>
 
           <div className="mb-4 flex justify-center">
             <button

@@ -154,7 +154,7 @@ const UbicacionEvento = ({ siguientePaso, anteriorPaso, handleUpdateData, evento
     <LoadScriptNext googleMapsApiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}>
       <div className="p-4 max-w-4xl mx-auto">
         <form className="bg-white p-5 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-center py-4">Paso 4: Ubicación del evento</h3>
+          <h3 className="text-2xl font-semibold text-center py-4">Paso 6: Ubicación del evento</h3>
           {/* Campo departamento */}
           <div className="mb-4">
             <label htmlFor="departamento" className="block text-sm font-medium text-gray-700">Departamento</label>

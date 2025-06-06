@@ -29,11 +29,20 @@ const AgregarEvento = () => {
   });
 
   const siguientePaso = () => {
-    setPasoActual(pasoActual + 1);
+    if (pasoActual === 5 && eventoData.informacion.modalidad === 'virtual') {
+      setPasoActual(7); 
+    } else {
+      setPasoActual(pasoActual + 1);
+    }
   };
 
+
   const anteriorPaso = () => {
-    setPasoActual(pasoActual - 1);
+    if (pasoActual === 7 && eventoData.informacion.modalidad === 'virtual') {
+      setPasoActual(5);
+    } else {
+      setPasoActual(pasoActual - 1);
+    }
   };
 
   const handleUpdateData = (section, data) => {

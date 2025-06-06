@@ -44,7 +44,18 @@ const FotoEvento = ({ anteriorPaso, handleUpdateData, eventoData }) => {
     }))));
 
     formData.append("telefonos_contacto", JSON.stringify(eventoData.telefonos));
-    formData.append("ubicacion", JSON.stringify(eventoData.ubicacion));
+    const ubicacionFinal = eventoData.informacion.modalidad === 'virtual'
+    ? {
+        descripcion: 'Virtual',
+        ubicacion: '',
+        departamento: '',
+        latitud: '0',
+        longitud: '0'
+      }
+    : eventoData.ubicacion;
+
+  formData.append("ubicacion", JSON.stringify(ubicacionFinal));
+
 
     try {
       if (!token) {throw new Error("Acceso denegado");}
@@ -69,7 +80,7 @@ const FotoEvento = ({ anteriorPaso, handleUpdateData, eventoData }) => {
     <>
       <div className="max-w-4xl mx-auto p-4">
         <form className="bg-white p-5 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-center py-4">Paso 5: Agregar Imagen del Evento</h3>
+          <h3 className="text-2xl font-semibold text-center py-4">Ultimo paso: Agregar Imagen del Evento</h3>
 
           {/* Input para seleccionar la imagen */}
           <div className="mb-4">
