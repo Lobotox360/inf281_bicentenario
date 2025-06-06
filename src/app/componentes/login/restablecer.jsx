@@ -103,7 +103,7 @@ function ObtenerToken() {
                   <button
                     type="button"
                     onClick={() => setVisibleNueva(!visibleNueva)}
-                    className="absolute right-3 top-2.5 text-xl text-gray-600"
+                    className="cursor-pointer absolute right-3 top-2.5 text-xl text-gray-600"
                   >
                     {visibleNueva ? <AiFillEye /> : <AiFillEyeInvisible />}
                   </button>
@@ -124,7 +124,7 @@ function ObtenerToken() {
                   <button
                     type="button"
                     onClick={() => setVisibleRepetir(!visibleRepetir)}
-                    className="absolute right-3 top-2.5 text-xl text-gray-600"
+                    className="cursor-pointer absolute right-3 top-2.5 text-xl text-gray-600"
                   >
                     {visibleRepetir ? <AiFillEye /> : <AiFillEyeInvisible />}
                   </button>
