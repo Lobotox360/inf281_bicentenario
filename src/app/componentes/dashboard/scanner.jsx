@@ -36,30 +36,31 @@ export default function Scanner() {
           canvas.width = video.videoWidth;
           canvas.height = video.videoHeight;
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
-          
+
           const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
           const code = jsQR(imageData.data, canvas.width, canvas.height);
 
           if (code) {
+            // Detener el escaneo temporalmente para evitar múltiples registros
+            setEscaneando(false);
             setScannedCode(code.data); 
-            handleRegistrarQR(code.data); 
+            handleRegistrarQR(code.data);
+
+            // Añadir un cooldown (ej. 5 segundos) antes de volver a escanear
+            setTimeout(() => {
+              setEscaneando(true);
+            }, 5000); // 5000 milisegundos = 5 segundos
+            return; // detener frame loop temporalmente
           }
         }
+
         if (escaneando && !abrirModal) {
-          requestAnimationFrame(scanQRCode);  
+          requestAnimationFrame(scanQRCode);
         } else if (abrirModal) {
-          video.pause();  
+          video.pause();
         }
       }
-    }
 
-    return () => {
-      const video = videoRef.current;
-      if (video && video.srcObject) {
-        const stream = video.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-      }
     };
   }, [escaneando, abrirModal]);
 
